@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { z } from "zod";
-import { adminSignUp, signUp } from "@/app/api/(auth)/signup";
+import { adminSignUp } from "@/app/api/(auth)/signup";
 import { useAuthStore } from "@/app/store/authStore";
 import { toast } from "react-hot-toast";
 import axios from "axios";
@@ -58,10 +58,11 @@ export default function SignupPage() {
       username: data.username,
       email: data.email,
       password: data.password,
+      role: "admin"
     };
 
     try {
-      const response = await signUp(payload);
+      const response = await adminSignUp(payload);
       if (response?.access_token || response?.data?.access_token) {
         toast.success("Registration successful!");
         router.push("/login");
@@ -107,10 +108,10 @@ export default function SignupPage() {
       >
         <div>
           <h2 className="mt-2 text-center text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
-            User Registration
+            Admin Registration
           </h2>
           <p className="mt-2 text-center text-sm text-gray-400">
-            Create your User account
+            Create your administrator account
           </p>
         </div>
 
@@ -251,7 +252,7 @@ export default function SignupPage() {
                 </div>
               ) : (
                 <div className="flex items-center">
-                  Create  User Account
+                  Create Admin Account
                   <svg
                     className="ml-2 -mr-1 w-5 h-5"
                     fill="none"

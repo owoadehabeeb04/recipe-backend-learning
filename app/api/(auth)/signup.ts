@@ -1,17 +1,29 @@
 import axios from "axios"
+interface SignUpFormData {
+  username: string;
+  email: string;
+  password: string;
+  role?: string
+}
 
-interface signUpFormData {
-username: string;
-email: string;
-password: string;
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
+
+export const signUp = async (payload: SignUpFormData) => {
+  try {
+    const response = await axios.post(`${API_URL}/auth/register`, payload);
+    return response.data || response;
+  } catch (error) {
+    console.error(error)
+    return error
+  }
 }
-export const signUp = async (payload: signUpFormData)=> {
-try{
-const response = await axios.post(`http://localhost:3001/auth/register`, 
-payload
-)
-return response
-} catch(error){
-    console.log(error)
-}
+
+export const adminSignUp = async (payload: SignUpFormData) => {
+  try {
+    const response = await axios.post(`${API_URL}/auth/register/admin`, payload);
+    return response.data || response;
+  } catch (error) {
+    console.error(error)
+    return error
+  }
 }
