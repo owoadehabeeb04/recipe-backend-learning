@@ -2,13 +2,19 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 interface User {
-  id: string;
+  _id: string;
   username: string;
   email: string;
   bio?: string;
   role?: string;
   location?:string;
   website?: string;
+  phoneNumber?: any;
+  profileImage?: string;
+  socialMediaLink?: {
+    name: string;
+    link: string;
+  }
 
 }
 

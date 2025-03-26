@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuthStore } from "../store/authStore";
 import { motion } from "framer-motion";
-
+import Image from "next/image";
 // Icons
 const HomeIcon = () => (
   <svg
@@ -93,6 +93,7 @@ const BellIcon = () => (
 
 export default function DashboardLayout({ children }: any) {
   const { user } = useAuthStore();
+  console.log(user);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
@@ -109,7 +110,7 @@ export default function DashboardLayout({ children }: any) {
       href: "/dashboard/all-recipes",
       icon: <RecipeIcon />
     },
-    { name: "Profile", href: "/dashboard/profile", icon: <ProfileIcon /> },
+    { name: "Profile", href: `/dashboard/profile`, icon: <ProfileIcon /> },
     { name: "Security", href: "/dashboard/security", icon: <SecurityIcon /> }
   ];
 
@@ -160,11 +161,34 @@ export default function DashboardLayout({ children }: any) {
               </div>
 
               {/* User menu */}
-              <div className="relative">
+              {/* <div className="relative">
                 <div className="flex items-center">
                   <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center overflow-hidden">
                     {user?.username?.charAt(0).toUpperCase() || "U"}
                   </div>
+                  <span className="hidden md:flex ml-2">
+                    {user?.username || "User"}
+                  </span>
+                </div>
+              </div> */}
+              <div className="relative">
+                <div className="flex items-center">
+                  {user?.username ? (
+                    <div className="w-8 h-8 rounded-full overflow-hidden relative">
+                      <Image
+                        src={user?.profileImage || "/default-profile.png"}
+                        alt={user?.username}
+                        width={40}
+                        height={40}
+                        className="w-full h-full object-cover"
+                        style={{ borderRadius: "50%" }}
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center overflow-hidden">
+                      {user?.username?.charAt(0).toUpperCase() || "U"}
+                    </div>
+                  )}
                   <span className="hidden md:flex ml-2">
                     {user?.username || "User"}
                   </span>

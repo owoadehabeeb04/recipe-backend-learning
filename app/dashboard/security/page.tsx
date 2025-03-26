@@ -2,10 +2,15 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
+import { useAuthStore } from "../../store/authStore";
+import { changePassword } from "../../api/(security)/change-password";
+import toast from "react-hot-toast";
 
 const SecurityPage = () => {
+  const { token, user } = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const {
     register,
@@ -22,18 +27,42 @@ const SecurityPage = () => {
   });
 
   const onSubmit = async (data: any) => {
+    if (!token) {
+      toast.error("You must be logged in to change your password");
+      return;
+    }
+
     setIsLoading(true);
     setSuccessMessage("");
+    setErrorMessage("");
 
-    // API call to change password would go here
-    console.log("Password change data:", data);
+    try {
+      const payload = {
+        email: user?.email,
+        currentPassword: data.currentPassword,
+        newPassword: data.newPassword,
+      };
 
-    // Simulate API call
-    setTimeout(() => {
+      const result = await changePassword(payload, token);
+
+      if (result.success) {
+        setSuccessMessage("Your password has been successfully changed.");
+        toast.success("Password updated successfully");
+        reset();
+      } else {
+        // Set error message
+        const errorMsg = result.message || "Failed to update password";
+        setErrorMessage(errorMsg);
+        toast.error(errorMsg);
+      }
+    } catch (error) {
+      console.error("Error changing password:", error);
+      const errorMsg = "An unexpected error occurred";
+      setErrorMessage(errorMsg);
+      toast.error(errorMsg);
+    } finally {
       setIsLoading(false);
-      setSuccessMessage("Your password has been successfully changed.");
-      reset();
-    }, 1000);
+    }
   };
 
   return (
@@ -65,6 +94,12 @@ const SecurityPage = () => {
         {successMessage && (
           <div className="mb-6 p-4 bg-green-500/20 border border-green-500/30 rounded-xl text-green-300">
             {successMessage}
+          </div>
+        )}
+
+        {errorMessage && (
+          <div className="mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-xl text-red-300">
+            {errorMessage}
           </div>
         )}
 
@@ -135,8 +170,11 @@ const SecurityPage = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-white hover:from-purple-700 hover:to-pink-700 transition-all disabled:opacity-70"
+                className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-white hover:from-purple-700 hover:to-pink-700 transition-all disabled:opacity-70 flex items-center"
               >
+                {isLoading && (
+                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
+                )}
                 {isLoading ? "Updating..." : "Update Password"}
               </button>
             </div>
