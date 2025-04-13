@@ -10,38 +10,35 @@ import Image from "next/image";
 import { editRecipe, getRecipeBySlug } from "@/app/api/(recipe)/adminRecipe";
 import { getRecipeDetails } from "@/app/api/(recipe)/userRecipes";
 
+interface Ingredient {
+  name: string;
+  quantity: string;
+  unit: string;
+}
+
 interface RecipeFormData {
   title: string;
   description: string;
   category: string;
+  ingredients: string[]
   cookingTime: number;
   difficulty: string;
   servings: number;
   steps: { value: string }[];
   tips: { value: string }[];
-  ingredients: string; // Changed to string instead of array
   featuredImage: string;
 }
 
 const difficultyOptions = ["Easy", "Medium", "Hard"];
 
-const categoryOptions = [
-  "Breakfast",
-  "Lunch",
-  "Dinner",
-  "Appetizer",
-  "Dessert",
-  "Snack",
-  "Soup",
-  "Salad",
-  "Main Course",
-  "Side Dish",
-  "Drink",
-  "Baking",
-  "Vegetarian",
-  "Vegan",
-  "Gluten-Free",
-  "Other"
+
+export const categoryOptions = [
+  "breakfast",
+  "lunch",
+  "dinner",
+  "dessert",
+  "snack",
+"beverage",
 ];
 
 const EditRecipe = () => {
@@ -53,6 +50,9 @@ const EditRecipe = () => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [recipeId, setRecipeId] = useState<string | null>(null);
   const [fetchingRecipe, setFetchingRecipe] = useState(true);
+  const [ingredients, setIngredients] = useState<Ingredient[]>([
+    { name: "", quantity: "", unit: "" }
+  ]);
 
   const {
     register,
@@ -65,13 +65,12 @@ const EditRecipe = () => {
     defaultValues: {
       title: "",
       description: "",
-      category: categoryOptions[0], // Set default category
+      category: categoryOptions[0],
       cookingTime: 30,
-      difficulty: difficultyOptions[0], // Set default difficulty
+      difficulty: difficultyOptions[0],
       servings: 4,
       steps: [{ value: "" }],
       tips: [{ value: "" }],
-      ingredients: "", // Single string for ingredients
       featuredImage: ""
     }
   });
@@ -94,6 +93,21 @@ const EditRecipe = () => {
     name: "tips"
   });
 
+  const addIngredient = () => {
+    setIngredients([...ingredients, { name: "", quantity: "", unit: "" }]);
+  };
+
+  const removeIngredient = (index: number) => {
+    if (ingredients.length === 1) return;
+    setIngredients(ingredients.filter((_, i) => i !== index));
+  };
+
+  const updateIngredient = (index: number, field: keyof Ingredient, value: string) => {
+    const updatedIngredients = [...ingredients];
+    updatedIngredients[index][field] = value;
+    setIngredients(updatedIngredients);
+  };
+
   // Fetch recipe data when the component mounts
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -115,30 +129,42 @@ const EditRecipe = () => {
 
         const recipe = response.data;
         setRecipeId(recipe._id);
-
+        console.log(recipe.difficulty)
         // Set form values with recipe data
         setValue("title", recipe.title);
         setValue("description", recipe.description);
         setValue("cookingTime", recipe.cookingTime);
-        setValue("difficulty", recipe.difficulty || difficultyOptions[0]);
-        setValue("category", recipe.category || categoryOptions[0]);
-        setValue("featuredImage", recipe.featuredImage);
+
+// Ensure difficulty value from API is preserved
+      if (recipe.difficulty) {
+        const normalizedDifficulty = recipe.difficulty.charAt(0).toUpperCase() + recipe.difficulty.slice(1).toLowerCase();
+        setValue("difficulty", normalizedDifficulty);
+      }    
+ // Ensure category value from API is preserved
+ if (recipe.category) {
+  const normalizedCategory = recipe.category.charAt(0).toUpperCase() + recipe.category.slice(1).toLowerCase();
+  setValue("category", normalizedCategory);
+}        setValue("featuredImage", recipe.featuredImage);
         setValue("servings", recipe.servings);
         
-        // Handle ingredients - format as a comma-separated string
+        // Set ingredients using the separate state
         if (Array.isArray(recipe.ingredients)) {
-          // Check if ingredients are objects with name, quantity, unit
-          if (recipe.ingredients.length > 0 && typeof recipe.ingredients[0] === 'object') {
-            const ingredientStrings = recipe.ingredients.map(ing => {
-              if (ing.quantity && ing.unit) {
-                return `${ing.quantity} ${ing.unit} ${ing.name}`;
-              }
-              return ing.name;
-            });
-            setValue("ingredients", ingredientStrings.join(", "));
-          } else {
-            // Handle simple string array
-            setValue("ingredients", recipe.ingredients.join(", "));
+          if (recipe.ingredients.length > 0) {
+            // If ingredients are objects with name, quantity, unit
+            if (typeof recipe.ingredients[0] === 'object') {
+              setIngredients(recipe.ingredients.map((ing: { name: any; quantity: any; unit: any; }) => ({
+                name: ing.name || '',
+                quantity: ing.quantity || '',
+                unit: ing.unit || ''
+              })));
+            } else {
+              // If ingredients are simple strings
+              setIngredients(recipe.ingredients.map((ing: { toString: () => any; }) => ({
+                name: ing.toString(),
+                quantity: '',
+                unit: ''
+              })));
+            }
           }
         }
         
@@ -146,7 +172,7 @@ const EditRecipe = () => {
         if (Array.isArray(recipe.steps)) {
           setValue(
             "steps",
-            recipe.steps.map((step) => ({ value: step }))
+            recipe.steps.map((step: any) => ({ value: step }))
           );
         }
         
@@ -154,8 +180,10 @@ const EditRecipe = () => {
         if (Array.isArray(recipe.tips) && recipe.tips.length > 0) {
           setValue(
             "tips",
-            recipe.tips.map((tip) => ({ value: tip }))
+            recipe.tips.map((tip: any) => ({ value: tip }))
           );
+        } else {
+          setValue("tips", [{ value: "" }]);
         }
         
         // Set the preview image using featuredImage
@@ -186,9 +214,8 @@ const EditRecipe = () => {
       setUploadingImage(true);
       toast.loading("Uploading image...", { id: "imageUpload" });
 
-      // Use the uploadToCloudinary function
       const cloudinaryUrl = await uploadToCloudinary(file);
-      setValue("featuredImage", cloudinaryUrl); // Make sure this matches your form field name
+      setValue("featuredImage", cloudinaryUrl);
       
       toast.success("Image uploaded successfully", { id: "imageUpload" });
     } catch (error) {
@@ -210,44 +237,42 @@ const EditRecipe = () => {
       return;
     }
 
+    // Validate ingredients
+    const validIngredients = ingredients.filter(ing => ing.name.trim() !== "");
+    if (validIngredients.length === 0) {
+      toast.error("Please add at least one ingredient");
+      return;
+    }
+
     setLoading(true);
     try {
-      // Format ingredients as objects with name, quantity, unit
-      const ingredients = data.ingredients.split(",").map(item => {
-        const trimmedItem = item.trim();
-        const parts = trimmedItem.split(" ");
-        
-        if (parts.length >= 3) {
-          // Assume format: "2 g flour" (quantity unit name)
-          return {
-            quantity: parts[0],
-            unit: parts[1],
-            name: parts.slice(2).join(" ")
-          };
-        }
-        
-        return { name: trimmedItem };
-      }).filter(item => item.name);
-
       // Transform the data into the format expected by the API
       const payload = {
         title: data.title,
         description: data.description,
-        category: data.category,
+        category: data.category.toLocaleLowerCase(),
         cookingTime: data.cookingTime,
-        difficulty: data.difficulty,
+        difficulty: data.difficulty.toLocaleLowerCase(),
         servings: data.servings,
         steps: data.steps.map(step => step.value).filter(Boolean),
         tips: data.tips.map(tip => tip.value).filter(Boolean),
-        ingredients: ingredients,
+        // Make sure ingredients are in the correct format - array of objects
+        ingredients: validIngredients.map(ing => ({
+          name: ing.name.trim(),
+          quantity: ing.quantity.trim(),
+          unit: ing.unit.trim()
+        })),
         featuredImage: data.featuredImage
       };
+
+      console.log("Submitting recipe with ID:", recipeId);
+      console.log("Payload:", payload);
 
       const response = await editRecipe(recipeId, payload, token);
 
       if (response.success) {
         toast.success("Recipe updated successfully");
-        router.push(`/recipe/${slug}`);
+        router.push(`/dashboard/recipe/${slug}`);
       } else {
         toast.error(response.message || "Failed to update recipe");
       }
@@ -392,25 +417,6 @@ const EditRecipe = () => {
               )}
             </div>
 
-            {/* Ingredients */}
-            <div>
-              <label className="block text-gray-300 text-sm font-medium mb-2">
-                Ingredients*
-              </label>
-              <textarea
-                {...register("ingredients", {
-                  required: "Ingredients are required"
-                })}
-                rows={4}
-                className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 text-white resize-none"
-                placeholder="Enter ingredients separated by commas (e.g., 2 cups flour, 1 cup sugar, 3 eggs)"
-              />
-              {errors.ingredients && (
-                <p className="text-pink-500 text-sm mt-1">{errors.ingredients.message}</p>
-              )}
-              <p className="text-gray-400 text-xs mt-1">Separate ingredients with commas</p>
-            </div>
-
             {/* Cooking Time, Difficulty, Servings in a row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
@@ -501,12 +507,118 @@ const EditRecipe = () => {
           </div>
         </div>
 
+        {/* Ingredients - In the style from create-recipe */}
+        <div className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
+          <h2 className="text-xl font-semibold text-white mb-6">Ingredients</h2>
+          
+          {ingredients.map((ingredient, index) => (
+            <div key={index} className="mb-4 last:mb-0">
+              <div className="flex items-center space-x-4 mb-2">
+                <div className="h-px bg-gray-700 flex-grow"></div>
+                <span className="text-gray-400 text-sm">
+                  Ingredient {index + 1}
+                </span>
+                <div className="h-px bg-gray-700 flex-grow"></div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <div className="md:col-span-2 space-y-2">
+                  <label className="text-gray-300 text-sm">Name*</label>
+                  <input
+                    type="text"
+                    value={ingredient.name}
+                    onChange={(e) =>
+                      updateIngredient(index, "name", e.target.value)
+                    }
+                    className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                    placeholder="Ingredient name"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-gray-300 text-sm">Quantity</label>
+                  <input
+                    type="text"
+                    value={ingredient.quantity}
+                    onChange={(e) =>
+                      updateIngredient(index, "quantity", e.target.value)
+                    }
+                    className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                    placeholder="Amount"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-gray-300 text-sm">Unit</label>
+                  <input
+                    type="text"
+                    value={ingredient.unit}
+                    onChange={(e) =>
+                      updateIngredient(index, "unit", e.target.value)
+                    }
+                    className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50"
+                    placeholder="g, ml, tbsp"
+                  />
+                </div>
+
+                <div className="flex items-end">
+                  <button
+                    type="button"
+                    onClick={() => removeIngredient(index)}
+                    disabled={ingredients.length === 1}
+                    className="px-3 py-3 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30 transition-colors disabled:opacity-50"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          <div className="mt-6">
+            <button
+              type="button"
+              onClick={addIngredient}
+              className="px-4 py-2 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/30 text-blue-400 rounded-lg flex items-center hover:from-blue-500/30 hover:to-cyan-500/30 transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 mr-2"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                />
+              </svg>
+              Add Ingredient
+            </button>
+          </div>
+        </div>
+
         {/* Steps */}
         <div className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
           <h2 className="text-xl font-semibold text-white mb-6">Steps</h2>
           <div className="space-y-4">
             {stepFields.map((field, index) => (
-              <div key={field.id} className="flex items-start mb-3">
+              <div key={field.id} className="flex items-start space-x-2">
                 <div className="bg-purple-500 rounded-full h-6 w-6 flex-shrink-0 flex items-center justify-center mt-3">
                   <span className="text-white text-sm font-medium">
                     {index + 1}
@@ -577,7 +689,7 @@ const EditRecipe = () => {
           </h2>
           <div className="space-y-3">
             {tipFields.map((field, index) => (
-              <div key={field.id} className="flex items-start mb-3">
+              <div key={field.id} className="flex items-center space-x-2">
                 <div className="flex-1">
                   <input
                     {...register(`tips.${index}.value` as const)}

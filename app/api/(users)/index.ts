@@ -15,7 +15,7 @@ interface ProfileUpdatePayload {
 export const updateProfile = async (payload: ProfileUpdatePayload, token: string, userId: string | undefined)  => {
   try {
     const response = await axios.post(
-      `${API_URL}/user/edit-user/${userId}`,
+      `${API_URL}/users/edit-user/${userId}`,
       payload, 
       {
         headers: {
@@ -49,3 +49,63 @@ export const updateProfile = async (payload: ProfileUpdatePayload, token: string
     };
   }
 }
+
+
+// get all users api
+// export const getAllUsers = async (token: string) => {
+//   try {
+//     const response = await axios.get(`${API_URL}/users`, {
+//       headers: {
+//         'Content-Type': 'application/json',
+//         'Authorization': `Bearer ${token}`
+//       }
+//     });
+
+//     // Log the response structure to verify what's returned
+//     console.log('API response structure:', response.data);
+
+//     return {
+//       success: true,
+//       data: response.data.data || response.data.users || [], 
+//       pagination: response.data.pagination,
+//       message: response.data.message || 'Users fetched successfully'
+//     };
+//   } catch (error) {
+//     console.error('Error fetching users:', error);
+    
+//     if (axios.isAxiosError(error)) {
+//       return {
+//         success: false,
+//         data: [],
+//         message: error.response?.data?.message || error.message,
+//         status: error.response?.status
+//       };
+//     }
+    
+//     return {
+//       success: false,
+//       data: [],
+//       message: error instanceof Error ? error.message : 'An unknown error occurred'
+//     };
+//   }
+// }
+
+export const getAllUsers = async (token: string, queryParams = '') => {
+  try {
+    const endpoint = `${API_URL}/users${queryParams ? `?${queryParams}` : ''}`;
+    
+    const response = await axios.get(endpoint, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    
+    return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const errorMessage = error.response?.data?.message || error.message;
+      throw new Error(errorMessage);
+    }
+    throw error;
+  }
+};

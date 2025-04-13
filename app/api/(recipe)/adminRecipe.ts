@@ -11,7 +11,11 @@ interface payload {
   servings: number;
   steps: string[];
   tips: string[];
-  ingredients: string[];
+  ingredients: {
+name: string;
+quantity: any;
+unit: any;
+  }[];
   featuredImage: string;
 }
 
@@ -100,8 +104,9 @@ export const editRecipe = async (recipeId: string, payload: Partial<payload>, to
     const response = await axios.patch(`${API_URL}/recipes/edit-recipe/${recipeId}`, payload, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }
+        'Authorization': `Bearer ${token}`,
+        "Access-Control-Allow-Origin": "*",
+      },
     });
     
     return {
@@ -173,29 +178,22 @@ export const deleteRecipe = async (recipeId: string, token: string) => {
  * @param token JWT token for authentication
  * @returns Response with success status and message or error
  */
-export const toggleRecipePublishStatus = async (recipeId: string, isPublished: boolean, token: string) => {
+export const toggleRecipePublishStatus = async (recipeId: string,  token: string) => {
   try {
-    const response = await axios.patch(
-      `${API_URL}/recipes/publish/${recipeId}`,
-      { isPublished },
+
+    const response = await axios.patch(`${API_URL}/recipes/publish/${recipeId}`,
+      {},
       {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        }
+          'Authorization': `Bearer ${token}`,
+        },
       }
-    );
+    )
     
-    return {
-      success: true,
-      message: isPublished 
-        ? 'Recipe published successfully' 
-        : 'Recipe unpublished successfully',
-      data: response.data.data
-    };
+    return response.data
   } catch (error) {
     console.error('Error toggling recipe publish status:', error);
-    
     if (axios.isAxiosError(error)) {
       return {
         success: false,

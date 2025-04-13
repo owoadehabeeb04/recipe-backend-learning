@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useAuthStore } from "../store/authStore";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Users from "./users/page";
 // Icons
 const HomeIcon = () => (
   <svg
@@ -98,21 +99,54 @@ export default function DashboardLayout({ children }: any) {
   const pathname = usePathname();
 
   const menuItems = [
-    { name: "Dashboard", href: "/dashboard", icon: <HomeIcon /> },
+    {
+      name: "Dashboard",
+      href: "/dashboard",
+      icon: <HomeIcon />,
+      roles: ["user", "admin", "super_admin"]
+    },
     {
       name: "Create Recipe",
       href: "/dashboard/create-recipe",
-      icon: <RecipeIcon />
+      icon: <RecipeIcon />,
+      roles: ["admin"]
     },
-    { name: "My Recipes", href: "/dashboard/my-recipes", icon: <RecipeIcon /> },
+    {
+      name: "My Recipes",
+      href: "/dashboard/my-recipes",
+      icon: <RecipeIcon />,
+      roles: ["admin"]
+    },
     {
       name: "All Recipes",
       href: "/dashboard/all-recipes",
-      icon: <RecipeIcon />
+      icon: <RecipeIcon />,
+      roles: ["super_admin"]
     },
-    { name: "Profile", href: `/dashboard/profile`, icon: <ProfileIcon /> },
-    { name: "Security", href: "/dashboard/security", icon: <SecurityIcon /> }
+    {
+      name: "Users",
+      href: "/dashboard/users",
+      icon: <ProfileIcon />,
+      roles: ["super_admin"]
+    },
+    {
+      name: "Profile",
+      href: `/dashboard/profile`,
+      icon: <ProfileIcon />,
+      roles: ["user", "admin", "super_admin"]
+    },
+    {
+      name: "Security",
+      href: "/dashboard/security",
+      icon: <SecurityIcon />,
+      roles: ["user", "admin", "super_admin"]
+    }
   ];
+
+  const finalMenuItems = menuItems.filter((item: any) =>
+    item.roles.includes(user?.role)
+  );
+  console.log("Final Menu Items: ", finalMenuItems);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
@@ -165,7 +199,6 @@ export default function DashboardLayout({ children }: any) {
                 <div className="flex items-center">
                   <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center overflow-hidden">
                     {user?.username?.charAt(0).toUpperCase() || "U"}
-                  </div>
                   <span className="hidden md:flex ml-2">
                     {user?.username || "User"}
                   </span>
@@ -173,7 +206,7 @@ export default function DashboardLayout({ children }: any) {
               </div> */}
               <div className="relative">
                 <div className="flex items-center">
-                  {user?.username ? (
+                  {user?.profileImage && user?.profileImage ? (
                     <div className="w-8 h-8 rounded-full overflow-hidden relative">
                       <Image
                         src={user?.profileImage || "/default-profile.png"}
@@ -207,7 +240,7 @@ export default function DashboardLayout({ children }: any) {
       >
         <div className="h-full px-3 overflow-y-auto">
           <ul className="space-y-2 font-medium">
-            {menuItems.map((item, index) => {
+            {finalMenuItems.map((item, index) => {
               const isActive = pathname === item.href;
 
               return (

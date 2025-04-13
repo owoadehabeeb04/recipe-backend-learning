@@ -67,28 +67,28 @@ const MyRecipesPage = () => {
     router.push(`/dashboard/edit-recipe/${id}`);
   };
 
-  const handleDeleteRecipe = async (id: string) => {
-    if (!token) {
-      toast.error("Authentication required");
-      return;
-    }
+  // const handleDeleteRecipe = async (id: string) => {
+  //   if (!token) {
+  //     toast.error("Authentication required");
+  //     return;
+  //   }
     
-    if (confirm("Are you sure you want to delete this recipe?")) {
-      try {
-        const response = await deleteRecipe(id, token);
+  //   if (confirm("Are you sure you want to delete this recipe?")) {
+  //     try {
+  //       const response = await deleteRecipe(id, token);
         
-        if (response.success) {
-          setRecipes(recipes.filter((recipe) => recipe._id !== id));
-          toast.success("Recipe deleted successfully");
-        } else {
-          toast.error(response.message || "Failed to delete recipe");
-        }
-      } catch (err) {
-        console.error("Error deleting recipe:", err);
-        toast.error("An error occurred while deleting the recipe");
-      }
-    }
-  };
+  //       if (response.success) {
+  //         setRecipes(recipes.filter((recipe) => recipe._id !== id));
+  //         toast.success("Recipe deleted successfully");
+  //       } else {
+  //         toast.error(response.message || "Failed to delete recipe");
+  //       }
+  //     } catch (err) {
+  //       console.error("Error deleting recipe:", err);
+  //       toast.error("An error occurred while deleting the recipe");
+  //     }
+  //   }
+  // };
 
   const handleTogglePublish = async (id: string, currentStatus: boolean) => {
     if (!token) {
@@ -241,7 +241,8 @@ const MyRecipesPage = () => {
                 <RecipeCard
                   recipe={recipe}
                   onEdit={() => handleEditRecipe(recipe._id)}
-                  onDelete={() => handleDeleteRecipe(recipe._id)}
+                  // onDelete={() => (recipe._id)}
+                  refreshData={fetchRecipes}
                   onTogglePublish={() => handleTogglePublish(recipe._id, recipe.isPublished)}
                 />
               </motion.div>

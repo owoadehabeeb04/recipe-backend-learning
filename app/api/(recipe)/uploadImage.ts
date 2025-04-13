@@ -6,13 +6,12 @@ export const uploadToCloudinary = async (file: File): Promise<string> => {
   
     const formData = new FormData();
     
-    // Essential Cloudinary parameters
     formData.append('file', file);
     formData.append('upload_preset', process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!
     ); 
     formData.append('cloud_name', process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!
     );
-    
+    ``
     // Optional parameters for better organization and control
     formData.append('folder', 'Link-sharing-app');
     
