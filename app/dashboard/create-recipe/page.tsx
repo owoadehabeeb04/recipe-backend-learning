@@ -8,9 +8,9 @@ import { useAuthStore } from "@/app/store/authStore";
 import { useMutation } from "@tanstack/react-query";
 import { createRecipe } from "@/app/api/(recipe)/adminRecipe";
 import { uploadToCloudinary } from "@/app/api/(recipe)/uploadImage";
-import { categoryOptions } from "../edit-recipe/[slug]/page";
 import { GoogleGenerativeAI } from "@google/generative-ai";
-
+import Image from "next/image";
+import { categoryOptions } from "@/utils";
 const CreateRecipePage = () => {
   const { user, token } = useAuthStore();
   console.log(user, token)
@@ -714,10 +714,12 @@ const handleCreateRecipe = async (recipeData: any) => {
                           </div>
                         </div>
                       )}
-                      <img
+                      <Image
                         src={previewImage}
                         alt="Preview"
                         className="object-cover w-full h-full"
+                        width={32}
+                        height={32}
                       />
                     </div>
                   )}

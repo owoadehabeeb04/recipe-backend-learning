@@ -294,7 +294,6 @@ const AllRecipesPage = () => {
   // Fetch recipes on mount and when filters change
   useEffect(() => {
     fetchRecipes();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, category, cookingTime, sortBy]);
 
   // Handle search with explicit button click or Enter key

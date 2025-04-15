@@ -10,6 +10,14 @@ interface Recipe {
   adminName: string;
   createdAt: string;
 }
+export const categoryOptions = [
+  "breakfast",
+  "lunch",
+  "dinner",
+  "dessert",
+  "snack",
+"beverage",
+];
 // Sample data - replace with actual API call
 export const sampleRecipes: Recipe[] = [
   {

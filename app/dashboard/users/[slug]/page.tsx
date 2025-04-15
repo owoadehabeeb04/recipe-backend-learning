@@ -546,7 +546,7 @@ const SingleUser = () => {
                   {recentRecipes.length > 0 ? (
                     <div className="space-y-4">
                       {recentRecipes.map((recipe: any) => (
-                      <Link href={`/dashboard/recipe/${recipe._id}`}>  <div 
+                      <Link href={`/dashboard/recipe/${recipe._id}`} key={recipe._id}>  <div 
                           key={recipe._id} 
                           className="flex items-center bg-gray-800/70 rounded-xl overflow-hidden"
                         >

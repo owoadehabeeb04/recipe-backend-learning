@@ -100,7 +100,7 @@ const MyRecipesPage = () => {
     const newStatus = !currentStatus;
     
     try {
-      const response = await toggleRecipePublishStatus(id, newStatus, token);
+      const response = await toggleRecipePublishStatus(id, token);
       
       if (response.success) {
         setRecipes(

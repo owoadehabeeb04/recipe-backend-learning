@@ -300,7 +300,6 @@ console.log({recipes})
     } else {
       setIsLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage, category, sortBy, token]);
 
   // Handle search with explicit button click

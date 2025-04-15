@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import Image from "next/image";
 import { editRecipe, getRecipeBySlug } from "@/app/api/(recipe)/adminRecipe";
 import { getRecipeDetails } from "@/app/api/(recipe)/userRecipes";
+import { categoryOptions } from "@/utils";
 
 interface Ingredient {
   name: string;
@@ -32,14 +33,7 @@ interface RecipeFormData {
 const difficultyOptions = ["Easy", "Medium", "Hard"];
 
 
-export const categoryOptions = [
-  "breakfast",
-  "lunch",
-  "dinner",
-  "dessert",
-  "snack",
-"beverage",
-];
+
 
 const EditRecipe = () => {
   const { slug } = useParams();
