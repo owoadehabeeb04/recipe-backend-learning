@@ -5,7 +5,7 @@ interface LoginFormData {
   password: string;
 }
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-
+console.log({API_URL})
 // Create axios instance
 const api = axios.create({
   baseURL: API_URL,
