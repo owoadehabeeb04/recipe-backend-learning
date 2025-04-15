@@ -16,7 +16,7 @@ import axios from "axios";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 // get all recipes
-interface RecipeQueryParams {
+export interface RecipeQueryParams {
   page?: number;
   limit?: number;
   search?: string;

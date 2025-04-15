@@ -6,6 +6,8 @@ import { getAllUsers } from "@/app/api/(users)";
 import { useAuthStore } from "@/app/store/authStore";
 import toast from "react-hot-toast";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 // Define user type
 interface User {
@@ -38,7 +40,7 @@ const Users = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [filterRole, setFilterRole] = useState("all");
-
+  const router = useRouter()
   // Debounce search term to avoid excessive API calls
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -480,12 +482,12 @@ const Users = () => {
                 >
                   Role
                 </th>
-                <th
+                {/* <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
                 >
                   Status
-                </th>
+                </th> */}
                 <th
                   scope="col"
                   className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
@@ -506,21 +508,25 @@ const Users = () => {
                 </tr>
               ) : (
                 usersData?.data?.map((user) => (
-                  <tr
+                 <tr
                     key={user._id}
-                    className="hover:bg-gray-700/20 transition-colors"
+                    onClick={()=> router.push(`/dashboard/users/${user._id}`)}
+                    className="hover:bg-gray-700/20 cursor-pointer transition-colors"
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="flex-shrink-0 h-10 w-10 relative">
                           {user.profileImage ? (
-                            <Image
-                              src={user.profileImage}
-                              alt={user.username}
-                              width={40}
-                              height={40}
-                              className="rounded-full object-cover"
-                            />
+                                             <div className="w-10 h-10 rounded-full overflow-hidden relative">
+                                               <Image
+                                                 src={user?.profileImage || "/default-profile.png"}
+                                                 alt={user?.username}
+                                                 width={40}
+                                                 height={40}
+                                                 className="w-full h-full object-cover"
+                                                 style={{ borderRadius: "50%" }}
+                                               />
+                                             </div>
                           ) : (
                             <div className="h-10 w-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 flex items-center justify-center">
                               <span className="text-white font-bold">
@@ -555,7 +561,7 @@ const Users = () => {
                         {user.role}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    {/* <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                           user.status === "inactive"
@@ -565,7 +571,7 @@ const Users = () => {
                       >
                         {user.status || "active"}
                       </span>
-                    </td>
+                    </td> */}
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
                       {formatDate(user.createdAt)}
                     </td>

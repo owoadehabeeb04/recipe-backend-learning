@@ -1,13 +1,103 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
+import { RecipeCard } from "./recipesComponent/recipeCardAll";
 
-const HomePageComponent = () => {
+const LandingPage = () => {
+  // Sample recipe data for featured recipes
+  const [featuredRecipes, setFeaturedRecipes] = useState([
+    {
+      _id: "1",
+      title: "Creamy Garlic Pasta",
+      category: "Italian",
+      cookingTime: 25,
+      difficulty: "easy",
+      featuredImage: "/api/placeholder/600/400",
+      averageRating: 4.8,
+      adminName: "Chef Mario",
+      createdAt: new Date().toISOString(),
+      isPublished: true,
+      adminDetails: {
+        name: "Chef Mario",
+        email: "mario@example.com"
+      }
+    },
+    {
+      _id: "2",
+      title: "Avocado & Quinoa Bowl",
+      category: "Healthy",
+      cookingTime: 15,
+      difficulty: "medium",
+      featuredImage: "/api/placeholder/600/400",
+      averageRating: 4.5,
+      adminName: "Nutrition Expert",
+      createdAt: new Date().toISOString(),
+      isPublished: true,
+      adminDetails: {
+        name: "Nutrition Expert",
+        email: "nutrition@example.com"
+      }
+    },
+    {
+      _id: "3",
+      title: "Chocolate Lava Cake",
+      category: "Dessert",
+      cookingTime: 35,
+      difficulty: "hard",
+      featuredImage: "/api/placeholder/600/400",
+      averageRating: 4.9,
+      adminName: "Pastry Chef",
+      createdAt: new Date().toISOString(),
+      isPublished: true,
+      adminDetails: {
+        name: "Pastry Chef",
+        email: "pastry@example.com"
+      }
+    }
+  ]);
+
+  // Categories with icons
+  const categories = [
+    {
+      name: "Breakfast",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+        </svg>
+      )
+    },
+    {
+      name: "Lunch",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+      )
+    },
+    {
+      name: "Dinner",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+      )
+    },
+    {
+      name: "Dessert",
+      icon: (
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z" />
+        </svg>
+      )
+    }
+  ];
+
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-900 to-gray-800 text-white">
-      {/* Header with Glassmorphism */}
-      <header className="sticky top-0 z-50 backdrop-blur-lg bg-black/20 border-b border-white/10">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-gray-900 to-gray-800 text-gray-100">
+      {/* Header */}
+      <header className="sticky top-0 z-50 backdrop-blur-lg bg-gray-900/80 border-b border-gray-700">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -15,7 +105,7 @@ const HomePageComponent = () => {
             transition={{ duration: 0.5 }}
             className="flex items-center"
           >
-            <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+            <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
               RecipeApp
             </h1>
           </motion.div>
@@ -27,13 +117,13 @@ const HomePageComponent = () => {
           >
             <Link
               href="/login"
-              className="text-white/80 hover:text-white transition-colors"
+              className="text-gray-300 hover:text-white transition-colors"
             >
               Login
             </Link>
             <Link
               href="/signup"
-              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-6 py-3 rounded-full transition-all hover:shadow-lg hover:shadow-purple-500/30"
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-3 rounded-full transition-all hover:shadow-lg hover:shadow-purple-900/50"
             >
               Get Started
             </Link>
@@ -41,180 +131,194 @@ const HomePageComponent = () => {
         </nav>
       </header>
 
-      {/* Hero Section with 3D effects */}
-      <section className="relative py-32 overflow-hidden">
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-900/40 via-gray-900 to-gray-900"></div>
-        </div>
+      {/* Hero Section */}
+      <section className="relative py-20 md:py-32 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7 }}
-            className="text-center"
-          >
-            <h2 className="text-5xl md:text-7xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
-              The Future of Cooking
-            </h2>
-            <p className="mt-6 text-xl md:text-2xl text-gray-300 max-w-3xl mx-auto">
-              AI-powered recipe discovery and personalization. Create, share,
-              and experience food like never before.
-            </p>
+          <div className="flex flex-col lg:flex-row items-center gap-12">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3, duration: 0.7 }}
-              className="mt-10"
+              transition={{ duration: 0.7 }}
+              className="lg:w-1/2"
             >
-              <Link
-                href="/signup"
-                className="bg-white text-gray-900 px-8 py-4 rounded-full text-lg font-medium hover:shadow-xl hover:shadow-white/20 transition-all duration-300 inline-flex items-center group"
+              <h2 className="text-4xl md:text-6xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-pink-300">
+                Discover & Create Delicious Recipes
+              </h2>
+              <p className="mt-6 text-xl text-gray-300 max-w-2xl">
+                AI-powered recipe discovery and personalization. Create, share,
+                and experience food like never before.
+              </p>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3, duration: 0.7 }}
+                className="mt-10"
               >
-                Begin Your Journey
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+                <Link
+                  href="/signup"
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-4 rounded-full text-lg font-medium hover:shadow-xl hover:shadow-purple-900/30 transition-all duration-300 inline-flex items-center group"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 7l5 5m0 0l-5 5m5-5H6"
-                  />
-                </svg>
-              </Link>
+                  Begin Your Journey
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 7l5 5m0 0l-5 5m5-5H6"
+                    />
+                  </svg>
+                </Link>
+              </motion.div>
             </motion.div>
-          </motion.div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2, duration: 0.8 }}
+              className="lg:w-1/2"
+            >
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/30 to-pink-500/30 rounded-3xl transform rotate-3"></div>
+                <div className="relative overflow-hidden rounded-3xl shadow-xl">
+                  <Image
+                    src="https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg"
+                    alt="Gourmet dish with fresh ingredients"
+                    width={600}
+                    height={400}
+                    className="w-full h-auto object-cover"
+                    priority
+                  />
+                </div>
+              </div>
+            </motion.div>
+          </div>
         </div>
-
-        {/* Floating 3D elements */}
-        <div className="absolute inset-0 -z-10 overflow-hidden">
-          <div className="absolute h-40 w-40 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 blur-3xl opacity-20 -top-10 -left-10 animate-pulse"></div>
-          <div
-            className="absolute h-60 w-60 rounded-full bg-gradient-to-r from-blue-600 to-cyan-600 blur-3xl opacity-20 top-1/3 -right-10 animate-pulse"
-            style={{ animationDelay: "2s" }}
-          ></div>
-          <div
-            className="absolute h-40 w-40 rounded-full bg-gradient-to-r from-yellow-600 to-red-600 blur-3xl opacity-20 bottom-10 left-1/4 animate-pulse"
-            style={{ animationDelay: "4s" }}
-          ></div>
-        </div>
+        
+        {/* Background decorations - more subtle in dark theme */}
+        <div className="absolute top-32 right-10 w-64 h-64 rounded-full bg-purple-900/20 blur-3xl opacity-30 -z-10"></div>
+        <div className="absolute bottom-10 left-10 w-80 h-80 rounded-full bg-pink-900/20 blur-3xl opacity-30 -z-10"></div>
       </section>
 
-      {/* Features Section with Cards */}
-      <section className="py-24">
+      {/* Categories Section */}
+      <section className="py-20 bg-gray-800/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            transition={{ duration: 1 }}
+            transition={{ duration: 0.7 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-12"
           >
-            <h3 className="text-3xl font-bold text-white">
-              Revolutionary Features
+            <h3 className="text-3xl font-bold text-white mb-4">
+              Explore Recipe Categories
             </h3>
-            <div className="w-20 h-1 mx-auto mt-4 bg-gradient-to-r from-purple-500 to-pink-500"></div>
+            <div className="w-20 h-1 mx-auto bg-gradient-to-r from-purple-400 to-pink-400"></div>
+            <p className="mt-4 text-gray-300 max-w-2xl mx-auto">
+              Browse through our diverse collection of recipes categorized for every occasion
+            </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-            {[
-              {
-                title: "AI Recipe Generation",
-                description:
-                  "Our advanced AI creates personalized recipes based on your preferences, dietary restrictions, and available ingredients.",
-                color: "from-purple-500 to-indigo-500",
-                delay: 0
-              },
-              {
-                title: "Interactive Cooking",
-                description:
-                  "Step-by-step guidance with voice control and real-time adjustments as you cook.",
-                color: "from-pink-500 to-rose-500",
-                delay: 0.2
-              },
-              {
-                title: "Global Culinary Network",
-                description:
-                  "Connect with chefs and food enthusiasts worldwide to exchange recipes and techniques.",
-                color: "from-blue-500 to-cyan-500",
-                delay: 0.4
-              }
-            ].map((feature, index) => (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {categories.map((category, index) => (
               <motion.div
                 key={index}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: feature.delay, duration: 0.5 }}
+                transition={{ delay: index * 0.1, duration: 0.5 }}
                 viewport={{ once: true }}
-                className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:shadow-xl hover:shadow-purple-500/10 transition-all group"
+                whileHover={{ y: -5, boxShadow: "0 10px 30px rgba(0,0,0,0.3)" }}
+                className="bg-gray-800 rounded-xl p-6 text-center shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-black/30 transition-all cursor-pointer border border-gray-700"
               >
-                <div className="p-8">
-                  <div
-                    className={`w-14 h-14 mb-6 rounded-full bg-gradient-to-br ${feature.color} flex items-center justify-center group-hover:scale-110 transition-transform`}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6 text-white"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13 10V3L4 14h7v7l9-11h-7z"
-                      />
-                    </svg>
-                  </div>
-                  <h4 className="text-xl font-semibold text-white mb-3">
-                    {feature.title}
-                  </h4>
-                  <p className="text-gray-400">{feature.description}</p>
+                <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center text-purple-400">
+                  {category.icon}
                 </div>
+                <h4 className="font-semibold text-lg text-gray-100">{category.name}</h4>
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="py-24 bg-gray-800/30 backdrop-blur-sm">
+      {/* Featured Recipes Section */}
+      <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            transition={{ duration: 1 }}
+            transition={{ duration: 0.7 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-12"
           >
-            <h3 className="text-3xl font-bold text-white">
+            <h3 className="text-3xl font-bold text-white mb-4">
+              Featured Recipes
+            </h3>
+            <div className="w-20 h-1 mx-auto bg-gradient-to-r from-purple-400 to-pink-400"></div>
+            <p className="mt-4 text-gray-300 max-w-2xl mx-auto">
+              Discover our most popular and highly-rated recipes
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {featuredRecipes.map((recipe, index) => (
+              <RecipeCard key={index} recipe={recipe}  />
+            ))}
+          </div>
+          
+          <div className="mt-12 text-center">
+            <Link 
+              href="/recipes"
+              className="inline-flex items-center text-purple-400 hover:text-purple-300 transition-colors font-medium"
+            >
+              View all recipes
+              <svg 
+                xmlns="http://www.w3.org/2000/svg" 
+                className="h-5 w-5 ml-1" 
+                fill="none" 
+                viewBox="0 0 24 24" 
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* User Reviews Section */}
+      <section className="py-20 bg-gray-800/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ duration: 0.7 }}
+            viewport={{ once: true }}
+            className="text-center mb-12"
+          >
+            <h3 className="text-3xl font-bold text-white mb-4">
               What Users Are Saying
             </h3>
-            <div className="w-20 h-1 mx-auto mt-4 bg-gradient-to-r from-purple-500 to-pink-500"></div>
+            <div className="w-20 h-1 mx-auto bg-gradient-to-r from-purple-400 to-pink-400"></div>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                quote:
-                  "RecipeApp transformed how I cook. The AI suggestions are brilliant!",
+                quote: "RecipeApp transformed how I cook. The AI suggestions are brilliant and always match my preferences!",
                 author: "Sarah Johnson",
                 role: "Home Chef"
               },
               {
-                quote:
-                  "As a professional chef, I'm impressed by the innovation and precision.",
+                quote: "As a professional chef, I'm impressed by the innovation and precision of the recipes. Great for inspiration!",
                 author: "Marco Rodriguez",
                 role: "Executive Chef"
               },
               {
-                quote:
-                  "Finally found recipes that match my dietary needs perfectly.",
+                quote: "Finally found recipes that match my dietary needs perfectly. The personalization is amazing!",
                 author: "Aisha Patel",
                 role: "Fitness Enthusiast"
               }
@@ -225,10 +329,10 @@ const HomePageComponent = () => {
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ delay: index * 0.2, duration: 0.5 }}
                 viewport={{ once: true }}
-                className="bg-gray-900/70 backdrop-blur p-8 rounded-2xl border border-white/5"
+                className="bg-gray-800 p-8 rounded-2xl shadow-lg border border-gray-700"
               >
                 <svg
-                  className="h-10 w-10 text-purple-500 mb-4"
+                  className="h-10 w-10 text-purple-400 mb-4"
                   fill="currentColor"
                   viewBox="0 0 32 32"
                 >
@@ -243,10 +347,17 @@ const HomePageComponent = () => {
         </div>
       </section>
 
-      {/* CTA Section with Particles */}
-      <section className="relative py-32 overflow-hidden">
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute inset-0 bg-gradient-to-b from-purple-900/30 to-gray-900"></div>
+      {/* CTA Section */}
+      <section className="relative py-20 overflow-hidden bg-gradient-to-r from-gray-900 to-gray-800">
+        <div className="absolute inset-0 -z-10 opacity-20">
+          <svg className="absolute inset-0 h-full w-full" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M0 40L40 0M20 40L40 20M0 20L20 0" fill="none" stroke="currentColor" strokeWidth="1" />
+              </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+          </svg>
         </div>
 
         <motion.div
@@ -256,12 +367,11 @@ const HomePageComponent = () => {
           viewport={{ once: true }}
           className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10"
         >
-          <h2 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+          <h2 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
             Ready to Transform Your Cooking?
           </h2>
           <p className="mt-6 text-xl text-gray-300">
-            Join thousands of food enthusiasts revolutionizing their culinary
-            experience
+            Join thousands of food enthusiasts revolutionizing their culinary experience
           </p>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -272,7 +382,7 @@ const HomePageComponent = () => {
           >
             <Link
               href="/signup"
-              className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-8 py-4 rounded-full text-lg font-medium inline-flex items-center group"
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-4 rounded-full text-lg font-medium inline-flex items-center group shadow-xl shadow-purple-900/30"
             >
               Create Your Account
               <svg
@@ -294,17 +404,16 @@ const HomePageComponent = () => {
         </motion.div>
       </section>
 
-      {/* Footer with Glassmorphism */}
-      <footer className="bg-black/30 backdrop-blur-md border-t border-white/10 py-16">
+      {/* Footer */}
+      <footer className="bg-gray-900 border-t border-gray-800 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
             <div>
-              <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600 mb-4">
+              <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400 mb-4">
                 RecipeApp
               </h3>
               <p className="text-gray-400">
-                Revolutionizing the way you discover, create, and share culinary
-                experiences.
+                Revolutionizing the way you discover, create, and share culinary experiences.
               </p>
             </div>
             <div>
@@ -372,7 +481,7 @@ const HomePageComponent = () => {
               <div className="flex space-x-4">
                 <a
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors"
+                  className="text-gray-400 hover:text-purple-400 transition-colors"
                 >
                   <span className="sr-only">Twitter</span>
                   <svg
@@ -385,7 +494,7 @@ const HomePageComponent = () => {
                 </a>
                 <a
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors"
+                  className="text-gray-400 hover:text-purple-400 transition-colors"
                 >
                   <span className="sr-only">Instagram</span>
                   <svg
@@ -402,7 +511,7 @@ const HomePageComponent = () => {
                 </a>
                 <a
                   href="#"
-                  className="text-gray-400 hover:text-white transition-colors"
+                  className="text-gray-400 hover:text-purple-400 transition-colors"
                 >
                   <span className="sr-only">GitHub</span>
                   <svg
@@ -418,12 +527,42 @@ const HomePageComponent = () => {
                   </svg>
                 </a>
               </div>
+              <div className="mt-6">
+                <h5 className="font-medium text-white mb-2">Subscribe to our newsletter</h5>
+                <form className="flex">
+                  <input
+                    type="email"
+                    placeholder="Enter your email"
+                    className="px-4 py-2 w-full rounded-l-md border border-gray-700 bg-gray-800 text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  />
+                  <button
+                    type="submit"
+                    className="bg-purple-600 text-white px-4 py-2 rounded-r-md hover:bg-purple-700 transition-colors"
+                  >
+                    Subscribe
+                  </button>
+                </form>
+              </div>
             </div>
           </div>
-          <div className="mt-12 pt-8 border-t border-gray-800 text-center text-gray-400">
-            <p>
+          <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
+            <p className="text-gray-500">
               &copy; {new Date().getFullYear()} RecipeApp. All rights reserved.
             </p>
+            <div className="mt-4 md:mt-0 flex space-x-6">
+              <Link
+                href="/privacy"
+                className="text-gray-500 hover:text-gray-300 transition-colors"
+              >
+                Privacy Policy
+              </Link>
+              <Link
+                href="/terms"
+                className="text-gray-500 hover:text-gray-300 transition-colors"
+              >
+                Terms of Service
+              </Link>
+            </div>
           </div>
         </div>
       </footer>
@@ -431,4 +570,4 @@ const HomePageComponent = () => {
   );
 };
 
-export default HomePageComponent;
+export default LandingPage;

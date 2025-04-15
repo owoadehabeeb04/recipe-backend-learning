@@ -2,19 +2,18 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import Image from "next/image";
-import Link from "next/link";
 import { SearchBar } from "@/components/recipesComponent/search";
 import { RecipeCard } from "@/components/recipesComponent/recipeCardAll";
-import { SortOptions } from "@/components/recipesComponent/sort";
 import { CategoryFilter } from "@/components/recipesComponent/category";
-import { CookingTimeFilter } from "@/components/recipesComponent/cookingTimeFilter";
-import { getAllRecipes } from "@/app/api/(recipe)/userRecipes";
+import { SortOptions } from "@/components/recipesComponent/sort";
 import { useAuthStore } from "@/app/store/authStore";
+import Link from "next/link";
+import toast from "react-hot-toast";
+import { getFavorites } from "@/app/api/(favorites)/favorites";
 
 // Recipe type definition
 export interface Recipe {
-  _id: string; 
+  _id: string;
   title: string;
   category: string;
   cookingTime: number;
@@ -23,15 +22,33 @@ export interface Recipe {
   averageRating: number;
   adminName: string;
   createdAt: string;
-  isPublished?: boolean; 
+  isPublished?: boolean;
   adminDetails: {
     name: string;
     email: string;
   };
+  isFavorited: boolean;
+  recipe: {
+    _id: string;
+    title: string;
+    category: string;
+    cookingTime: number;
+    difficulty: string;
+    featuredImage: string;
+    averageRating: number;
+    adminName: string;
+    createdAt: string;
+    isPublished?: boolean;
+    adminDetails: {
+      name: string;
+      email: string;
+    };
+    isFavorited: boolean;
+  }
 }
 
-// Empty state component for better UX
-const EmptyState = () => {
+// Empty state component for when no favorites exist
+const EmptyFavorites = () => {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -43,10 +60,10 @@ const EmptyState = () => {
         initial={{ scale: 0.8, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ delay: 0.2, duration: 0.5 }}
-        className="w-32 h-32 mb-8 rounded-full bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-purple-500/20 flex items-center justify-center"
+        className="w-32 h-32 mb-8 rounded-full bg-gradient-to-br from-pink-600/20 to-purple-600/20 border border-pink-500/20 flex items-center justify-center"
       >
         <svg
-          className="w-16 h-16 text-purple-400/70"
+          className="w-16 h-16 text-pink-400/70"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -56,22 +73,22 @@ const EmptyState = () => {
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth="1.5"
-            d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
+            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
           />
         </svg>
       </motion.div>
-      <h2 className="text-2xl font-bold text-white mb-3">No Recipes Yet</h2>
+      <h2 className="text-2xl font-bold text-white mb-3">No Favorites Yet</h2>
       <p className="text-gray-400 max-w-md mb-8">
-        It looks like there aren't any recipes available at the moment. Check
-        back soon as our chefs are always cooking up something new!
+        You haven't added any recipes to your favorites. Browse our recipes and
+        click the heart icon to save your favorites for easy access later!
       </p>
-      <Link href="/dashboard">
+      <Link href="/dashboard/all-recipes">
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
           className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-white hover:from-purple-700 hover:to-pink-700 transition-all"
         >
-          Return to Dashboard
+          Browse Recipes
         </motion.button>
       </Link>
     </motion.div>
@@ -110,13 +127,13 @@ const NoSearchResults = ({
           />
         </svg>
       </div>
-      <h3 className="text-xl font-medium text-white mb-2">No recipes found</h3>
+      <h3 className="text-xl font-medium text-white mb-2">No favorites found</h3>
       <p className="text-gray-400 max-w-md">
         {searchQuery
-          ? `We couldn't find any recipes matching "${searchQuery}"${
+          ? `We couldn't find any favorites matching "${searchQuery}"${
               category !== "all" ? ` in ${category}` : ""
             }.`
-          : `No recipes found${category !== "all" ? ` in ${category}` : ""}.`}
+          : `No favorites found${category !== "all" ? ` in ${category}` : ""}.`}
       </p>
       <button
         onClick={clearFilters}
@@ -173,7 +190,7 @@ const ErrorState = ({
 };
 
 // Main Page Component
-const AllRecipesPage = () => {
+const FavoriteRecipes = () => {
   const { user, token } = useAuthStore();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -181,72 +198,64 @@ const AllRecipesPage = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState("all");
-  const [cookingTime, setCookingTime] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [categories, setCategories] = useState<string[]>([]);
-  const [isFirstLoad, setIsFirstLoad] = useState(true);
   const recipesPerPage = 10;
+console.log({recipes})
 
-  const filterByCookingTime = (recipes: Recipe[]) => {
-    if (cookingTime === "all") return recipes;
 
-    return recipes.filter((recipe) => {
-      const time = recipe.cookingTime || 0;
-      switch (cookingTime) {
-        case "quick":
-          return time < 15;
-        case "medium":
-          return time >= 15 && time <= 30;
-        case "long":
-          return time > 30;
-        default:
-          return true;
-      }
-    });
-  };
 
-  const fetchRecipes = async () => {
+  // Fetch favorites function
+  const fetchFavorites = async () => {
+    if (!token) {
+      toast.error("You must be logged in to view favorites");
+      setIsLoading(false);
+      return;
+    }
+
     setIsLoading(true);
     setHasError(false);
 
     try {
-      const response = await getAllRecipes({
+      const response = await getFavorites(token, {
         page: currentPage,
         limit: recipesPerPage,
         search: searchQuery || undefined,
         category: category !== "all" ? category : undefined,
-        sort: sortBy,
+        sort: sortBy
       });
 
-      console.log("API Response:", response); 
-
-      if (response && response.status === 200) {
-        const allRecipes = response.data || [];
-        const filteredRecipes =
-          cookingTime !== "all" ? filterByCookingTime(allRecipes) : allRecipes;
-        setRecipes(filteredRecipes);
+      if (response && response.data) {
+        // Mark all recipes as favorited since they're in the favorites list
+        const favoriteRecipes = response.data.map((recipe: Recipe) => ({
+          ...recipe,
+          isFavorited: true
+        }));
+        setRecipes(favoriteRecipes);
 
         // Extract pagination info
         if (response.pagination) {
           setTotalPages(response.pagination.pages);
         }
 
-        // Extract unique categories if this is first load
-        if (isFirstLoad && allRecipes.length > 0) {
+        // Extract unique categories if available
+        console.log({favoriteRecipes})
+        if (favoriteRecipes.length > 0) {
+
           const uniqueCategories = Array.from(
-            new Set(allRecipes.map((recipe: Recipe) => recipe.category))
+            new Set(favoriteRecipes.map((recipe: Recipe) => recipe.recipe.category))
           ).filter(Boolean);
+          console.log({uniqueCategories})
           setCategories(uniqueCategories as string[]);
-          setIsFirstLoad(false);
         }
       } else {
         setHasError(true);
-        setErrorMessage(response?.message || "Failed to fetch recipes");
+        setErrorMessage(response?.message || "Failed to fetch favorites");
       }
     } catch (error) {
-      console.error("Error fetching recipes:", error);
+      console.error("Error fetching favorites:", error);
       setHasError(true);
       setErrorMessage("An unexpected error occurred. Please try again.");
     } finally {
@@ -258,7 +267,6 @@ const AllRecipesPage = () => {
   const clearFilters = () => {
     setSearchQuery("");
     setCategory("all");
-    setCookingTime("all");
     setSortBy("newest");
     setCurrentPage(1);
   };
@@ -274,12 +282,6 @@ const AllRecipesPage = () => {
     setCurrentPage(1); // Reset to first page when changing category
   };
 
-  // Cooking time change handler
-  const handleCookingTimeChange = (value: string) => {
-    setCookingTime(value);
-    setCurrentPage(1); // Reset to first page when changing cooking time
-  };
-
   // Sort change handler
   const handleSortChange = (value: string) => {
     setSortBy(value);
@@ -291,17 +293,42 @@ const AllRecipesPage = () => {
     setCurrentPage(pageNumber);
   };
 
-  // Fetch recipes on mount and when filters change
+  // Fetch favorites on mount and when filters change
   useEffect(() => {
-    fetchRecipes();
+    if (token) {
+      fetchFavorites();
+    } else {
+      setIsLoading(false);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, category, cookingTime, sortBy]);
+  }, [currentPage, category, sortBy, token]);
 
-  // Handle search with explicit button click or Enter key
+  // Handle search with explicit button click
   const handleSearch = () => {
     setCurrentPage(1);
-    fetchRecipes();
+    fetchFavorites();
   };
+
+  // Update favorites list when a recipe is unfavorited
+  const handleUnfavorite = (recipeId: string) => {
+    setRecipes((prev) => prev.filter((recipe) => recipe._id !== recipeId));
+  };
+
+  if (!token) {
+    return (
+      <div className="flex flex-col items-center justify-center h-96">
+        <h2 className="text-2xl font-bold text-white mb-4">Sign In Required</h2>
+        <p className="text-gray-400 mb-6">
+          Please sign in to view your favorite recipes
+        </p>
+        <Link href="/login">
+          <button className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-white">
+            Sign In
+          </button>
+        </Link>
+      </div>
+    );
+  }
 
   return (
     <div className="px-4 py-8 md:px-8 max-w-7xl mx-auto">
@@ -311,14 +338,15 @@ const AllRecipesPage = () => {
         transition={{ duration: 0.5 }}
         className="mb-8"
       >
-        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
-          All Recipes
+        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-600">
+          My Favorite Recipes
         </h1>
         <p className="text-gray-400 mt-2">
-          Discover and explore delicious recipes from our community
+          Your personalized collection of saved recipes
         </p>
       </motion.div>
 
+      {/* Search and Filter Options */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
@@ -338,31 +366,85 @@ const AllRecipesPage = () => {
           {/* <SortOptions value={sortBy} onChange={handleSortChange} /> */}
         </div>
 
-        <div className="mt-4 space-y-4">
-          {categories.length > 0 && (
+        {/* Category filters */}
+        {categories.length > 0 && (
+          <div className="mt-4">
             <CategoryFilter
               categories={categories}
               selectedCategory={category}
               onChange={handleCategoryChange}
             />
-          )}
+          </div>
+        )}
 
-          <CookingTimeFilter
-            selectedTime={cookingTime}
-            onChange={handleCookingTimeChange}
-          />
-        </div>
+        {/* Active filters display */}
+        {(searchQuery || category !== "all" || sortBy !== "newest") && (
+          <div className="flex items-center space-x-2 mt-4">
+            <span className="text-sm text-gray-400">Active filters:</span>
+            <div className="flex flex-wrap gap-2">
+              {searchQuery && (
+                <span className="px-2 py-1 bg-gray-800/70 text-gray-300 rounded-full text-xs flex items-center">
+                  Search: {searchQuery}
+                  <button 
+                    onClick={() => setSearchQuery("")}
+                    className="ml-1 text-gray-400 hover:text-white"
+                  >
+                    ×
+                  </button>
+                </span>
+              )}
+              
+              {category !== "all" && (
+                <span className="px-2 py-1 bg-gray-800/70 text-gray-300 rounded-full text-xs flex items-center">
+                  Category: {category}
+                  <button 
+                    onClick={() => setCategory("all")}
+                    className="ml-1 text-gray-400 hover:text-white"
+                  >
+                    ×
+                  </button>
+                </span>
+              )}
+              
+              {sortBy !== "newest" && (
+                <span className="px-2 py-1 bg-gray-800/70 text-gray-300 rounded-full text-xs flex items-center">
+                  Sort: {sortBy}
+                  <button 
+                    onClick={() => setSortBy("newest")}
+                    className="ml-1 text-gray-400 hover:text-white"
+                  >
+                    ×
+                  </button>
+                </span>
+              )}
+              
+              <button
+                onClick={clearFilters}
+                className="px-2 py-1 bg-pink-900/30 text-pink-300 rounded-full text-xs hover:bg-pink-900/50 transition-colors"
+              >
+                Clear all
+              </button>
+            </div>
+          </div>
+        )}
       </motion.div>
 
+      {/* Content Area */}
       {isLoading ? (
         <div className="flex flex-col justify-center items-center h-64">
-          <div className="w-16 h-16 mb-4 border-t-4 border-b-4 border-purple-500 rounded-full animate-spin"></div>
-          <p className="text-gray-400">Loading tasty recipes...</p>
+          <div className="w-16 h-16 mb-4 border-t-4 border-b-4 border-pink-500 rounded-full animate-spin"></div>
+          <p className="text-gray-400">Loading your favorites...</p>
         </div>
       ) : hasError ? (
-        <ErrorState message={errorMessage} retry={fetchRecipes} />
+        <ErrorState message={errorMessage} retry={fetchFavorites} />
       ) : recipes.length > 0 ? (
         <>
+          <div className="flex justify-between items-center mb-4">
+            <p className="text-sm text-gray-400">
+              Showing <span className="text-white">{recipes.length}</span> favorite{recipes.length !== 1 ? 's' : ''}
+            </p>
+          </div>
+          
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {recipes.map((recipe, index) => (
               <motion.div
@@ -371,7 +453,7 @@ const AllRecipesPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.05 * index }}
               >
-                <RecipeCard recipe={recipe} />
+                <RecipeCard recipe={recipe.recipe} />
               </motion.div>
             ))}
           </div>
@@ -416,7 +498,7 @@ const AllRecipesPage = () => {
                         onClick={() => paginate(number)}
                         className={`px-3 py-1 rounded-lg ${
                           currentPage === number
-                            ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white"
+                            ? "bg-gradient-to-r from-pink-600 to-purple-600 text-white"
                             : "bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-700/50"
                         }`}
                       >
@@ -448,17 +530,17 @@ const AllRecipesPage = () => {
             </div>
           )}
         </>
-      ) : searchQuery || category !== "all" || cookingTime !== "all" ? (
+      ) : searchQuery || category !== "all" ? (
         <NoSearchResults
           searchQuery={searchQuery}
           category={category}
           clearFilters={clearFilters}
         />
       ) : (
-        <EmptyState />
+        <EmptyFavorites />
       )}
     </div>
   );
 };
 
-export default AllRecipesPage;
+export default FavoriteRecipes;

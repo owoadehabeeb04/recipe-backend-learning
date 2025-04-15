@@ -90,17 +90,57 @@ export const updateProfile = async (payload: ProfileUpdatePayload, token: string
 //   }
 // }
 
-export const getAllUsers = async (token: string, queryParams = '') => {
+export const getAllUsers = async (token: string | null | undefined, queryParams = '') => {
   try {
     const endpoint = `${API_URL}/users${queryParams ? `?${queryParams}` : ''}`;
     
     const response = await axios.get(endpoint, {
       headers: {
+        'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       }
     });
     
     return response.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const errorMessage = error.response?.data?.message || error.message;
+      throw new Error(errorMessage);
+    }
+    throw error;
+  }
+};
+
+
+
+export const getSingleUser = async (token: string | null | undefined, userId: string)=> {
+  try{
+const response = await axios.get(`${API_URL}/users/${userId}`, {
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`
+  }
+})
+return response.data
+  } catch(error) {
+    if (axios.isAxiosError(error)) {
+      const errorMessage = error.response?.data?.message || error.message;
+      throw new Error(errorMessage);
+    }
+    throw error;
+  }
+}
+
+
+export const deleteUser = async (token: string | null | undefined, userId: string) => {
+  try {
+    const response = await axios.delete(`${API_URL}/users/delete/${userId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    return response;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const errorMessage = error.response?.data?.message || error.message;

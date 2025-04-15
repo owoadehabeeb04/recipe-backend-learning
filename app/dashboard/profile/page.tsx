@@ -48,7 +48,6 @@ const ProfilePage = () => {
       profileImage: user?.profileImage || ""
     }
   });
-  console.log({user})
 
   // Update form values when user data changes
   useEffect(() => {
@@ -72,7 +71,7 @@ const ProfilePage = () => {
       setPreviewImage(user.profileImage || null);
     }
   }, [user, reset]);
-console.log({errors})
+
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -110,14 +109,13 @@ console.log({errors})
   const triggerFileInput = () => {
     fileInputRef.current?.click();
   };
-  console.log(isLoading, uploadingImage)
 
   const onSubmit = async (data: any) => {
     if (!token) {
       toast.error("You must be logged in to update your profile");
       return;
     }
-    console.log('form data', data)
+    
     setIsLoading(true);
     try {
       // Only include fields that are defined
@@ -137,7 +135,6 @@ console.log({errors})
       }
 
       const result = await updateProfile(payload, token, user?._id);
-      console.log("Profile update result:", result);
       
       if (result.success) {
         toast.success("Profile updated successfully");
@@ -177,34 +174,34 @@ console.log({errors})
   };
 
   return (
-    <div>
+    <div className="px-4 sm:px-6 md:px-8 py-6">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
         className="mb-8"
       >
-        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+        <h1 className="text-2xl sm:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
           Profile Settings
         </h1>
-        <p className="text-gray-400 mt-2">
+        <p className="text-gray-400 mt-2 text-sm sm:text-base">
           Manage your personal information and preferences
         </p>
       </motion.div>
 
-      <div className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-8">
-        <div className="flex justify-between items-center mb-8">
-          <div className="flex items-center">
+      <div className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-4 sm:p-6 md:p-8">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sm:gap-0 mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             <div 
               onClick={isEditing && !uploadingImage ? triggerFileInput : undefined}
-              className={`w-20 h-20 rounded-full overflow-hidden relative ${isEditing && !uploadingImage ? 'cursor-pointer hover:opacity-80' : ''}`}
+              className={`w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden relative mx-auto sm:mx-0 ${isEditing && !uploadingImage ? 'cursor-pointer hover:opacity-80' : ''}`}
             >
               {/* Overlay loading indicator for image upload */}
               {uploadingImage && (
                 <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10">
                   <div className="flex flex-col items-center">
-                    <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin mb-2"></div>
-                    <span className="text-white text-xs">Uploading...</span>
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 border-2 border-white border-t-transparent rounded-full animate-spin mb-1 sm:mb-2"></div>
+                    <span className="text-white text-xs hidden sm:block">Uploading...</span>
                   </div>
                 </div>
               )}
@@ -218,7 +215,7 @@ console.log({errors})
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white text-3xl font-bold">
+                <div className="w-full h-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white text-xl sm:text-3xl font-bold">
                   {user?.username?.charAt(0).toUpperCase() || "U"}
                 </div>
               )}
@@ -231,16 +228,16 @@ console.log({errors})
                 disabled={!isEditing || uploadingImage}
               />
             </div>
-            <div className="ml-6">
-              <h2 className="text-2xl font-semibold text-white">
+            <div className="text-center sm:text-left sm:ml-4">
+              <h2 className="text-xl sm:text-2xl font-semibold text-white">
                 {user?.username || "Username"}
               </h2>
-              <p className="text-gray-400">
+              <p className="text-gray-400 text-sm sm:text-base">
                 {user?.email || "email@example.com"}
               </p>
               {isEditing && (
-                <p className="text-purple-400 text-sm mt-1">
-                  {uploadingImage ? "Uploading image..." : "Click on the avatar to change your profile image"}
+                <p className="text-purple-400 text-xs sm:text-sm mt-1">
+                  {uploadingImage ? "Uploading..." : "Click avatar to change profile image"}
                 </p>
               )}
             </div>
@@ -248,7 +245,7 @@ console.log({errors})
           {!isEditing && (
             <button
               onClick={() => setIsEditing(true)}
-              className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-white hover:from-purple-700 hover:to-pink-700 transition-all"
+              className="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-white hover:from-purple-700 hover:to-pink-700 transition-all mt-4 sm:mt-0"
             >
               Edit Profile
             </button>
@@ -256,49 +253,48 @@ console.log({errors})
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="space-y-2">
-              <label className="text-gray-300 text-sm">Username</label>
+          <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
+            <div className="space-y-1 sm:space-y-2">
+              <label className="text-gray-300 text-xs sm:text-sm">Username</label>
               <input
                 {...register("username", { required: "Username is required" })}
                 type="text"
                 disabled={!isEditing}
-                className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 text-white disabled:opacity-60"
+                className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-3 py-2 sm:px-4 sm:py-3 text-white text-sm sm:text-base disabled:opacity-60"
               />
               {errors.username && (
-                <p className="text-pink-500 text-sm">
+                <p className="text-pink-500 text-xs sm:text-sm">
                   {errors.username.message}
                 </p>
               )}
             </div>
             
-            <div className="space-y-2">
-              <label className="text-gray-300 text-sm">Email Address</label>
+            <div className="space-y-1 sm:space-y-2">
+              <label className="text-gray-300 text-xs sm:text-sm">Email Address</label>
               <input
                 {...register("email", { required: "Email is required" })}
                 type="email"
                 disabled={true} // Email is always disabled as it's a key identifier
-                className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 text-white disabled:opacity-60"
+                className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-3 py-2 sm:px-4 sm:py-3 text-white text-sm sm:text-base disabled:opacity-60"
               />
             </div>
             
-            <div className="space-y-2">
-              <label className="text-gray-300 text-sm">Phone Number</label>
+            <div className="space-y-1 sm:space-y-2">
+              <label className="text-gray-300 text-xs sm:text-sm">Phone Number</label>
               <input
                 {...register("phoneNumber", {
                   pattern: {
-                    value:
-                      /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/,
+                    value: /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/,
                     message: "Please enter a valid phone number"
                   }
                 })}
                 type="tel"
                 disabled={!isEditing}
                 placeholder="e.g., +1 (555) 123-4567"
-                className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 text-white disabled:opacity-60"
+                className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-3 py-2 sm:px-4 sm:py-3 text-white text-sm sm:text-base disabled:opacity-60"
               />
               {errors.phoneNumber && (
-                <p className="text-pink-500 text-sm">
+                <p className="text-pink-500 text-xs sm:text-sm">
                   {errors.phoneNumber.message &&
                     typeof errors.phoneNumber.message === "string" &&
                     errors.phoneNumber.message}
@@ -306,18 +302,29 @@ console.log({errors})
               )}
             </div>
             
-            {/* Social Media section with two fields */}
-            <div className="space-y-2 md:col-span-2">
-              <label className="text-gray-300 text-sm">Social Media</label>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-1 sm:space-y-2">
+              <label className="text-gray-300 text-xs sm:text-sm">Location</label>
+              <input
+                {...register("location")}
+                type="text"
+                disabled={!isEditing}
+                placeholder="e.g., New York, NY"
+                className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-3 py-2 sm:px-4 sm:py-3 text-white text-sm sm:text-base disabled:opacity-60"
+              />
+            </div>
+            
+            {/* Social Media section */}
+            <div className="space-y-1 sm:space-y-2 md:col-span-2">
+              <label className="text-gray-300 text-xs sm:text-sm">Social Media</label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
                   <input
                     type="text"
                     value={socialMediaName}
                     onChange={(e) => setSocialMediaName(e.target.value)}
                     disabled={!isEditing}
-                    placeholder="Platform (e.g., Facebook, Twitter)"
-                    className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 text-white disabled:opacity-60"
+                    placeholder="Platform (e.g., Twitter)"
+                    className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-3 py-2 sm:px-4 sm:py-3 text-white text-sm sm:text-base disabled:opacity-60"
                   />
                 </div>
                 <div>
@@ -327,43 +334,32 @@ console.log({errors})
                     onChange={(e) => setSocialMediaUrl(e.target.value)}
                     disabled={!isEditing}
                     placeholder="URL (e.g., https://twitter.com/username)"
-                    className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 text-white disabled:opacity-60"
+                    className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-3 py-2 sm:px-4 sm:py-3 text-white text-sm sm:text-base disabled:opacity-60"
                     pattern="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"
                   />
                 </div>
               </div>
               {/* Display current social media if available */}
               {!isEditing && user?.socialMediaLink && (
-                <p className="text-gray-400 text-sm mt-2">
-                  {user.socialMediaLink.name}: <a href={user.socialMediaLink.link} target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:underline">{user.socialMediaLink.link}</a>
+                <p className="text-gray-400 text-xs sm:text-sm mt-2">
+                  {user.socialMediaLink.name}: <a href={user.socialMediaLink.link} target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:underline break-all">{user.socialMediaLink.link}</a>
                 </p>
               )}
             </div>
             
-            <div className="space-y-2 md:col-span-2">
-              <label className="text-gray-300 text-sm">Bio</label>
+            <div className="space-y-1 sm:space-y-2 md:col-span-2">
+              <label className="text-gray-300 text-xs sm:text-sm">Bio</label>
               <textarea
                 {...register("bio")}
                 disabled={!isEditing}
                 rows={4}
                 placeholder="Tell us a little about yourself..."
-                className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 text-white disabled:opacity-60"
+                className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-3 py-2 sm:px-4 sm:py-3 text-white text-sm sm:text-base disabled:opacity-60"
               />
             </div>
             
-            <div className="space-y-2">
-              <label className="text-gray-300 text-sm">Location</label>
-              <input
-                {...register("location")}
-                type="text"
-                disabled={!isEditing}
-                placeholder="e.g., New York, NY"
-                className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 text-white disabled:opacity-60"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <label className="text-gray-300 text-sm">Website</label>
+            <div className="space-y-1 sm:space-y-2">
+              <label className="text-gray-300 text-xs sm:text-sm">Website</label>
               <input
                 {...register("website", {
                   pattern: {
@@ -374,10 +370,10 @@ console.log({errors})
                 type="text"
                 disabled={!isEditing}
                 placeholder="e.g., https://yourwebsite.com"
-                className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 text-white disabled:opacity-60"
+                className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-3 py-2 sm:px-4 sm:py-3 text-white text-sm sm:text-base disabled:opacity-60"
               />
               {errors.website && (
-                <p className="text-pink-500 text-sm">
+                <p className="text-pink-500 text-xs sm:text-sm">
                   {errors.website.message &&
                     typeof errors.website.message === "string" &&
                     errors.website.message}
@@ -387,11 +383,11 @@ console.log({errors})
           </div>
 
           {isEditing && (
-            <div className="mt-8 flex justify-end space-x-4">
+            <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row sm:justify-end gap-3 sm:gap-4">
               <button
                 type="button"
                 onClick={handleReset}
-                className="px-4 py-2 border border-gray-600 rounded-full text-gray-300 hover:bg-gray-700 transition-all"
+                className="px-4 py-2 border border-gray-600 rounded-full text-gray-300 hover:bg-gray-700 transition-all w-full sm:w-auto order-2 sm:order-1"
                 disabled={uploadingImage}
               >
                 Cancel
@@ -399,12 +395,12 @@ console.log({errors})
               <button
                 type="submit"
                 disabled={isLoading || uploadingImage}
-                className="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-white hover:from-purple-700 hover:to-pink-700 transition-all disabled:opacity-70 flex items-center"
+                className="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-white hover:from-purple-700 hover:to-pink-700 transition-all disabled:opacity-70 flex items-center justify-center w-full sm:w-auto order-1 sm:order-2"
               >
                 {(isLoading || uploadingImage) && (
                   <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
                 )}
-                {isLoading ? "Saving..." : uploadingImage ? "Uploading Image..." : "Save Changes"}
+                {isLoading ? "Saving..." : uploadingImage ? "Uploading..." : "Save Changes"}
               </button>
             </div>
           )}
