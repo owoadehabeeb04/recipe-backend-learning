@@ -14,7 +14,6 @@ const api = axios.create({
   }
 });
 
-
 // Add request interceptor to include token from Zustand store
 api.interceptors.request.use(
   (config) => {
