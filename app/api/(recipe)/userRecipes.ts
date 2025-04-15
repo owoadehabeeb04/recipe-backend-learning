@@ -88,6 +88,7 @@ export const getRecipeDetails = async (id: string | null) => {
     };
   }
   
+  
   try {
     const response = await api.get(`/recipes/${id}`);
     
