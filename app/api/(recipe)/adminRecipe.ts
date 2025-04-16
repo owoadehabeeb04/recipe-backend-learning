@@ -105,7 +105,6 @@ export const editRecipe = async (recipeId: string, payload: Partial<payload>, to
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`,
-        "Access-Control-Allow-Origin": "*",
       },
     });
     

@@ -32,9 +32,6 @@ interface RecipeFormData {
 
 const difficultyOptions = ["Easy", "Medium", "Hard"];
 
-
-
-
 const EditRecipe = () => {
   const { slug } = useParams();
   const router = useRouter();
