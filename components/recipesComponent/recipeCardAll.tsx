@@ -48,8 +48,9 @@ export const RecipeCard = ({ recipe }: { recipe: Recipe }) => {
       const checkStatus = async () => {
         try {
           setIsCheckingStatus(true);
+          if (user?.role === "user") {
           const status = await checkFavoriteStatus(recipe._id, token);
-          setIsFavorite(status);
+          setIsFavorite(status);}
         } catch (error) {
           console.error("Error checking favorite status:", error);
         } finally {
