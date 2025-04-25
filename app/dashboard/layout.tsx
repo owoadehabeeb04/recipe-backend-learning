@@ -2,10 +2,11 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useAuthStore } from "../store/authStore";
+import { useAuthStore, User } from "../store/authStore";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Users from "./users/page";
+import toast from "react-hot-toast";
 // Icons
 const HomeIcon = () => (
   <svg
@@ -97,71 +98,113 @@ export default function DashboardLayout({ children }: any) {
   console.log(user);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-
+  const { setAuth } = useAuthStore();
   const menuItems = [
     {
       name: "Dashboard",
       href: "/dashboard",
       icon: <HomeIcon />,
-      roles: ["user", "admin", "super_admin"]
+      roles: ["user", "admin", "super_admin"],
     },
     {
       name: "Create Recipe",
       href: "/dashboard/create-recipe",
       icon: <RecipeIcon />,
-      roles: ["admin"]
+      roles: ["admin"],
     },
     {
       name: "My Recipes",
       href: "/dashboard/my-recipes",
       icon: <RecipeIcon />,
-      roles: ["admin"]
+      roles: ["admin"],
     },
     {
       name: "All Recipes",
       href: "/dashboard/all-recipes",
       icon: <RecipeIcon />,
-      roles: ["super_admin", "user"]
+      roles: ["super_admin", "user"],
     },
     {
       name: "Favorite Recipes",
       href: "/dashboard/favorites",
       icon: (
-        <svg 
-          className="w-5 h-5" 
-          fill="none" 
-          stroke="currentColor" 
-          viewBox="0 0 24 24" 
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <path 
-            strokeLinecap="round" 
-            strokeLinejoin="round" 
-            strokeWidth={2} 
-            d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z" 
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z"
           />
         </svg>
       ),
-      roles: ["user"]
+      roles: ["user"],
+    },
+    {
+      name: "Meal Planner",
+      href: "/dashboard/meal-planner",
+      icon: (
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+          />
+        </svg>
+      ),
+      roles: ["user"],
+    },
+    {
+      name: "Recipe Assistant",
+      href: "/dashboard/ai-assistant",
+      icon: (
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714a2.25 2.25 0 001.241 2.013l.512.256a2.25 2.25 0 001.241.226h.756a2.25 2.25 0 01.53.066L21 16.5m-9-3v-2.25a2.25 2.25 0 012.25-2.25h1.5a2.25 2.25 0 012.25 2.25v2.25M15 12h4.5m-9-3h4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+      ),
+      roles: ["user"],
     },
     {
       name: "Users",
       href: "/dashboard/users",
       icon: <ProfileIcon />,
-      roles: ["super_admin"]
+      roles: ["super_admin"],
     },
     {
       name: "Profile",
       href: `/dashboard/profile`,
       icon: <ProfileIcon />,
-      roles: ["user", "admin", "super_admin"]
+      roles: ["user", "admin", "super_admin"],
     },
     {
       name: "Security",
       href: "/dashboard/security",
       icon: <SecurityIcon />,
-      roles: ["user", "admin", "super_admin"]
-    }
+      roles: ["user", "admin", "super_admin"],
+    },
   ];
 
   const finalMenuItems = menuItems.filter((item: any) =>
@@ -199,9 +242,9 @@ export default function DashboardLayout({ children }: any) {
               </button>
 
               {/* Logo */}
-              <Link href="/dashboard" className="flex ml-2 md:mr-24">
-                <span className="self-center text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600 whitespace-nowrap">
-                  RecipeApp
+              <Link href="/dashboard" className="flex items-center ml-2 md:mr-24">
+                <span className="self-center text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600 whitespace-nowrap">
+                  Recipia
                 </span>
               </Link>
             </div>
@@ -216,15 +259,6 @@ export default function DashboardLayout({ children }: any) {
               </div>
 
               {/* User menu */}
-              {/* <div className="relative">
-                <div className="flex items-center">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center overflow-hidden">
-                    {user?.username?.charAt(0).toUpperCase() || "U"}
-                  <span className="hidden md:flex ml-2">
-                    {user?.username || "User"}
-                  </span>
-                </div>
-              </div> */}
               <div className="relative">
                 <div className="flex items-center">
                   {user?.profileImage && user?.profileImage ? (
@@ -260,47 +294,91 @@ export default function DashboardLayout({ children }: any) {
         } md:translate-x-0`}
       >
         <div className="h-full px-3 overflow-y-auto">
-          <ul className="space-y-2 font-medium">
-            {finalMenuItems.map((item, index) => {
-              const isActive = pathname === item.href;
-
-              return (
-                <motion.li
-                  key={item.name}
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                >
-                  <Link
-                    href={item.href}
-                    className={`group flex items-center p-3 rounded-lg ${
-                      isActive
-                        ? "bg-gradient-to-r from-purple-600/50 to-pink-600/50 text-white"
-                        : "text-gray-400 hover:bg-gray-700/30"
-                    } transition-all duration-300`}
-                  >
-                    <div
-                      className={`${
-                        isActive
-                          ? "text-white"
-                          : "text-purple-400 group-hover:text-white"
-                      }`}
+          <div className="flex flex-col h-full justify-between">
+            {/* Main menu items */}
+            <div className="flex-1">
+              <ul className="space-y-1">
+                {finalMenuItems.map((item) => {
+                  const isActive = pathname === item.href;
+                  return (
+                    <motion.li
+                      key={item.name}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ duration: 0.3, delay: 0.1 }}
                     >
-                      {item.icon}
-                    </div>
-                    <span className="ml-3">{item.name}</span>
+                      <Link
+                        href={item.href}
+                        className={`group flex items-center p-3 rounded-lg ${
+                          isActive
+                            ? "bg-gradient-to-r from-purple-600/50 to-pink-600/50 text-white"
+                            : "text-gray-400 hover:bg-gray-700/30"
+                        } transition-all duration-300`}
+                      >
+                        <div
+                          className={`${
+                            isActive
+                              ? "text-white"
+                              : "text-purple-400 group-hover:text-white"
+                          }`}
+                        >
+                          {item.icon}
+                        </div>
+                        <span className="ml-3">{item.name}</span>
 
-                    {isActive && (
-                      <motion.div
-                        layoutId="sidebar-highlight"
-                        className="ml-auto w-1.5 h-5 bg-gradient-to-b from-purple-400 to-pink-500 rounded-full"
+                        {isActive && (
+                          <motion.div
+                            layoutId="sidebar-highlight"
+                            className="ml-auto w-1.5 h-5 bg-gradient-to-b from-purple-400 to-pink-500 rounded-full"
+                          />
+                        )}
+                      </Link>
+                    </motion.li>
+                  );
+                })}
+              </ul>
+            </div>
+
+            {/* Logout at the bottom */}
+            <div className="mt-auto mb-[5rem] pt-4 border-t border-gray-700/30">
+              <motion.div
+                key="logout"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, delay: 0.1 }}
+              >
+                <button
+                  onClick={async () => {
+                    try {
+                      setAuth("", {} as User);
+
+                      window.location.href = "/login";
+                      toast.success("Logout successful");
+                    } catch (error) {
+                      console.error("Logout failed:", error);
+                    }
+                  }}
+                  className="w-full cursor-pointer group flex items-center p-3 rounded-lg text-gray-400 hover:bg-gray-700/30 transition-all duration-300"
+                >
+                  <div className="text-purple-400 group-hover:text-white">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="w-5 h-5"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M7.5 3.75A1.5 1.5 0 006 5.25v13.5a1.5 1.5 0 001.5 1.5h6a1.5 1.5 0 001.5-1.5V15a.75.7Z5 0 011.5 0v3.75a3 3 0 01-3 3h-6a3 3 0 01-3-3V5.25a3 3 0 013-3h6a3 3 0 013 3V9a.75.75 0 01-1.5 0V5.25a1.5 1.5 0 00-1.5-1.5h-6zm10.72 4.72a.75.75 0 011.06 0l3 3a.75.75 0 010 1.06l-3 3a.75.75 0 11-1.06-1.06l1.72-1.72H9a.75.75 0 010-1.5h10.94l-1.72-1.72a.75.75 0 010-1.06z"
+                        clipRule="evenodd"
                       />
-                    )}
-                  </Link>
-                </motion.li>
-              );
-            })}
-          </ul>
+                    </svg>
+                  </div>
+                  <span className="ml-3">Logout</span>
+                </button>
+              </motion.div>
+            </div>
+          </div>
         </div>
       </aside>
 

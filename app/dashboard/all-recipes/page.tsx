@@ -11,10 +11,12 @@ import { CategoryFilter } from "@/components/recipesComponent/category";
 import { CookingTimeFilter } from "@/components/recipesComponent/cookingTimeFilter";
 import { getAllRecipes } from "@/app/api/(recipe)/userRecipes";
 import { useAuthStore } from "@/app/store/authStore";
+import { RecipeCardEditDelete } from "@/components/recipesComponent/recipeCard";
+import { useRouter } from "next/navigation";
 
 // Recipe type definition
 export interface Recipe {
-  _id: string; 
+  _id: string;
   title: string;
   category: string;
   cookingTime: number;
@@ -23,11 +25,16 @@ export interface Recipe {
   averageRating: number;
   adminName: string;
   createdAt: string;
-  isPublished?: boolean; 
+  isPublished?: boolean;
   adminDetails: {
     name: string;
     email: string;
   };
+  roleCreated: string;
+  user: {
+    name: string;
+    email: string;
+  }
 }
 
 // Empty state component for better UX
@@ -188,7 +195,7 @@ const AllRecipesPage = () => {
   const [categories, setCategories] = useState<string[]>([]);
   const [isFirstLoad, setIsFirstLoad] = useState(true);
   const recipesPerPage = 10;
-
+  const router = useRouter();
   const filterByCookingTime = (recipes: Recipe[]) => {
     if (cookingTime === "all") return recipes;
 
@@ -217,11 +224,11 @@ const AllRecipesPage = () => {
         limit: recipesPerPage,
         search: searchQuery || undefined,
         category: category !== "all" ? category : undefined,
-        sort: sortBy,
+        sort: sortBy
       });
 
-      console.log("API Response:", response); 
-
+      console.log("API Response:", response);
+      
       if (response && response.status === 200) {
         const allRecipes = response.data || [];
         const filteredRecipes =
@@ -252,6 +259,9 @@ const AllRecipesPage = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+  const handleEditRecipe = (id: string) => {
+    router.push(`/dashboard/edit-recipe/${id}`);
   };
 
   // Clear filters handler
@@ -370,7 +380,16 @@ const AllRecipesPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.05 * index }}
               >
-                <RecipeCard recipe={recipe} />
+                {user?.role === "user" ? (
+                  <RecipeCardEditDelete
+                    recipe={recipe}
+                    onEdit={() => handleEditRecipe(recipe._id)}
+                    // onDelete={() => (recipe._id)}
+                    refreshData={fetchRecipes}
+                  />
+                ) : (
+                  <RecipeCard recipe={recipe} />
+                )}
               </motion.div>
             ))}
           </div>

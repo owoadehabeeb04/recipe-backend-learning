@@ -1,5 +1,6 @@
+
+// Recipe type definition
 export interface Recipe {
-  id: string;
   _id: string;
   title: string;
   category: string;
@@ -7,10 +8,52 @@ export interface Recipe {
   difficulty: string;
   featuredImage: string;
   averageRating: number;
-  isPublished: boolean;
+  adminName: string;
   createdAt: string;
+  isPublished?: boolean;
+  adminDetails?: {
+    name: string;
+    email: string;
+    role: string;
+    profileImage?: string;
+  };
+  isFavorited?: boolean; // Track if recipe is favorited
+  recipe: {
+    _id: string;
+    title: string;
+    category: string;
+    cookingTime: number;
+    difficulty: string;
+    featuredImage: string;
+    averageRating: number;
+    adminName: string;
+    createdAt: string;
+    isPublished?: boolean;
+    adminDetails?: {
+      name: string;
+      email: string;
+      role: string;
+      profileImage?: string;
+    };
+    isFavorited?: boolean; // Track if recipe is favorited
+  }
 }
 
+export interface NutritionData {
+  calories: number;
+  protein: number;
+  carbs: number;
+  fat: number;
+  sugar?: number;
+  fiber?: number;
+  sodium?: number;
+}
+
+export interface Ingredient {
+  quantity: string;
+  unit: string;
+  name: string;
+}
 // export const sampleRecipes: Recipe[] = [
 //   {
 //     id: "1",

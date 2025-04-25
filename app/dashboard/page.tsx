@@ -15,6 +15,7 @@ import { getAllRecipes } from "../api/(recipe)/userRecipes";
 import { getAllUsers } from "../api/(users)";
 import { DashboardCharts } from "@/components/charts/dashboardCharts";
 import DashboardUser from "@/components/userDashboard/dashboardUser";
+import { Recipe } from "@/types/recipe";
 
 // Define types for our data
 interface Statistics {
@@ -24,19 +25,7 @@ interface Statistics {
   unpublishedRecipes: number;
 }
 
-interface Recipe {
-  _id: string;
-  title: string;
-  category: string;
-  createdAt: string;
-  isPublished?: boolean;
-  adminDetails?: {
-    name: string;
-    email: string;
-    role: string;
-    profileImage?: string;
-  };
-}
+
 
 const Dashboard = () => {
   const { user, token } = useAuthStore();

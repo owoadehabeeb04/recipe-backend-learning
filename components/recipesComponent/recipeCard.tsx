@@ -4,11 +4,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { deleteRecipe } from "@/app/api/(recipe)/adminRecipe";
+import { deleteRecipe, deleteUserRecipe } from "@/app/api/(recipe)/adminRecipe";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 // Recipe Card Component
-export const RecipeCard = ({
+export const RecipeCardEditDelete = ({
   recipe,
   onEdit,
   // onDelete,
@@ -18,7 +19,7 @@ export const RecipeCard = ({
   recipe: Recipe;
   onEdit: (id: string) => void;
   // onDelete: (id: string) => void;
-  onTogglePublish: (id: string, currentStatus: boolean) => void;
+  onTogglePublish?: (id: string, currentStatus: boolean | undefined) => void;
   refreshData?: () => void;
 }) => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -59,8 +60,8 @@ console.log({recipe})
 
     setIsDeleting(true);
     try {
+      if (user?.role === "admin") {
       const result = await deleteRecipe(recipe._id, token);
-      
       if (result.success) {
         toast.success("Recipe deleted successfully");
         setShowDeleteModal(false);
@@ -69,7 +70,20 @@ console.log({recipe})
         
       } else {
         toast.error(result.message || "Failed to delete recipe");
+        if (result.success) {
+          toast.success("Recipe deleted successfully");
+          setShowDeleteModal(false);
+          if (refreshData)   {
+            refreshData();}
+          
+        } else {
+          toast.error(result.message || "Failed to delete recipe");
+        }
       }
+      } else if (user?.role === "user") {
+        const result = await deleteUserRecipe(recipe._id, token);
+      }
+      
     } catch (error) {
       toast.error("An error occurred while deleting the recipe");
       console.error(error);
@@ -136,24 +150,42 @@ console.log({recipe})
         {/* Content */}
         <div className="p-5">
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">
+           <Link href={`/dashboard/recipe/${recipe._id}`}> <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">
               {recipe.title}
-            </h3>
-            {user?.role === "admin" && (
-              <button 
-                className="absolute cursor-pointer top-3 right-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-medium px-3 py-1.5 rounded-full shadow-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 flex items-center gap-1.5 z-10"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  goToEdit();
-                }}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
-                  <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
-                  <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
-                </svg>
-                Edit
-              </button>
-            )}
+            </h3></Link>
+          {/* Edit button - show only if user is admin or creator of the recipe */}
+{user && (user.role === "admin" || (user.role === "user" && (recipe.user === user._id || recipe.roleCreated === "user"))) && (
+  <button 
+    className="absolute cursor-pointer top-3 right-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-medium px-3 py-1.5 rounded-full shadow-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 flex items-center gap-1.5 z-10"
+    onClick={(e) => {
+      e.stopPropagation();
+      goToEdit();
+    }}
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
+      <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
+      <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
+    </svg>
+    Edit
+  </button>
+)}
+
+{/* Delete button - add this next to the edit button */}
+{user && (user.role === "admin" || (user.role === "user" && (recipe.user === user._id || recipe.roleCreated === "user"))) && (
+  <button 
+    className="absolute cursor-pointer top-3 right-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-medium px-3 py-1.5 rounded-full shadow-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 flex items-center gap-1.5 z-10"
+    onClick={(e) => {
+      e.stopPropagation();
+      goToEdit();
+    }}
+  >
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-3.5 h-3.5">
+      <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
+      <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
+    </svg>
+    Edit
+  </button>
+)}
           </div>
 
           <div className="flex justify-between items-center mb-4">
@@ -203,8 +235,8 @@ console.log({recipe})
                 </svg>
                 Edit
               </button> */}
-              <button
-                onClick={() => onTogglePublish(recipe._id, recipe.isPublished)}
+              {user?.role === 'super_admin' &&<button
+                onClick={() => onTogglePublish?.(recipe._id, recipe.isPublished)}
                 className="text-xs px-3 py-1.5 rounded-lg bg-purple-700/40 hover:bg-purple-700/60 text-white transition-colors flex items-center"
               >
                 {recipe.isPublished ? (
@@ -223,8 +255,10 @@ console.log({recipe})
                     Publish
                   </>
                 )}
-              </button>
+              </button>}
             </div>
+            {user && (user.role === "admin" || (user.role === "user" && (recipe.user === user._id || recipe.roleCreated === "user"))) && (
+
             <button
               onClick={handleDeleteClick}
               className="text-xs px-3 py-1.5 rounded-lg bg-red-700/40 hover:bg-red-700/60 text-white transition-colors flex items-center"
@@ -233,7 +267,7 @@ console.log({recipe})
                 <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
               </svg>
               Delete
-            </button>
+            </button>)}
           </div>
         </div>
       </motion.div>

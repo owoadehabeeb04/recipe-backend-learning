@@ -52,7 +52,7 @@ export const getRecipeBySlug = async (slug: string) => {
 };
 
 
-export const createRecipe = async (payload: payload, token: string, role: string| undefined) => {
+export const createRecipe = async (payload: payload, token: string) => {
   try {
     const response = await axios.post(`${API_URL}/recipes/create-recipe`, payload, {
       headers: {
@@ -133,6 +133,43 @@ export const editRecipe = async (recipeId: string, payload: Partial<payload>, to
   }
 };
 
+
+export const editUserRecipe = async (recipeId: string, payload: Partial<payload>, token: string) => {
+  try {
+    const response = await axios.patch(`${API_URL}/recipes/user/edit-recipe/${recipeId}`, payload, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+    
+    return {
+      success: true,
+      message: response.data.message || 'Recipe updated successfully',
+      data: response.data.data
+    };
+  } catch (error) {
+    console.error('Error updating recipe:', error);
+    
+    if (axios.isAxiosError(error)) {
+      return {
+        success: false,
+        message: error.response?.data?.message || error.message,
+        status: error.response?.status,
+        error: error.response?.data?.errors || 'Failed to update recipe'
+      };
+    }
+    
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : 'An unknown error occurred',
+      error: 'Failed to update recipe'
+    };
+  }
+};
+
+
+
 /**
  * Delete a recipe (admin only)
  * @param recipeId ID of the recipe to delete
@@ -170,6 +207,37 @@ export const deleteRecipe = async (recipeId: string, token: string) => {
   }
 };
 
+
+export const deleteUserRecipe = async (recipeId: string, token: string) => {
+  try {
+    const response = await axios.delete(`${API_URL}/recipes/user/delete-recipe/${recipeId}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+    
+    return {
+      success: true,
+      message: response.data.message || 'Recipe deleted successfully'
+    };
+  } catch (error) {
+    console.error('Error deleting recipe:', error);
+    
+    if (axios.isAxiosError(error)) {
+      return {
+        success: false,
+        message: error.response?.data?.message || error.message,
+        status: error.response?.status
+      };
+    }
+    
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : 'An unknown error occurred'
+    };
+  }
+};
 /**
  * Publish or unpublish a recipe (admin only)
  * @param recipeId ID of the recipe

@@ -1,3 +1,75 @@
+// "use client"
+
+// import { useEffect } from "react"
+// import Navbar from "@/components/navbar"
+// import Hero from "@/components/hero"
+// import Features from "@/components/features"
+// import HowItWorks from "@/components/how-it-works"
+// import Testimonials from "@/components/testimonials"
+// import Cta from "@/components/cta"
+// import Footer from "@/components/footer"
+// import AnimationWrapper from "@/components/animation-wrapper"
+// import AnimatedBackground from "./animation-background"
+// import AiCapabilities from "./aiCapabilities"
+
+// export default function Home() {
+//   useEffect(() => {
+//     // Smooth scroll for anchor links
+//     document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+//       anchor.addEventListener("click", (e) => {
+//         e.preventDefault()
+//         const mouseEvent = e as MouseEvent
+//         const targetId = (mouseEvent.currentTarget as HTMLAnchorElement).getAttribute("href")
+//         if (!targetId) return
+
+//         const targetElement = document.querySelector(targetId)
+//         if (targetElement) {
+//           window.scrollTo({
+//             top: targetElement.getBoundingClientRect().top + window.scrollY - 100,
+//             behavior: "smooth",
+//           })
+//         }
+//       })
+//     })
+//   }, [])
+
+//   return (
+//     <div className="min-h-screen bg-background text-foreground">
+//       <Navbar />
+//       <AnimatedBackground />
+
+//       <AnimationWrapper direction="none" duration={1.2}>
+//         <Hero />
+//       </AnimationWrapper>
+
+//       <AnimationWrapper delay={0.1}>
+//         <Features />
+//       </AnimationWrapper>
+
+//       <AnimationWrapper delay={0.1}>
+//         <HowItWorks />
+//       </AnimationWrapper>
+
+//       <AnimationWrapper delay={0.1}>
+//         <AiCapabilities />
+//       </AnimationWrapper>
+
+//       <AnimationWrapper delay={0.1}>
+//         <Testimonials />
+//       </AnimationWrapper>
+
+//       {/* <AnimationWrapper delay={0.1}>
+//         <Pricing />
+//       </AnimationWrapper> */}
+
+//       <AnimationWrapper delay={0.1}>
+//         <Cta />
+//       </AnimationWrapper>
+
+//       <Footer />
+//     </div>
+//   )
+// }
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";

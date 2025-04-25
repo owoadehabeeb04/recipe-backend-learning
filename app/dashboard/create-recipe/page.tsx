@@ -10,30 +10,51 @@ import { createRecipe } from "@/app/api/(recipe)/adminRecipe";
 import { uploadToCloudinary } from "@/app/api/(recipe)/uploadImage";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Image from "next/image";
-import { categoryOptions } from "@/utils";
+import {
+  categoryOptions,
+  generateCompleteRecipe,
+  generateRecipeImage
+} from "@/utils";
+import { useNutritionCalculator } from "@/hooks/useNutritionalCalculator";
+import NutritionSection from "@/components/create-recipe-component/nutitionalSection";
+import CalculateNutritionButton from "@/components/create-recipe-component/calculateNutritionButton";
 const CreateRecipePage = () => {
   const { user, token } = useAuthStore();
-  console.log(user, token)
+  console.log(user, token);
   const router = useRouter();
   const [ingredients, setIngredients] = useState([
     { name: "", quantity: "", unit: "" }
   ]);
-  const [steps, setSteps] = useState<{ description: string }[]>([{ description: "" }]);
-  const [tips, setTips] = useState([{ description: "" }]); 
+  const [steps, setSteps] = useState<{ description: string }[]>([
+    { description: "" }
+  ]);
+  const [tips, setTips] = useState([{ description: "" }]);
   const [previewImage, setPreviewImage] = useState<string | undefined | null>(
     null
   );
   const [isGenerating, setIsGenerating] = useState(false);
   const [titleForGeneration, setTitleForGeneration] = useState("");
   const [showGenerateButton, setShowGenerateButton] = useState(false);
-  
+  const [recipeImage, setRecipeImage] = useState<string>("");
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const [isPrivate, setIsPrivate] = useState(true);
+
+  // nutrition hook
+  const {
+    nutrition,
+    isCalculatingNutrition,
+    setNutrition,
+    setIsCalculatingNutrition,
+    calculateIngredientNutrition
+  } = useNutritionCalculator(ingredients, isGenerating);
   const {
     register,
     handleSubmit,
     reset,
     watch,
     setValue,
-    formState: { errors }
+    formState: { errors },
+    getValues
   } = useForm({
     defaultValues: {
       title: "",
@@ -55,273 +76,80 @@ const CreateRecipePage = () => {
     }
   }, [watchedTitle]);
 
-// GENEARTE COMPLECTED RECIPE
-// Add this function to handle problematic AI-generated JSON
-const generateCompleteRecipe = async () => {
-  if (!titleForGeneration || titleForGeneration.length < 3) {
-    toast.error("Please enter a recipe title first");
-    return;
-  }
+  // GENEARTE COMPLECTED RECIPE
+  // Add this function to handle problematic AI-generated JSON
 
-  setIsGenerating(true);
-  const loadingToastId = toast.loading("Generating recipe content...");
-  
-  try {
-    // Initialize Gemini AI
-    const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY || "");
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    
-    // Create a structured prompt for the AI
-    // The key difference: we'll ask for field-by-field responses instead of JSON
-    const prompt = `Create a detailed recipe for "${titleForGeneration}".
-    
-    I need the following information (answer with ONLY the requested information for each field, no explanations):
-    
-    1. DESCRIPTION: Write a detailed description of the dish (4-6 sentences).
-    2. COOKING_TIME: How many minutes to prepare and cook (just the number)?
-    3. SERVINGS: How many people does this serve (number between 1-8)?
-    4. DIFFICULTY: Is this Easy, Medium, or Hard to make?
-    5. CATEGORY: Which one best fits: ${categoryOptions.join(", ")}?
-    6. INGREDIENTS: List 5-10 ingredients with quantities and units (one per line, format: quantity unit name).
-    7. STEPS: List 4-8 detailed preparation steps (one per line, numbered).
-    8. TIPS: Provide 3-5 useful cooking tips (one per line).
-    
-    Be practical, accurate, and detailed in your responses.`;
-  
-    // Generate content
-    const result = await model.generateContent(prompt);
-    const response = result.response.text();
-    
-    console.log("AI response:", response);
-    
-    // Parse the response using a line-by-line approach instead of JSON parsing
-    const sections: any = {
-      description: "",
-      cookingTime: "",
-      servings: "",
-      difficulty: "",
-      category: "",
-      ingredients: [],
-      steps: [],
-      tips: []
-    };
-    
-    // Extract each section using regex patterns
-    const descriptionMatch = response.match(/DESCRIPTION:?\s*(.*?)(?=\d+\.\s*COOKING_TIME|$)/s);
-    if (descriptionMatch && descriptionMatch[1]) {
-      sections.description = descriptionMatch[1].trim();
-    }
-    
-    const cookingTimeMatch = response.match(/COOKING_TIME:?\s*(\d+)/);
-    if (cookingTimeMatch && cookingTimeMatch[1]) {
-      sections.cookingTime = cookingTimeMatch[1].trim();
-    }
-    
-    const servingsMatch = response.match(/SERVINGS:?\s*(\d+)/);
-    if (servingsMatch && servingsMatch[1]) {
-      sections.servings = servingsMatch[1].trim();
-    }
-    
-    const difficultyMatch = response.match(/DIFFICULTY:?\s*(Easy|Medium|Hard)/i);
-    if (difficultyMatch && difficultyMatch[1]) {
-      sections.difficulty = difficultyMatch[1].toLowerCase();
-    }
-    
-    const categoryMatch = response.match(/CATEGORY:?\s*([^0-9\n]+)(?=\d|$)/);
-    if (categoryMatch && categoryMatch[1]) {
-      const category = categoryMatch[1].trim();
-      // Find the closest match in categoryOptions
-      const matchedCategory = categoryOptions.find(c => 
-        c.toLowerCase() === category.toLowerCase()
-      ) || categoryOptions[0];
-      sections.category = matchedCategory;
-    }
-    
-    // Extract ingredients section
-    const ingredientsSection = response.match(/INGREDIENTS:?\s*([\s\S]*?)(?=\d+\.\s*STEPS|$)/);
-    if (ingredientsSection && ingredientsSection[1]) {
-      const ingredientLines = ingredientsSection[1].trim().split('\n')
-        .map(line => line.trim())
-        .filter(line => line && !line.startsWith('INGREDIENTS'));
-      
-      sections.ingredients = ingredientLines.map(line => {
-        // Try to extract quantity, unit, and name
-        const parts = line.split(' ');
-        if (parts.length >= 3) {
-          // Assume first part is quantity, second is unit, rest is name
-          return {
-            quantity: parts[0],
-            unit: parts[1],
-            name: parts.slice(2).join(' ').replace(/^\W+|\W+$/g, '') // Remove non-word chars from start/end
-          };
-        } else if (parts.length === 2) {
-          // Assume first part is quantity, no unit, second is name
-          return {
-            quantity: parts[0],
-            unit: '',
-            name: parts[1].replace(/^\W+|\W+$/g, '')
-          };
-        } else {
-          // Just a name
-          return {
-            quantity: '',
-            unit: '',
-            name: line.replace(/^\W+|\W+$/g, '')
-          };
-        }
-      }).filter(ing => ing.name.trim());
-    }
-    
-    // Extract steps section
-    const stepsSection = response.match(/STEPS:?\s*([\s\S]*?)(?=\d+\.\s*TIPS|$)/);
-    if (stepsSection && stepsSection[1]) {
-      const stepLines = stepsSection[1].trim().split('\n')
-        .map(line => line.trim())
-        .filter(line => line && !line.startsWith('STEPS'));
-      
-      sections.steps = stepLines.map(line => {
-        // Remove numbers and periods from the beginning
-        return { description: line.replace(/^\d+\.?\s*/, '').trim() };
-      }).filter(step => step.description);
-    }
-    
-    // Extract tips section
-    const tipsSection = response.match(/TIPS:?\s*([\s\S]*?)(?=\d+\.|$)/s);
-    if (tipsSection && tipsSection[1]) {
-      const tipLines = tipsSection[1].trim().split('\n')
-        .map(line => line.trim())
-        .filter(line => line && !line.startsWith('TIPS'));
-      
-      sections.tips = tipLines.map(line => {
-        // Remove bullets, numbers, etc. from the beginning
-        return { description: line.replace(/^[-•*\d]+\.?\s*/, '').trim() };
-      }).filter(tip => tip.description);
-    }
-    
-    // Fill the form with generated data
-    setValue("title", titleForGeneration);
-    
-    if (sections.description) {
-      setValue("description", sections.description);
-    }
-    
-    if (sections.cookingTime) {
-      setValue("cookingTime", sections.cookingTime);
-    }
-    
-    if (sections.servings) {
-      setValue("servings", sections.servings);
-    }
-    
-    if (sections.difficulty) {
-      setValue("difficulty", sections.difficulty);
-    }
-    
-    if (sections.category) {
-      setValue("category", sections.category);
-    }
-    
-    // Set ingredients
-    if (sections.ingredients.length > 0) {
-      setIngredients(sections.ingredients);
-    }
-    
-    // Set steps
-    if (sections.steps.length > 0) {
-      setSteps(sections.steps);
-    }
-    
-    // Set tips
-    if (sections.tips.length > 0) {
-      setTips(sections.tips);
-    }
-    
-    toast.success("Recipe generated successfully! Feel free to edit any details.", {
-      id: loadingToastId,
-      duration: 4000
-    });
-  } catch (error) {
-    console.error("Error generating recipe:", error);
-    toast.error("Failed to generate recipe. Please try again or enter details manually.", {
-      id: loadingToastId
-    });
-  } finally {
-    setIsGenerating(false);
-  }
-};
-const fixBrokenJson = (brokenJson: any) => {
-  // Very basic JSON repair - only for emergency cases
-  // This is not a comprehensive solution
-  try {
-    // Try to construct a valid object structure
-    let fixed = brokenJson;
-    
-    // Ensure the string starts with { and ends with }
-    if (!fixed.startsWith('{')) fixed = '{' + fixed;
-    if (!fixed.endsWith('}')) fixed = fixed + '}';
-    
-    // Replace multiple commas with a single comma
-    fixed = fixed.replace(/,\s*,/g, ',');
-    
-    // Remove trailing commas before closing brackets
-    fixed = fixed.replace(/,\s*}/g, '}');
-    fixed = fixed.replace(/,\s*]/g, ']');
-    
-    return fixed;
-  } catch (e) {
-    console.error("JSON repair failed:", e);
-    return brokenJson; // Return original if repair fails
-  }
-};
+  // const fixBrokenJson = (brokenJson: any) => {
+  //   try {
+  //     let fixed = brokenJson;
 
+  //     if (!fixed.startsWith('{')) fixed = '{' + fixed;
+  //     if (!fixed.endsWith('}')) fixed = fixed + '}';
 
-// Replace the useMutation hook with a regular async function
-const [isSubmitting, setIsSubmitting] = useState(false);
+  //     fixed = fixed.replace(/,\s*,/g, ',');
 
-// Regular function to handle recipe creation
-const handleCreateRecipe = async (recipeData: any) => {
-  try {
-    setIsSubmitting(true);
-    
-    if (!token) {
-      toast.error("You must be logged in to create recipes");
-      return;
+  //     // Remove trailing commas before closing brackets
+  //     fixed = fixed.replace(/,\s*}/g, '}');
+  //     fixed = fixed.replace(/,\s*]/g, ']');
+
+  //     return fixed;
+  //   } catch (e) {
+  //     console.error("JSON repair failed:", e);
+  //     return brokenJson; // Return original if repair fails
+  //   }
+  // };
+
+  // Replace the useMutation hook with a regular async function
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Regular function to handle recipe creation
+  const handleCreateRecipe = async (recipeData: any) => {
+    try {
+      setIsSubmitting(true);
+
+      if (!token) {
+        toast.error("You must be logged in to create recipes");
+        return;
+      }
+
+      console.log({ recipeData });
+
+      const response = await createRecipe(recipeData, token);
+
+      if (response.success) {
+        toast.success("Recipe created successfully!");
+
+        // Reset form after successful submission
+        reset();
+        setIngredients([{ name: "", quantity: "", unit: "" }]);
+        setSteps([{ description: "" }]);
+        setTips([{ description: "" }]);
+        setPreviewImage(null);
+
+        // Redirect to admin recipes list after a short delay
+        setTimeout(() => {
+          {
+            user?.role === "admin"
+              ? router.push("/dashboard/my-recipes")
+              : router.push("/dashboard/favorite-recipes");
+          }
+        }, 1500);
+      } else {
+        // API returned a success:false response
+        toast.error(response.message || "Failed to create recipe");
+      }
+    } catch (error: any) {
+      console.error("Error creating recipe:", error);
+
+      if (error.message === "Authentication required") {
+        toast.error("You must be logged in to create recipes");
+      } else {
+        toast.error(error.response?.data?.message || "Failed to create recipe");
+      }
+    } finally {
+      setIsSubmitting(false);
     }
-    
-    console.log({recipeData});
-    
-    const response = await createRecipe(recipeData, token, user?.role);
-    
-    if (response.success) {
-      toast.success("Recipe created successfully!");
-
-      // Reset form after successful submission
-      reset();
-      setIngredients([{ name: "", quantity: "", unit: "" }]);
-      setSteps([{ description: "" }]);
-      setTips([{ description: "" }]);
-      setPreviewImage(null);
-
-      // Redirect to admin recipes list after a short delay
-      setTimeout(() => {
-        router.push("/dashboard/my-recipes");
-      }, 1500);
-    } else {
-      // API returned a success:false response
-      toast.error(response.message || "Failed to create recipe");
-    }
-  } catch (error: any) {
-    console.error("Error creating recipe:", error);
-
-    if (error.message === "Authentication required") {
-      toast.error("You must be logged in to create recipes");
-    } else {
-      toast.error(error.response?.data?.message || "Failed to create recipe");
-    }
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+  };
   const addIngredient = () => {
     setIngredients([...ingredients, { name: "", quantity: "", unit: "" }]);
   };
@@ -381,7 +209,7 @@ const handleCreateRecipe = async (recipeData: any) => {
   };
 
   const [isUploading, setIsUploading] = useState(false);
-  const [featuredImage, setFeaturedImage] = useState("")
+  const [featuredImage, setFeaturedImage] = useState("");
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
@@ -393,7 +221,7 @@ const handleCreateRecipe = async (recipeData: any) => {
 
           // Upload to Cloudinary
           const cloudinaryUrl = await uploadToCloudinary(file);
-          console.log({cloudinaryUrl})
+          console.log({ cloudinaryUrl });
           setPreviewImage(cloudinaryUrl);
           setFeaturedImage(cloudinaryUrl);
 
@@ -419,7 +247,7 @@ const handleCreateRecipe = async (recipeData: any) => {
   };
   const validTips = () => {
     return tips.some((tip) => tip.description.trim() !== "");
-  }
+  };
 
   const onSubmit = async (data: any) => {
     // Validate ingredients and steps
@@ -449,7 +277,6 @@ const handleCreateRecipe = async (recipeData: any) => {
     const validTipss = tips
       .filter((tip) => tip.description.trim() !== "")
       .map((tip) => tip.description);
-    
 
     // Use the ingredients array directly instead of formatting them as strings
     // This keeps the object structure that your backend expects
@@ -462,14 +289,17 @@ const handleCreateRecipe = async (recipeData: any) => {
     // Compile form data with ingredients, steps and tips
     const recipeData = {
       ...data,
-      ingredients: formattedIngredients, 
+      ingredients: formattedIngredients,
       steps: validSteps,
       tips: validTipss,
       cookingTime: Number(data.cookingTime),
       servings: Number(data.servings),
-      featuredImage: previewImage || ""
-    };
+      featuredImage: previewImage || "",
+      nutrition: nutrition,
+      ...(user?.role === "user" && { isPrivate }),
 
+    };    
+    console.log({ recipeData });
     // Submit with React Query mutation
     await handleCreateRecipe(recipeData);
   };
@@ -477,7 +307,7 @@ const handleCreateRecipe = async (recipeData: any) => {
   // Check if user is authenticated
   if (!user) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh]">
+      <div className="flex flex-col items-center (justify)-center min-h-[60vh]">
         <h2 className="text-2xl font-bold text-gray-200 mb-4">
           Authentication Required
         </h2>
@@ -493,8 +323,37 @@ const handleCreateRecipe = async (recipeData: any) => {
       </div>
     );
   }
+  // Your existing handleGenerateRecipe function
+  const handleGenerateRecipe = () => {
+    const titleForGeneration = watch("title");
 
-  // Rest of your component remains the same...
+    generateCompleteRecipe({
+      titleForGeneration,
+      setValue: setValue,
+      setIngredients,
+      setSteps,
+      setTips,
+      setIsGenerating,
+      categoryOptions: [
+        "Breakfast",
+        "Lunch",
+        "Dinner",
+        "Dessert",
+        "Snack",
+        "Appetizer"
+      ],
+      calculateNutrition: calculateIngredientNutrition
+    });
+    // generateRecipeImage(
+    //   titleForGeneration,
+    //   setValue,
+    //   setIsGeneratingImage,
+    //   setRecipeImage
+    // );
+  };
+
+  console.log({ previewImage });
+  console.log({ recipeImage });
   return (
     <div className="pb-20">
       <motion.div
@@ -534,54 +393,63 @@ const handleCreateRecipe = async (recipeData: any) => {
             </h2>
 
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div className="mb-6">
-              <div className="flex justify-between items-center mb-2">
-                <label className="text-gray-300 text-sm font-medium">
-                  Recipe Title*
-                </label>
-                {showGenerateButton && (
-                  <button
-                    type="button"
-                    className={`text-sm px-4 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-md hover:from-purple-700 hover:to-pink-700 transition flex items-center ${
-                      isGenerating ? "opacity-70 cursor-wait" : ""
-                    }`}
-                    onClick={generateCompleteRecipe}
-                    disabled={isGenerating}
-                  >
-                    {isGenerating ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin mr-2"></div>
-                        Creating Recipe...
-                      </>
-                    ) : (
-                      <>
-                        <svg 
-                          viewBox="0 0 24 24" 
-                          fill="currentColor" 
-                          className="w-4 h-4 mr-2"
-                        >
-                          <path d="M19 11h-6V5c0-.6-.4-1-1-1s-1 .4-1 1v6H5c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1v-6h6c.6 0 1-.4 1-1s-.4-1-1-1z"/>
-                        </svg>
-                        Generate Full Recipe
-                      </>
-                    )}
-                  </button>
+              <div className="mb-6">
+                <div className="flex justify-between items-center mb-2">
+                  <label className="text-gray-300 text-sm font-medium">
+                    Recipe Title*
+                  </label>
+                  {showGenerateButton && (
+                    <button
+                      type="button"
+                      className={`text-sm px-4 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-md hover:from-purple-700 hover:to-pink-700 transition flex items-center ${
+                        isGenerating ? "opacity-70 cursor-wait" : ""
+                      }`}
+                      //                     onClick={() =>
+                      // handleGenerateRecipe()}
+                      //                     }
+                      onClick={handleGenerateRecipe}
+                      disabled={isGenerating}
+                    >
+                      {isGenerating ? (
+                        <>
+                          <div className="w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin mr-2"></div>
+                          Creating Recipe...
+                        </>
+                      ) : (
+                        <>
+                          <svg
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                            className="w-4 h-4 mr-2"
+                          >
+                            <path d="M19 11h-6V5c0-.6-.4-1-1-1s-1 .4-1 1v6H5c-.6 0-1 .4-1 1s.4 1 1 1h6v6c0 .6.4 1 1 1s1-.4 1-1v-6h6c.6 0 1-.4 1-1s-.4-1-1-1z" />
+                          </svg>
+                          Generate Full Recipe
+                        </>
+                      )}
+                    </button>
+                  )}
+                </div>
+                <input
+                  {...register("title", {
+                    required: "Recipe title is required"
+                  })}
+                  className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                  placeholder="Enter recipe title (e.g., Creamy Garlic Parmesan Pasta)"
+                />
+                {errors.title && (
+                  <p className="text-pink-500 text-sm mt-1">
+                    {errors.title.message}
+                  </p>
                 )}
+                {watchedTitle &&
+                  watchedTitle.length > 0 &&
+                  watchedTitle.length < 4 && (
+                    <p className="text-blue-400 text-sm mt-1">
+                      Continue typing to enable AI recipe generation
+                    </p>
+                  )}
               </div>
-              <input
-                {...register("title", { required: "Recipe title is required" })}
-                className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50"
-                placeholder="Enter recipe title (e.g., Creamy Garlic Parmesan Pasta)"
-              />
-              {errors.title && (
-                <p className="text-pink-500 text-sm mt-1">{errors.title.message}</p>
-              )}
-              {watchedTitle && watchedTitle.length > 0 && watchedTitle.length < 4 && (
-                <p className="text-blue-400 text-sm mt-1">
-                  Continue typing to enable AI recipe generation
-                </p>
-              )}
-            </div>
 
               <div className="space-y-2 md:col-span-2">
                 <label className="text-gray-300 text-sm flex items-center">
@@ -658,71 +526,141 @@ const handleCreateRecipe = async (recipeData: any) => {
               <div className="space-y-2">
                 <label className="text-gray-300 text-sm">Category</label>
                 <select
-  {...register("category", {
-    required: "Category is required"
-  })}
-  className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 text-white"
->
-  {categoryOptions.map((option) => (
-    <option key={option} value={option}>
-      {option}
-    </option>
-  ))}
-</select>
+                  {...register("category", {
+                    required: "Category is required"
+                  })}
+                  className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 text-white"
+                >
+                  {categoryOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div className="space-y-2 md:col-span-2">
                 <label className="text-gray-300 text-sm block mb-2">
                   Featured Image
                 </label>
-                <div className="flex items-start space-x-6">
-                  <div className="flex-1">
-                    <label className="flex flex-col items-center px-4 py-6 bg-gray-900/50 text-gray-300 rounded-lg border border-gray-700 cursor-pointer hover:bg-gray-900/70 transition-all">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-10 w-10"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={1.5}
-                          d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                <div className="flex flex-col space-y-4">
+                  <div className="flex items-start space-x-6">
+                    <div className="flex-1">
+                      <label className="flex flex-col items-center px-4 py-6 bg-gray-900/50 text-gray-300 rounded-lg border border-gray-700 cursor-pointer hover:bg-gray-900/70 transition-all">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-10 w-10"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={1.5}
+                            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                          />
+                        </svg>
+                        <span className="mt-2 text-sm">
+                          Click to select an image
+                        </span>
+                        <input
+                          type="file"
+                          className="hidden"
+                          accept="image/*"
+                          onChange={handleImageChange}
+                          disabled={isUploading || isGeneratingImage}
                         />
-                      </svg>
-                      <span className="mt-2 text-sm">
-                        Click to select an image
-                      </span>
-                      <input
-                        type="file"
-                        className="hidden"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        disabled={isUploading}
-                      />
-                    </label>
+                      </label>
+                    </div>
+
+                    {/* Preview Image */}
+                    {previewImage && previewImage.startsWith("http") && (
+                      <div className="w-32 h-32 relative rounded-lg overflow-hidden border border-gray-700 group">
+                        {(isUploading || isGeneratingImage) && (
+                          <div className="absolute inset-0 flex items-center justify-center bg-gray-900/70 z-10">
+                            <div className="loader">
+                              <div className="h-8 w-8 rounded-full border-3 border-t-purple-500 border-r-transparent border-b-pink-500 border-l-transparent animate-spin"></div>
+                            </div>
+                          </div>
+                        )}
+                        <Image
+                          src={previewImage}
+                          alt="Preview"
+                          className="object-cover w-full h-full"
+                          width={128}
+                          height={128}
+                        />
+
+                        {/* Image hover controls */}
+                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setPreviewImage("");
+                              setValue("featuredImage", "");
+                            }}
+                            className="p-1 bg-red-600/80 text-white rounded-full hover:bg-red-700 transition-colors"
+                            title="Remove image"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              className="h-4 w-4"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
-                  {previewImage && (
-                    <div className="w-32 h-32 relative rounded-lg overflow-hidden border border-gray-700">
-                      {isUploading && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-gray-900/70 z-10">
-                          <div className="loader">
-                            <div className="h-8 w-8 rounded-full border-3 border-t-purple-500 border-r-transparent border-b-pink-500 border-l-transparent animate-spin"></div>
-                          </div>
-                        </div>
-                      )}
-                      <Image
-                        src={previewImage}
-                        alt="Preview"
-                        className="object-cover w-full h-full"
-                        width={32}
-                        height={32}
-                      />
-                    </div>
-                  )}
+                  {/* AI Generation button */}
+                  {/* <div className="flex justify-between items-center">
+      <button
+        type="button"
+        onClick={() => {
+          const title = getValues("title");
+          generateRecipeImage(
+            title, 
+            setValue, 
+            setIsGeneratingImage, 
+            setPreviewImage
+          );
+        }}
+        disabled={isGeneratingImage || isUploading}
+        className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-md hover:from-purple-700 hover:to-pink-700 transition flex items-center disabled:opacity-50"
+      >
+        {isGeneratingImage ? (
+          <>
+            <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            Generating...
+          </>
+        ) : (
+          <>
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            Generate Image with AI
+          </>
+        )}
+      </button>
+      
+      <p className="text-xs text-gray-500">
+        {previewImage ? "Image uploaded. You can regenerate or remove it." : "Generate an image or upload your own."}
+      </p>
+    </div> */}
                 </div>
               </div>
             </div>
@@ -849,6 +787,13 @@ const handleCreateRecipe = async (recipeData: any) => {
                 Add Ingredient
               </button>
             </div>
+
+            <CalculateNutritionButton
+              ingredients={ingredients}
+              isCalculatingNutrition={isCalculatingNutrition}
+              setNutrition={setNutrition}
+              setIsCalculatingNutrition={setIsCalculatingNutrition}
+            />
           </div>
         </motion.div>
 
@@ -965,16 +910,14 @@ const handleCreateRecipe = async (recipeData: any) => {
               <span className="w-8 h-8 rounded-full bg-gradient-to-r from-amber-500 to-yellow-500 flex items-center justify-center mr-3 text-white text-sm">
                 4
               </span>
-              Chef's Tips 
+              Chef's Tips
             </h2>
 
             {tips.map((tip, index) => (
               <div key={index} className="mb-6 last:mb-0">
                 <div className="flex items-center space-x-4 mb-2">
                   <div className="h-px bg-gray-700 flex-grow"></div>
-                  <span className="text-gray-400 text-sm">
-                    Tip {index + 1}
-                  </span>
+                  <span className="text-gray-400 text-sm">Tip {index + 1}</span>
                   <div className="h-px bg-gray-700 flex-grow"></div>
                 </div>
 
@@ -1055,7 +998,51 @@ const handleCreateRecipe = async (recipeData: any) => {
             </div>
           </div>
         </motion.div>
-
+        {nutrition && (
+          <NutritionSection
+            nutrition={nutrition}
+            ingredients={ingredients}
+            isCalculatingNutrition={isCalculatingNutrition}
+            setNutrition={setNutrition}
+            setIsCalculatingNutrition={setIsCalculatingNutrition}
+          />
+        )}
+        {user?.role === "user" && (
+          <>
+            <div className="flex items-center  gap-2 pt-3 border-t border-gray-700">
+              <label className="text-gray-300">
+                Do you wish to make this recipe private?
+              </label>
+              <div className="flex space-x-2">
+                <button
+                  type="button"
+                  onClick={() => setIsPrivate(true)}
+                  className={`px-4 py-1.5 rounded-md cursor-pointer text-sm font-medium transition ${
+                    isPrivate
+                      ? "bg-purple-600 text-white"
+                      : "bg-gray-800 text-gray-400 hover:bg-gray-700"
+                  }`}
+                >
+                  Yes
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsPrivate(false)}
+                  className={`px-4 py-1.5 rounded-md cursor-pointer text-sm font-medium transition ${
+                    !isPrivate
+                      ? "bg-purple-600 text-white"
+                      : "bg-gray-800 text-gray-400 hover:bg-gray-700"
+                  }`}
+                >
+                  No
+                </button>
+              </div>
+            </div>
+            <div className="text-xs text-gray-500 mt-1 text-right">
+              {isPrivate ? "Only visible to you" : "Visible to everyone"}
+            </div>
+          </>
+        )}
         {/* Submit Button */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

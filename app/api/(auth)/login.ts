@@ -10,11 +10,11 @@ console.log(API_URL, 'API URLL', process.env.NEXT_PUBLIC_API_URL, 'NEXT PUBLIC A
 const api = axios.create({
   baseURL: API_URL,
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
+    'withCredentials': 'true'
   }
 });
 
-// Add request interceptor to include token from Zustand store
 api.interceptors.request.use(
   (config) => {
     const token = useAuthStore.getState().token;

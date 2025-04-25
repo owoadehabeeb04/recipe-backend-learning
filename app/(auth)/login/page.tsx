@@ -59,6 +59,7 @@ export default function Login() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-900 to-gray-800 text-white p-4">
       {/* Background elements */}
+      
       <div className="absolute inset-0 overflow-hidden -z-10">
         <div className="absolute top-0 left-0 w-80 h-80 bg-blue-500 rounded-full filter blur-3xl opacity-10 -ml-20 -mt-20"></div>
         <div className="absolute bottom-0 right-0 w-80 h-80 bg-purple-500 rounded-full filter blur-3xl opacity-10 -mr-20 -mb-20"></div>

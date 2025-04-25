@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/app/store/authStore";
 import { Recipe } from "@/types/recipe";
 import { RecipeFilter } from "@/components/recipesComponent/recipeFilter";
-import { RecipeCard } from "@/components/recipesComponent/recipeCard";
+import { RecipeCardEditDelete } from "@/components/recipesComponent/recipeCard";
 import { getAdminRecipes, deleteRecipe, toggleRecipePublishStatus } from "@/app/api/(recipe)/adminRecipe";
 import { toast } from "react-hot-toast";
 
@@ -90,7 +90,7 @@ const MyRecipesPage = () => {
   //   }
   // };
 
-  const handleTogglePublish = async (id: string, currentStatus: boolean) => {
+  const handleTogglePublish = async (id: string, currentStatus: boolean | undefined) => {
     if (!token) {
       toast.error("Authentication required");
       return;
@@ -238,7 +238,7 @@ const MyRecipesPage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: 0.1 * index }}
               >
-                <RecipeCard
+                <RecipeCardEditDelete
                   recipe={recipe}
                   onEdit={() => handleEditRecipe(recipe._id)}
                   // onDelete={() => (recipe._id)}
