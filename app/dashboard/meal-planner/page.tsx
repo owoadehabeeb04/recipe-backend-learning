@@ -32,7 +32,7 @@ interface WeekPlanStore {
     [day: string]: {
       [mealType: string]: {
         mealType: string;
-        recipe: Recipe;
+        recipe: any;
       };
     };
   };
@@ -687,7 +687,7 @@ const MealPlannerPage = () => {
       }
       
       // Create the plan data for the backend
-      const backendPlan = {};
+      const backendPlan: { [key: string]: any } = {};
       
       // Map frontend days to backend days
       const dayMap = {
@@ -702,7 +702,7 @@ const MealPlannerPage = () => {
       
       // Build the plan structure directly
       Object.entries(currentWeekPlan).forEach(([frontendDay, meals]) => {
-        const backendDay = dayMap[frontendDay];
+        const backendDay = dayMap[frontendDay as keyof typeof dayMap];
         
         if (backendDay && Object.keys(meals).length > 0) {
           backendPlan[backendDay] = {};
@@ -808,7 +808,7 @@ const MealPlannerPage = () => {
     
     try {
       // Create the plan data for the backend in the expected format
-      const backendPlan = {};
+      const backendPlan: { [key: string]: { [key: string]: { mealType: string; recipe: string } } } = {};
       
       // Map frontend days to backend days
       const dayMap = {
@@ -823,7 +823,7 @@ const MealPlannerPage = () => {
       
       // Build the plan structure directly
       Object.entries(currentWeekPlan).forEach(([frontendDay, meals]) => {
-        const backendDay = dayMap[frontendDay];
+        const backendDay = dayMap[frontendDay as keyof typeof dayMap];
         
         if (backendDay && Object.keys(meals).length > 0) {
           backendPlan[backendDay] = {};

@@ -17,6 +17,8 @@ export interface Recipe {
     role: string;
     profileImage?: string;
   };
+  user?: string;
+  roleCreated: string;
   isFavorited?: boolean; // Track if recipe is favorited
   recipe: {
     _id: string;

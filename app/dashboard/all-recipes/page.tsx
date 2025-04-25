@@ -13,29 +13,30 @@ import { getAllRecipes } from "@/app/api/(recipe)/userRecipes";
 import { useAuthStore } from "@/app/store/authStore";
 import { RecipeCardEditDelete } from "@/components/recipesComponent/recipeCard";
 import { useRouter } from "next/navigation";
+import { Recipe } from "@/types/recipe";
 
 // Recipe type definition
-export interface Recipe {
-  _id: string;
-  title: string;
-  category: string;
-  cookingTime: number;
-  difficulty: string;
-  featuredImage: string;
-  averageRating: number;
-  adminName: string;
-  createdAt: string;
-  isPublished?: boolean;
-  adminDetails: {
-    name: string;
-    email: string;
-  };
-  roleCreated: string;
-  user: {
-    name: string;
-    email: string;
-  }
-}
+// export interface Recipe {
+//   _id: string;
+//   title: string;
+//   category: string;
+//   cookingTime: number;
+//   difficulty: string;
+//   featuredImage: string;
+//   averageRating: number;
+//   adminName: string;
+//   createdAt: string;
+//   isPublished?: boolean;
+//   adminDetails: {
+//     name: string;
+//     email: string;
+//   };
+//   roleCreated: string;
+//   user: {
+//     name: string;
+//     email: string;
+//   }
+// }
 
 // Empty state component for better UX
 const EmptyState = () => {

@@ -84,7 +84,7 @@ export const createMealPlan = async (mealPlanData: MealPlanData, token: string):
  * Get all meal plans for the authenticated user
  */
 export const getUserMealPlans = async (
-  token: string,
+  token: string | null | undefined,
   options: { page?: number; limit?: number; active?: boolean } = {}
 ): Promise<MealPlanResponse> => {
   try {
