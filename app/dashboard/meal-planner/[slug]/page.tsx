@@ -10,9 +10,8 @@ import Link from "next/link";
 export default function MealPlanPage({
   params
 }: {
-  params: Promise<{ slug: string }> | { slug: string };
+  params:any
 }) {
-  // Unwrap params using React.use() to follow Next.js recommendations
   const unwrappedParams = params instanceof Promise ? use(params) : params;
   const { slug } = unwrappedParams;
   const { token } = useAuthStore();
