@@ -178,7 +178,7 @@ const LandingPage = () => {
             className="flex items-center"
           >
             <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
-              RecipeApp
+              Recipia
             </h1>
           </motion.div>
           <motion.div
@@ -380,7 +380,7 @@ const LandingPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                quote: "RecipeApp transformed how I cook. The AI suggestions are brilliant and always match my preferences!",
+                quote: "Recipia transformed how I cook. The AI suggestions are brilliant and always match my preferences!",
                 author: "Sarah Johnson",
                 role: "Home Chef"
               },
@@ -482,7 +482,7 @@ const LandingPage = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
             <div>
               <h3 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400 mb-4">
-                RecipeApp
+                Recipia
               </h3>
               <p className="text-gray-400">
                 Revolutionizing the way you discover, create, and share culinary experiences.
@@ -619,7 +619,7 @@ const LandingPage = () => {
           </div>
           <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-500">
-              &copy; {new Date().getFullYear()} RecipeApp. All rights reserved.
+              &copy; {new Date().getFullYear()} Recipia. All rights reserved.
             </p>
             <div className="mt-4 md:mt-0 flex space-x-6">
               <Link

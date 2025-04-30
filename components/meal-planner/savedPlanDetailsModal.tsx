@@ -29,6 +29,7 @@ export const SavedPlanDetailsModal: React.FC<SavedPlanDetailsModalProps> = ({
   onDuplicate,
   onLoad // Added to component props
 }) => {
+  console.log({plan})
   return (
     <motion.div 
       initial={{ opacity: 0 }}

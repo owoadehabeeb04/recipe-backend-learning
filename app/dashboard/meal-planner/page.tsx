@@ -840,7 +840,6 @@ const MealPlannerPage = () => {
             }
           });
           
-          // Remove days with no meals
           if (Object.keys(backendPlan[backendDay]).length === 0) {
             delete backendPlan[backendDay];
           }
@@ -852,9 +851,7 @@ const MealPlannerPage = () => {
         plan: backendPlan,
         notes: notes || ''
       };
-      
-      //("Updating plan with data:", updateData);
-      
+            
       const response = await updateMealPlan(planId, updateData, token);
       
       if (response.success && response.data) {
@@ -864,7 +861,7 @@ const MealPlannerPage = () => {
             return {
               ...plan,
               name: response.data.name,
-              plan: response.data.plan, // Store the raw plan data
+              plan: response.data.plan, 
               notes: response.data.notes
             };
           }
@@ -872,12 +869,12 @@ const MealPlannerPage = () => {
         }));
         
         toast.success(`Plan "${name}" has been updated!`, {
-          icon: "✏️",
-          style: {
-            borderRadius: "10px",
-            background: "#333",
-            color: "#fff"
-          }
+          // icon: "✏️",
+          // style: {
+          //   borderRadius: "10px",
+          //   // background: "#",
+          //   color: "#fff"
+          // }
         });
       } else {
         toast.error(response.message || "Failed to update meal plan");
@@ -981,7 +978,6 @@ const MealPlannerPage = () => {
   };
 
   const handleViewPlanDetails = (plan: SavedPlan) => {
-    // Format the date as YYYY-MM-DD for the URL
     let weekId;
     if (plan.week) {
       weekId = format(new Date(plan.week), "yyyy-MM-dd");
@@ -1226,13 +1222,13 @@ const confirmDuplication = (targetWeek: Date) => {
         >
           Meal Planner
         </TabButton>
-        <TabButton 
+        {/* <TabButton 
           active={activeTab === "grocery"} 
           onClick={() => setActiveTab("grocery")}
           icon={<ShoppingBag size={18} />}
         >
           Grocery List
-        </TabButton>
+        </TabButton> */}
         <TabButton 
           active={activeTab === "saved"} 
           onClick={() => setActiveTab("saved")}
@@ -1258,10 +1254,10 @@ const confirmDuplication = (targetWeek: Date) => {
             />
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <GroceryList weekPlan={currentWeekPlan} />
             <NutritionSummary />
-          </div>
+          </div> */}
         </div>
       )}
       
@@ -1273,8 +1269,8 @@ const confirmDuplication = (targetWeek: Date) => {
       )}
       
       {activeTab === "saved" && (
-        <div className="bg-white rounded-xl p-6 shadow-md">
-          <h2 className="text-2xl font-bold mb-4">Your Saved Plans</h2>
+        <div className="bg-white p-6 rounded-xl  shadow-md">
+          <h2 className="text-2xl text-gray-700  font-bold mb-4">Your Saved Plans</h2>
           
           {savedPlans.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">

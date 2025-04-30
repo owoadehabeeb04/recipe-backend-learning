@@ -120,7 +120,7 @@ export const getUserMealPlans = async (
 /**
  * Get a meal plan by week
  */
-export const getMealPlanByWeek = async (weekDate: Date | string, token: string): Promise<MealPlanResponse> => {
+export const getMealPlanByWeek = async (weekDate: Date | string, token: string | null): Promise<MealPlanResponse> => {
   try {
     // Format the week date if it's a Date object
     let formattedWeek: string;
@@ -133,7 +133,7 @@ export const getMealPlanByWeek = async (weekDate: Date | string, token: string):
       formattedWeek = weekDate;
     }
     
-    const response = await axios.get(`${API_URL}/meal-planner/week/${formattedWeek}`, {
+    const response = await axios.get(`${API_URL}/meal-planner/by-week/${weekDate}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
