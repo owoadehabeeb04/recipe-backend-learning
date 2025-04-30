@@ -58,7 +58,7 @@ export const MealSlotItem: React.FC<MealSlotItemProps> = ({ mealData, onClick, m
               {/* Image on top */}
               <div className="w-full h-32 overflow-hidden bg-gray-800 shadow-md">
                 {mealData.recipe.featuredImage ? (
-                  <img 
+                  <Image 
                     src={mealData.recipe.featuredImage} 
                     alt={mealData.recipe.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-500"

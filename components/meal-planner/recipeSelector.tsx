@@ -7,6 +7,7 @@ import { Recipe } from "@/types/recipe";
 import { RecipeCard } from "../recipesComponent/recipeCardAll";
 import { getFavorites } from "@/app/api/(favorites)/favorites";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export const RecipeSelector: React.FC<any> = ({
   mealType,
@@ -143,7 +144,7 @@ export const RecipeSelector: React.FC<any> = ({
               <div className="flex items-center">
                 <div className="h-12 w-12 rounded-lg overflow-hidden mr-3 flex-shrink-0">
                   {currentRecipe.featuredImage ? (
-                    <img
+                    <Image
                       src={currentRecipe.featuredImage}
                       alt={currentRecipe.title}
                       className="w-full h-full object-cover"

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react"
 import Link from "next/link"
+import Image from "next/image"
 
 export default function Hero() {
   const heroRef = useRef<HTMLDivElement>(null)
@@ -78,7 +79,9 @@ export default function Hero() {
           <div className="flex-1 relative animate-slide-up" style={{ animationDelay: '0.2s' }}>
             <div className="relative z-10 bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200 transition-all hover:shadow-2xl hover:scale-[1.02] duration-500">
               <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-purple-pink"></div>
-              <img
+              <Image
+                width={800}
+                height={600}
                 src="/placeholder.svg?height=600&width=800"
                 alt="Recipia app interface showing recipe creation"
                 className="w-full h-auto"

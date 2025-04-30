@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { useAuthStore } from "@/app/store/authStore";
 import { getMealPlanByWeek } from "@/app/api/(meal-planner)/mealplanner";
 import MealPlannerDetails from "@/components/meal-planner/mealPlannerDetails";
+import Link from "next/link";
 
 export default function MealPlanPage({
   params
@@ -153,11 +154,11 @@ const MealPlannerError = ({ error }: { error: string | null }) => (
       {error ||
         "This meal plan could not be loaded. It may have been deleted or you may not have permission to view it."}
     </p>
-    <a
+    <Link
       href="/dashboard/meal-planner"
       className="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:opacity-90 transition"
     >
       Return to Meal Planner
-    </a>
+    </Link>
   </div>
 );

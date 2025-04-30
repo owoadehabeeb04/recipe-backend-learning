@@ -1,3 +1,5 @@
+import Image from "next/image"
+
 export default function Testimonials() {
     const testimonials = [
       {
@@ -53,7 +55,7 @@ export default function Testimonials() {
                 <p className="text-gray-700 mb-6 flex-1">{testimonial.quote}</p>
   
                 <div className="flex items-center">
-                  <img
+                  <Image
                     src={testimonial.avatar || "/placeholder.svg"}
                     alt={testimonial.author}
                     className="w-12 h-12 rounded-full object-cover mr-4"

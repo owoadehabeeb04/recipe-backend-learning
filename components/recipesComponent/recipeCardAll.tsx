@@ -13,7 +13,7 @@ import {
 import { Recipe } from "@/types/recipe";
 import { usePathname } from "next/navigation";
 
-export const RecipeCard = ({ recipe }: { recipe: Recipe }) => {
+export const RecipeCard = ({ recipe }: { recipe: any }) => {
   // Get user and token from auth store
   const { user, token } = useAuthStore();
 

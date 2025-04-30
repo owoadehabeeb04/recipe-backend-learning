@@ -18,6 +18,7 @@ import {
   ShoppingBag
 } from "lucide-react";
 import ShoppingList from "../shopping-list/shoppingList";
+import Image from "next/image";
 
 interface MealPlanDay {
   [mealType: string]: {
@@ -45,6 +46,8 @@ interface MealPlan {
   plan: {
     [day: string]: MealPlanDay;
   };
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
   notes?: string;
 }
 
@@ -394,7 +397,7 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
                       const meal = mealForDay ? mealForDay[mealType] : null;
                       
                       // Define meal type colors and icons
-                      const mealTypeStyles = {
+                      const mealTypeStyles: any = {
                         breakfast: {
                           icon: (
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5 text-amber-400">
@@ -453,7 +456,9 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
                                   <div className="relative">
                                     {/* Image with overlay gradient */}
                                     <div className="w-full h-24 relative">
-                                      <img
+                                      <Image
+                                      // width={1000}
+                                      // height={24}
                                         src={meal.recipeDetails.featuredImage}
                                         alt={meal.recipeDetails.title}
                                         className="w-full h-full object-cover"

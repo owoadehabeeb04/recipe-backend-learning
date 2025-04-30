@@ -49,7 +49,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 export const createMealPlan = async (mealPlanData: MealPlanData, token: string): Promise<MealPlanResponse> => {
   try {
     // Format date if it's a Date object
-    let formattedData = { ...mealPlanData };
+    const formattedData = { ...mealPlanData };
     if (formattedData.week instanceof Date) {
       // Get start of week (Monday)
       const weekStart = startOfWeek(formattedData.week, { weekStartsOn: 1 });
@@ -188,7 +188,7 @@ export const updateMealPlan = async (
 ): Promise<MealPlanResponse> => {
   try {
     // Format date if it's a Date object
-    let formattedData = { ...updateData };
+    const formattedData = { ...updateData };
     if (formattedData.week instanceof Date) {
       // Get start of week (Monday)
       const weekStart = startOfWeek(formattedData.week, { weekStartsOn: 1 });

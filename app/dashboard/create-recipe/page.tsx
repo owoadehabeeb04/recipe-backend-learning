@@ -126,12 +126,11 @@ const CreateRecipePage = () => {
         setTips([{ description: "" }]);
         setPreviewImage(null);
 
-        // Redirect to admin recipes list after a short delay
         setTimeout(() => {
-          {
-            user?.role === "admin"
-              ? router.push("/dashboard/my-recipes")
-              : router.push("/dashboard/favorite-recipes");
+          if (user?.role === "admin") {
+            router.push("/dashboard/my-recipes");
+          } else {
+            router.push("/dashboard/favorite-recipes");
           }
         }, 1500);
       } else {

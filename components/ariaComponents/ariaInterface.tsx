@@ -6,7 +6,6 @@ import ChatMessage from './chatMessage';
 import SuggestionChip from './suggestionChip';
 import { useAuthStore } from '@/app/store/authStore';
 import { createChat, getChatMessages, sendMessage } from '@/app/api/(chatbot)/chat';
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
 
 interface Message {
@@ -326,7 +325,9 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({ selectedChatId, setSelect
       {messages.length === 0 && !isLoading && (
         <div className="px-4 py-3 border-t border-purple-800/30 flex overflow-x-auto no-scrollbar">
           {suggestions.map((suggestion, index) => (
-            <SuggestionChip key={index} text={suggestion} onClick={() => useSuggestion(suggestion)} />
+            <SuggestionChip key={index} text={suggestion}
+                // eslint-disable-next-line react-hooks/rules-of-hooks
+                 onClick={() => useSuggestion(suggestion)} />
           ))}
         </div>
       )}
@@ -403,7 +404,8 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({ selectedChatId, setSelect
               className="p-2 text-purple-400 hover:text-white" 
               disabled={isLoading}
             >
-              <Image className="w-5 h-5" />
+                {/* eslint-disable-next-line jsx-a11y/alt-text */}
+              <Image className="w-5 h-5"/>
             </button>
           </div>
           <button
