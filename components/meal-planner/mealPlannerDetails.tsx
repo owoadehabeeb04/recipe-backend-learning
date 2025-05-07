@@ -457,8 +457,8 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
                                     {/* Image with overlay gradient */}
                                     <div className="w-full h-24 relative">
                                       <Image
-                                      // width={1000}
-                                      // height={24}
+                                      width={1000}
+                                      height={24}
                                         src={meal.recipeDetails.featuredImage}
                                         alt={meal.recipeDetails.title}
                                         className="w-full h-full object-cover"

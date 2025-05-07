@@ -61,6 +61,8 @@ export const MealSlotItem: React.FC<MealSlotItemProps> = ({ mealData, onClick, m
                   <Image 
                     src={mealData.recipe.featuredImage} 
                     alt={mealData.recipe.title}
+                    width={64}
+                    height={32}
                     className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
                   />
                 ) : (

@@ -20,6 +20,7 @@ import NutritionSection from "@/components/create-recipe-component/nutitionalSec
 import CalculateNutritionButton from "@/components/create-recipe-component/calculateNutritionButton";
 const CreateRecipePage = () => {
   const { user, token } = useAuthStore();
+  console.log(user?._id, 'id of the user');
   console.log(user, token);
   const router = useRouter();
   const [ingredients, setIngredients] = useState([
@@ -79,26 +80,6 @@ const CreateRecipePage = () => {
   // GENEARTE COMPLECTED RECIPE
   // Add this function to handle problematic AI-generated JSON
 
-  // const fixBrokenJson = (brokenJson: any) => {
-  //   try {
-  //     let fixed = brokenJson;
-
-  //     if (!fixed.startsWith('{')) fixed = '{' + fixed;
-  //     if (!fixed.endsWith('}')) fixed = fixed + '}';
-
-  //     fixed = fixed.replace(/,\s*,/g, ',');
-
-  //     // Remove trailing commas before closing brackets
-  //     fixed = fixed.replace(/,\s*}/g, '}');
-  //     fixed = fixed.replace(/,\s*]/g, ']');
-
-  //     return fixed;
-  //   } catch (e) {
-  //     console.error("JSON repair failed:", e);
-  //     return brokenJson; // Return original if repair fails
-  //   }
-  // };
-
   // Replace the useMutation hook with a regular async function
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -130,7 +111,7 @@ const CreateRecipePage = () => {
           if (user?.role === "admin") {
             router.push("/dashboard/my-recipes");
           } else {
-            router.push("/dashboard/favorite-recipes");
+            router.push("/dashboard/favorites");
           }
         }, 1500);
       } else {

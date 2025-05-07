@@ -56,6 +56,55 @@ export interface Ingredient {
   unit: string;
   name: string;
 }
+export interface SavedPlan {
+  id: string;
+  name: string;
+  date: Date;
+  plan: any;
+  notes?: string;
+}
+
+export interface PlanStats {
+  title: string;
+  description: string;
+  notes: string;
+  startDate: string;
+  endDate: string;
+  numberOfDays: number;
+  totalMeals: number;
+  mealsByType: {
+    breakfast: number;
+    lunch: number;
+    dinner: number;
+    [key: string]: number;
+  };
+  uniqueRecipes: number;
+  nutritionSummary: {
+    totalCalories: number;
+    totalProtein: number;
+    totalCarbs: number;
+    totalFat: number;
+    averageDaily: {
+      calories: number;
+      protein: number;
+      carbs: number;
+      fat: number;
+    };
+  };
+  createdAt: string;
+  lastUpdated: string;
+}
+
+export interface SavedPlanDetailsModalProps {
+  id: string;
+  plan: SavedPlan;
+  countMeals: (plan: any) => number;
+  onClose: () => void;
+  onViewDetails: () => void;
+  onDelete: () => void;
+  onDuplicate: () => void;
+  onLoad: (plan: SavedPlan) => void;
+}
 // export const sampleRecipes: Recipe[] = [
 //   {
 //     id: "1",

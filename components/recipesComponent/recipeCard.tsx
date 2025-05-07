@@ -78,10 +78,16 @@ export const RecipeCardEditDelete = ({
             }
           } else {
             toast.error(result.message || "Failed to delete recipe");
+            setShowDeleteModal(false);
+            if (refreshData) {
+              refreshData();
+            }
           }
         }
       } else if (user?.role === "user") {
         const result = await deleteUserRecipe(recipe._id, token);
+        toast.success("Recipe deleted successfully");
+
       }
     } catch (error) {
       toast.error("An error occurred while deleting the recipe");
@@ -298,6 +304,24 @@ export const RecipeCardEditDelete = ({
                   )}
                 </button>
               )}
+                <p className="text-gray-400 text-xs flex items-center">
+                    <svg
+                      className="w-3.5 h-3.5 mr-1 text-gray-500"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      ></path>
+                    </svg>
+                    By {recipe?.adminDetails?.name || recipe?.userDetails?.name || "Chef"}
+                  </p>
+
             </div>
             {user &&
               (user.role === "admin" ||

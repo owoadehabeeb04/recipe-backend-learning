@@ -28,7 +28,6 @@ export default function MealPlanPage({
       setIsLoading(true);
       const response: any = await getMealPlanByWeek(slug, token);
       
-      console.log("API response:", response); // For debugging
       
       // First check if we have a response
       if (!response) {
@@ -50,7 +49,9 @@ export default function MealPlanPage({
         setError("Response missing expected data structure");
         return;
       }
-      
+      console.log({ mealPlan: response.data });
+    
+      console.log('RESPONSE', response)
       // Finally, set the meal plan data
       setMealPlan(response.data);
       setError(null);
@@ -74,7 +75,6 @@ export default function MealPlanPage({
     return <MealPlannerDetailsSkeleton />;
   }
 
-  // Better error handling with more specific checks
   if (error) {
     console.log({ error });
     console.error("API request failed:", error);

@@ -273,30 +273,7 @@ export const duplicateMealPlan = async (id: string, token: string, targetWeek: D
   }
 };
 
-/**
- * Get current active meal plan
- */
-// export const getCurrentMealPlan = async (token: string): Promise<MealPlanResponse> => {
-//   try {
-//     const response = await axios.get('${API_URL}/meal-planner/current', {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     });
-    
-//     return response.data;
-//   } catch (error) {
-//     if (axios.isAxiosError(error) && error.response) {
-//       return error.response.data as MealPlanResponse;
-//     }
-    
-//     return {
-//       success: false,
-//       message: 'Failed to retrieve current meal plan',
-//       error: error instanceof Error ? error.message : 'Unknown error',
-//     };
-//   }
-// };
+
 
 
 
@@ -371,10 +348,10 @@ export const generateShoppingList = async (mealPlanId: string, token: string): P
       });
       
       if (format === 'text') {
-        return response.data; // Return the raw text
+        return response.data; 
       }
       
-      return response.data; // Return the JSON response
+      return response.data; 
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         if (format === 'text') {
@@ -394,69 +371,34 @@ export const generateShoppingList = async (mealPlanId: string, token: string): P
       };
     }
   };
-  
-
-/**
- * Generate shopping list from meal plan
-//  */
-// export const generateShoppingList = async (mealPlanId: string, token: string): Promise<MealPlanResponse> => {
-//   try {
-//     const response = await axios.get(`/api${API_URL}/meal-planner/${mealPlanId}/shopping-list`, {
-//       headers: {
-//         Authorization: `Bearer ${token}`,
-//       },
-//     });
+  export const mealPlanStats = async (mealPlanId: string, token: string | null | undefined) => {
+    if (!token) {
+      return {
+        success: false,
+        message: "Authentication token is required"
+      };
+    }
     
-//     return response.data;
-//   } catch (error) {
-//     if (axios.isAxiosError(error) && error.response) {
-//       return error.response.data as MealPlanResponse;
-//     }
-    
-//     return {
-//       success: false,
-//       message: 'Failed to generate shopping list',
-//       error: error instanceof Error ? error.message : 'Unknown error',
-//     };
-//   }
-// };
-
-// /**
-//  * Format raw plan data to UI-friendly structure
-//  */
-// export const formatMealPlan = (rawPlan: any) => {
-//   if (!rawPlan || !rawPlan.plan) return {};
+    try {
+      const response = await axios.get(`${API_URL}/meal-planner/${mealPlanId}/stats`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      });
   
-//   const formattedPlan: any = {};
-  
-//   // Convert backend day names (e.g. 'monday') to frontend format (e.g. 'Mon')
-//   const dayMappings: { [key: string]: string } = {
-//     'monday': 'Mon',
-//     'tuesday': 'Tue',
-//     'wednesday': 'Wed',
-//     'thursday': 'Thu',
-//     'friday': 'Fri',
-//     'saturday': 'Sat',
-//     'sunday': 'Sun',
-//   };
-  
-//   Object.entries(rawPlan.plan).forEach(([backendDay, meals]) => {
-//     const frontendDay = dayMappings[backendDay.toLowerCase()];
-//     if (frontendDay && meals) {
-//       formattedPlan[frontendDay] = {};
+      return {
+        success: true,
+        data: response.data,
+        message: "Meal plan stats retrieved successfully"
+      };
+    } catch (error: any) {
+      console.error("Error fetching meal plan stats:", error);
       
-//       // For each meal in the day
-//       Object.entries(meals as object).forEach(([mealType, mealData]) => {
-//         // Get the full recipe details from the enriched data
-//         const recipeDetails = (mealData as any).recipeDetails || (mealData as any).recipe;
-        
-//         formattedPlan[frontendDay][mealType] = {
-//           mealType,
-//           recipe: recipeDetails
-//         };
-//       });
-//     }
-//   });
-  
-//   return formattedPlan;
-// };
+      return {
+        success: false,
+        message: error.response?.data?.message || error.message || "Failed to retrieve meal plan stats",
+        status: error.response?.status
+      };
+    }
+  };

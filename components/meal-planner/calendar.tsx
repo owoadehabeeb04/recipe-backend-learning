@@ -2,9 +2,6 @@
 import { format, startOfWeek, addDays, addWeeks, subWeeks, isSameDay } from "date-fns";
 import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { DayColumn } from "./dayColumn";
-// the calendar header 
-
-
 
 interface CalendarHeaderProps {
   currentDate: Date;

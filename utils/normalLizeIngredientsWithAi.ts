@@ -95,7 +95,7 @@ Important: Return ONLY the JSON object itself, with NO code block formatting, NO
       if (objectMatch && objectMatch[1]) {
         try {
           const mapping = JSON.parse(objectMatch[1]);
-          console.log("Normalized ingredients mapping (aggressive cleanup):", mapping);
+          // console.log("Normalized ingredients mapping (aggressive cleanup):", mapping);
           toast.success("Ingredients normalized successfully!", {
             id: loadingToastId,
             duration: 3000

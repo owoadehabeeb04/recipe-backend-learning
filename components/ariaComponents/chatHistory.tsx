@@ -36,6 +36,7 @@ interface CategorizedChats {
   yesterday: ApiChat[];
   thisWeek: ApiChat[];
   thisMonth: ApiChat[];
+  lastMonth: ApiChat[];
   earlier: ApiChat[];
 }
 
@@ -47,6 +48,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ selectedChatId, onSelectChat 
     yesterday: [],
     thisWeek: [],
     thisMonth: [],
+    lastMonth: [],
     earlier: []
   });
 
@@ -56,6 +58,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ selectedChatId, onSelectChat 
     yesterday: true,
     thisWeek: true,
     thisMonth: true,
+    lastMonth: true,
     earlier: true
   });
 
@@ -77,33 +80,56 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ selectedChatId, onSelectChat 
       const result: CategorizedChats = {
         today: [],
         yesterday: [],
-        thisWeek: [],
-        thisMonth: [],
+        thisWeek: [],     // Will be "Previous 7 Days" in UI
+        thisMonth: [],    // Will be "Previous 30 Days" in UI
+        lastMonth: [],    // This won't be used anymore
         earlier: []
       };
-
+  
+      const now = new Date();
+      const yesterday = new Date(now);
+      yesterday.setDate(now.getDate() - 1);
+      
+      const sevenDaysAgo = new Date(now);
+      sevenDaysAgo.setDate(now.getDate() - 7);
+      
+      const thirtyDaysAgo = new Date(now);
+      thirtyDaysAgo.setDate(now.getDate() - 30);
+  
       chats.forEach(chat => {
         const date = new Date(chat.updatedAt);
-
+        
         if (isToday(date)) {
           result.today.push(chat);
         } else if (isYesterday(date)) {
           result.yesterday.push(chat);
-        } else if (isThisWeek(date)) {
+        } else if (date >= sevenDaysAgo) {
+          // Previous 7 days (excluding today and yesterday)
           result.thisWeek.push(chat);
-        } else if (isThisMonth(date)) {
+        } else if (date >= thirtyDaysAgo) {
+          // Previous 30 days (excluding the first 7 days)
           result.thisMonth.push(chat);
         } else {
+          // Older than 30 days
           result.earlier.push(chat);
         }
       });
-
+  
       setCategorizedChats(result);
     };
-
+  
     categorize(chats);
   }, [chats]);
-
+function isLastMonth(date: Date, now: Date): boolean {
+  const thisMonth = now.getMonth();
+  const thisYear = now.getFullYear();
+  
+  // Get last month (handling January case where last month is December of previous year)
+  const lastMonth = thisMonth === 0 ? 11 : thisMonth - 1;
+  const lastMonthYear = thisMonth === 0 ? thisYear - 1 : thisYear;
+  
+  return date.getMonth() === lastMonth && date.getFullYear() === lastMonthYear;
+}
   const fetchChats = async () => {
     if (!token) return;
 
@@ -481,12 +507,11 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({ selectedChatId, onSelectChat 
         ) : (
           // Categorized list when not searching
           <>
-            {renderCategorySection("Today", categorizedChats.today, "today")}
-            {renderCategorySection("Yesterday", categorizedChats.yesterday, "yesterday")}
-            {renderCategorySection("This Week", categorizedChats.thisWeek, "thisWeek")}
-            {renderCategorySection("This Month", categorizedChats.thisMonth, "thisMonth")}
-            {renderCategorySection("Earlier", categorizedChats.earlier, "earlier")}
-
+  {renderCategorySection("Today", categorizedChats.today, "today")}
+{renderCategorySection("Yesterday", categorizedChats.yesterday, "yesterday")}
+{renderCategorySection("Previous 7 Days", categorizedChats.thisWeek, "thisWeek")}
+{renderCategorySection("Previous 30 Days", categorizedChats.thisMonth, "thisMonth")}
+{renderCategorySection("Earlier", categorizedChats.earlier, "earlier")}
             {/* Show empty state if no chats at all */}
             {chats.length === 0 && (
               <div className="h-full flex flex-col items-center justify-center text-center p-4">

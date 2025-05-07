@@ -489,12 +489,12 @@ const RecipeDetailPage = () => {
             <div className="flex items-center text-sm text-gray-400">
               <div className="flex items-center">
                 <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-bold">
-                  {recipe?.adminDetails
-                    ? recipe?.adminDetails?.name.charAt(0).toUpperCase()
-                    : "C"}
+                 
+                                      {recipe?.adminDetails?.name.charAt(0).toUpperCase() || recipe?.userDetails?.name.charAt(0).toUpperCase()|| ""} 
+
                 </div>
                 <span className="ml-2">
-                  By {recipe?.adminDetails?.name || "Chef"}
+                By {recipe?.adminDetails?.name || recipe?.userDetails?.name|| "Chef"} 
                 </span>
               </div>
               <span className="mx-3">•</span>
