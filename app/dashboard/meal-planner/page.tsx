@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { format, startOfWeek, addDays, addWeeks, subWeeks } from "date-fns";
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
@@ -235,7 +235,6 @@ const MealPlannerPage = () => {
     });
   };
 
-
   useEffect(() => {
     if (!token) return;
 
@@ -268,6 +267,45 @@ const MealPlannerPage = () => {
     }
 
     fetchSavedPlans();
+  }, [token]);
+
+  useEffect(() => {
+    if (!token) return;
+
+    const fetchRecipes = async () => {
+      setIsLoadingRecipes(true);
+      try {
+        // Fetch user recipes
+        const recipeResponse = await getAllRecipes(token);
+        if (recipeResponse.success && recipeResponse.data) {
+          setRecipes(recipeResponse.data);
+        }
+
+        // Also fetch favorite recipes
+        const favoritesResponse = await getFavorites(token);
+        if (favoritesResponse.success && favoritesResponse.data) {
+          // Mark favorite recipes
+          const favoriteIds = new Set(
+            favoritesResponse.data.map((fav: any) => fav.recipe._id || fav.recipe.id)
+          );
+          
+          // Update existing recipes with favorite status
+          setRecipes(prev => 
+            prev.map(recipe => ({
+              ...recipe,
+              isFavorite: favoriteIds.has(recipe.id) || favoriteIds.has(recipe._id)
+            }))
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching recipes:", error);
+        toast.error("Failed to load recipes");
+      } finally {
+        setIsLoadingRecipes(false);
+      }
+    };
+
+    fetchRecipes();
   }, [token]);
 
   const handleSavePlan = async (name: string, notes?: string) => {
@@ -565,12 +603,14 @@ const MealPlannerPage = () => {
     router.push(`/dashboard/meal-planner/${weekId}`);
   };
 
-  const handleLoadPlan = async (plan: SavedPlan) => {
+  const handleLoadPlan = async (plan: SavedPlan, options?: { preserveTab?: boolean }) => {
     if (!token || !plan.id) {
       toast.error("Unable to load meal plan");
       return;
     }
-
+    if (!options?.preserveTab) {
+      setActiveTab("planner");
+    }
     setIsLoading(true);
     toast.loading("Loading meal plan...", { id: "loadplan" });
 
@@ -715,6 +755,40 @@ const MealPlannerPage = () => {
       setIsLoading(false);
     }
   };
+
+  const loadMostRecentPlan = useCallback(async () => {
+    if (!token || savedPlans.length === 0) return;
+    
+    // Sort plans by date (newest first)
+    const sortedPlans = [...savedPlans].sort((a, b) => 
+      new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+    
+    // Find plan for current week if exists
+    const currentWeekStart = startOfWeek(new Date(), { weekStartsOn: 1 });
+    const currentWeekFormatted = format(currentWeekStart, 'yyyy-MM-dd');
+    
+    const currentWeekPlan = sortedPlans.find(plan => {
+      const planWeekStart = startOfWeek(new Date(plan.date), { weekStartsOn: 1 });
+      return format(planWeekStart, 'yyyy-MM-dd') === currentWeekFormatted;
+    });
+    
+    // Load current week plan if exists, otherwise load most recent
+    const planToLoad = currentWeekPlan || sortedPlans[0];
+    if (planToLoad) {
+      await handleLoadPlan(planToLoad);
+    }
+  }, [token, savedPlans, handleLoadPlan]);
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
+
+  useEffect(() => {
+    if (savedPlans.length > 0 && !isLoading && !initialLoadComplete) {
+      loadMostRecentPlan().then(() => {
+        setInitialLoadComplete(true);
+      });
+    }
+  }, [savedPlans, isLoading, initialLoadComplete, loadMostRecentPlan]);
+
   const weekDates = useMemo(() => {
     const dates = [];
     const startDate = startOfWeek(currentDate, { weekStartsOn: 1 });
@@ -993,8 +1067,8 @@ const MealPlannerPage = () => {
           countMeals={countMeals}
           plan={selectedPlan}
           onClose={() => setShowPlanDetailsModal(false)}
-          onLoad={(plan) => handleLoadPlan(plan)}
-          onViewDetails={() => handleViewPlanDetails(selectedPlan)}
+          onLoad={(plan) => handleLoadPlan(plan, { preserveTab: activeTab === "saved" })}
+                    onViewDetails={() => handleViewPlanDetails(selectedPlan)}
           onDelete={() => {
             handleDeletePlan(selectedPlan.id || selectedPlan._id || "");
             setShowPlanDetailsModal(false);

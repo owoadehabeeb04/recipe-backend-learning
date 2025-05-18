@@ -402,3 +402,173 @@ export const generateShoppingList = async (mealPlanId: string, token: string): P
       };
     }
   };
+
+
+
+  // Get shopping list with check status
+export const getShoppingListStatus = async (mealPlanId: string, token: string | null | undefined) => {
+  if (!token) {
+    return {
+      success: false,
+      message: "Authentication token is required"
+    };
+  }
+  
+  try {
+    const response = await axios.get(`${API_URL}/meal-planner/${mealPlanId}/shopping-list/status`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    return {
+      success: true,
+      data: response.data.data,
+      message: "Shopping list retrieved successfully"
+    };
+  } catch (error: any) {
+    console.error("Error fetching shopping list:", error);
+    
+    return {
+      success: false,
+      message: error.response?.data?.message || error.message || "Failed to retrieve shopping list",
+      status: error.response?.status
+    };
+  }
+};
+
+// Update shopping list item check status
+export const updateShoppingListItems = async (
+  mealPlanId: string, 
+  data: {
+    items?: string[],
+    category?: string,
+    checked?: boolean,
+    checkAll?: boolean
+  }, 
+  token: string | null | undefined
+) => {
+  if (!token) {
+    return {
+      success: false,
+      message: "Authentication token is required"
+    };
+  }
+  
+  try {
+    const response = await axios.patch(
+      `${API_URL}/meal-planner/${mealPlanId}/shopping-list/check`, 
+      data,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return {
+      success: true,
+      data: response.data.data,
+      message: "Shopping list updated successfully"
+    };
+  } catch (error: any) {
+    console.error("Error updating shopping list:", error);
+    
+    return {
+      success: false,
+      message: error.response?.data?.message || error.message || "Failed to update shopping list",
+      status: error.response?.status
+    };
+  }
+};
+
+// Reset shopping list (uncheck all items)
+export const resetShoppingList = async (mealPlanId: string, token: string | null | undefined) => {
+  if (!token) {
+    return {
+      success: false,
+      message: "Authentication token is required"
+    };
+  }
+  
+  try {
+    const response = await axios.post(
+      `${API_URL}/meal-planner/${mealPlanId}/shopping-list/reset`,
+      {},
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return {
+      success: true,
+      data: response.data.data,
+      message: "Shopping list reset successfully"
+    };
+  } catch (error: any) {
+    console.error("Error resetting shopping list:", error);
+    
+    return {
+      success: false,
+      message: error.response?.data?.message || error.message || "Failed to reset shopping list",
+      status: error.response?.status
+    };
+  }
+};
+
+// Convenience function to check/uncheck individual items
+export const toggleShoppingListItem = async (
+  mealPlanId: string,
+  itemName: string,
+  isChecked: boolean,
+  token: string | null | undefined
+) => {
+  return updateShoppingListItems(
+    mealPlanId,
+    {
+      items: [itemName],
+      checked: isChecked
+    },
+    token
+  );
+};
+
+// Convenience function to check/uncheck category
+export const toggleShoppingListCategory = async (
+  mealPlanId: string,
+  category: string,
+  isChecked: boolean,
+  token: string | null | undefined
+) => {
+  return updateShoppingListItems(
+    mealPlanId,
+    {
+      category,
+      checked: isChecked
+    },
+    token
+  );
+};
+
+// Convenience function to check/uncheck all items
+export const toggleAllShoppingListItems = async (
+  mealPlanId: string,
+  isChecked: boolean,
+  token: string | null | undefined
+) => {
+  return updateShoppingListItems(
+    mealPlanId,
+    {
+      checkAll: true,
+      checked: isChecked
+    },
+    token
+  );
+};
+
+

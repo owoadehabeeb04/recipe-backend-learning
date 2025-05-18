@@ -13,8 +13,15 @@ import {
   Sparkles,
 } from "lucide-react";
 import { format } from "date-fns";
-import { getCategorizedShoppingList, getPrintableShoppingList } from "../../app/api/(shopping-list)/shoppingList";
 import { useAuthStore } from "@/app/store/authStore";
+import { toast } from "react-hot-toast";
+import { 
+  getShoppingListStatus, 
+  toggleShoppingListItem, 
+  toggleShoppingListCategory,
+  toggleAllShoppingListItems, 
+  resetShoppingList 
+} from "../../app/api/(meal-planner)/mealplanner";
 
 interface ShoppingListItem {
   name: string;
@@ -24,10 +31,18 @@ interface ShoppingListItem {
     unit: string;
     recipe: string;
   }[];
+  checked: boolean;
 }
 
 interface CategorizedList {
   [category: string]: ShoppingListItem[];
+}
+
+interface CategoryStats {
+  [category: string]: {
+    total: number;
+    checked: number;
+  }
 }
 
 interface ShoppingListData {
@@ -36,6 +51,9 @@ interface ShoppingListData {
   week: string;
   numberOfRecipes: number;
   categorizedIngredients: CategorizedList;
+  categoryStats: CategoryStats;
+  checkedItems: string[];
+  lastUpdated: string | null;
 }
 
 interface ShoppingListProps {
@@ -43,30 +61,14 @@ interface ShoppingListProps {
 }
 
 const ShoppingList: React.FC<ShoppingListProps> = ({ mealPlanId }) => {
-    const {token} = useAuthStore()
-    const [isLoading, setIsLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [shoppingData, setShoppingData] = useState<ShoppingListData | null>(null);
-    const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
-    const [checkedItems, setCheckedItems] = useState<Record<string, boolean>>({});
-  
-  useEffect(() => {
-    try {
-      const savedItems = localStorage.getItem(`shopping-checks-${mealPlanId}`);
-      if (savedItems) {
-        setCheckedItems(JSON.parse(savedItems));
-      }
-    } catch (e) {
-      console.error("Error loading saved shopping list state", e);
-    }
-  }, [mealPlanId]);
+  const { token } = useAuthStore();
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [shoppingData, setShoppingData] = useState<ShoppingListData | null>(null);
+  const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
 
-  useEffect(() => {
-    if (Object.keys(checkedItems).length) {
-      localStorage.setItem(`shopping-checks-${mealPlanId}`, JSON.stringify(checkedItems));
-    }
-  }, [checkedItems, mealPlanId]);
-
+  // Fetch shopping list from the API
   const fetchShoppingList = useCallback(async () => {
     if (!token) return;
     
@@ -74,16 +76,13 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ mealPlanId }) => {
       setIsLoading(true);
       setError(null);
       
-      const response = await getCategorizedShoppingList(
-        token,
-        mealPlanId
-      );
+      const response = await getShoppingListStatus(mealPlanId, token);
       
-      if (response && response.data && response.data.success) {
-        setShoppingData(response.data.data);
+      if (response.success && response.data) {
+        setShoppingData(response.data);
         
-        if (response.data.data.categorizedIngredients) {
-          const categories = Object.keys(response.data.data.categorizedIngredients);
+        if (response.data.categorizedIngredients) {
+          const categories = Object.keys(response.data.categorizedIngredients);
           const initialExpanded = categories.reduce((acc, category) => {
             acc[category] = true;
             return acc;
@@ -92,7 +91,7 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ mealPlanId }) => {
           setExpandedCategories(initialExpanded);
         }
       } else {
-        setError("Failed to load shopping list data");
+        setError(response.message || "Failed to load shopping list data");
       }
     } catch (err) {
       setError("An error occurred while fetching the shopping list");
@@ -115,13 +114,169 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ mealPlanId }) => {
     }));
   };
 
-  // Toggle item checked state
-  const toggleItemCheck = (category: string, itemName: string) => {
-    const key = `${category}-${itemName.toLowerCase()}`;
-    setCheckedItems((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
+  // Toggle item checked state with server persistence
+  const handleToggleItem = async (category: string, itemName: string, isCurrentlyChecked: boolean) => {
+    if (!token || !shoppingData) return;
+    
+    try {
+      setIsSaving(true);
+      
+      // Optimistically update UI
+      const updatedData = {...shoppingData};
+      const items = updatedData.categorizedIngredients[category];
+      const item = items.find(i => i.name.toLowerCase() === itemName.toLowerCase());
+      
+      if (item) {
+        item.checked = !isCurrentlyChecked;
+        
+        // Update the checked items array
+        if (!isCurrentlyChecked) {
+          updatedData.checkedItems.push(itemName.toLowerCase());
+        } else {
+          updatedData.checkedItems = updatedData.checkedItems.filter(
+            i => i !== itemName.toLowerCase()
+          );
+        }
+        
+        // Update category stats
+        if (updatedData.categoryStats && updatedData.categoryStats[category]) {
+          updatedData.categoryStats[category].checked += !isCurrentlyChecked ? 1 : -1;
+        }
+        
+        setShoppingData(updatedData);
+      }
+      
+      // Call API to persist the change
+      const response = await toggleShoppingListItem(
+        mealPlanId,
+        itemName,
+        !isCurrentlyChecked,
+        token
+      );
+      
+      if (!response.success) {
+        // Revert optimistic update on failure
+        toast.error("Failed to update shopping list");
+        fetchShoppingList();
+      }
+    } catch (err) {
+      console.error("Error toggling item:", err);
+      toast.error("Failed to update item status");
+      fetchShoppingList();
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Toggle all items in a category
+  const toggleAllInCategory = async (category: string) => {
+    if (!token || !shoppingData) return;
+    
+    try {
+      setIsSaving(true);
+      
+      // Check if all items in category are already checked
+      const categoryItems = shoppingData.categorizedIngredients[category];
+      const allChecked = categoryItems.every(item => item.checked);
+      
+      // Optimistically update UI
+      const updatedData = {...shoppingData};
+      const items = updatedData.categorizedIngredients[category];
+      
+      items.forEach(item => {
+        item.checked = !allChecked;
+      });
+      
+      // Update checked items array
+      const itemNames = items.map(item => item.name.toLowerCase());
+      
+      if (allChecked) {
+        // Remove all category items from checked items
+        updatedData.checkedItems = updatedData.checkedItems.filter(
+          item => !itemNames.includes(item)
+        );
+      } else {
+        // Add all category items to checked items
+        const currentCheckedItems = new Set(updatedData.checkedItems);
+        itemNames.forEach(name => currentCheckedItems.add(name));
+        updatedData.checkedItems = Array.from(currentCheckedItems);
+      }
+      
+      // Update category stats
+      if (updatedData.categoryStats && updatedData.categoryStats[category]) {
+        updatedData.categoryStats[category].checked = allChecked ? 0 : items.length;
+      }
+      
+      setShoppingData(updatedData);
+      
+      // Call API to persist the change
+      const response = await toggleShoppingListCategory(
+        mealPlanId,
+        category,
+        !allChecked,
+        token
+      );
+      
+      if (!response.success) {
+        // Revert optimistic update on failure
+        toast.error("Failed to update category items");
+        fetchShoppingList();
+      }
+    } catch (err) {
+      console.error("Error toggling category:", err);
+      toast.error("Failed to update category items");
+      fetchShoppingList();
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Reset all checked items
+  const handleResetCheckedItems = async () => {
+    if (!token || !shoppingData) return;
+    
+    if (window.confirm("Are you sure you want to reset your shopping list progress?")) {
+      try {
+        setIsSaving(true);
+        
+        // Optimistically update UI
+        const updatedData = {...shoppingData};
+        
+        // Clear all checked items
+        updatedData.checkedItems = [];
+        
+        // Set all items to unchecked
+        Object.keys(updatedData.categorizedIngredients).forEach(category => {
+          updatedData.categorizedIngredients[category].forEach(item => {
+            item.checked = false;
+          });
+          
+          // Update category stats
+          if (updatedData.categoryStats && updatedData.categoryStats[category]) {
+            updatedData.categoryStats[category].checked = 0;
+          }
+        });
+        
+        setShoppingData(updatedData);
+        
+        // Call API to persist the reset
+        const response = await resetShoppingList(mealPlanId, token);
+        
+        if (response.success) {
+          toast.success("Shopping list reset successfully");
+        } else {
+          // Revert optimistic update on failure
+          toast.error("Failed to reset shopping list");
+          fetchShoppingList();
+        }
+      } catch (err) {
+        console.error("Error resetting shopping list:", err);
+        toast.error("Failed to reset shopping list");
+        fetchShoppingList();
+      } finally {
+        setIsSaving(false);
+      }
+    }
   };
 
   // Calculate progress
@@ -132,76 +287,58 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ mealPlanId }) => {
     let checkedCount = 0;
     
     Object.entries(shoppingData.categorizedIngredients).forEach(([category, items]) => {
-      items.forEach((item) => {
-        totalItems++;
-        const key = `${category}-${item.name.toLowerCase()}`;
-        if (checkedItems[key]) {
-          checkedCount++;
-        }
-      });
+      totalItems += items.length;
+      checkedCount += items.filter(item => item.checked).length;
     });
     
     return totalItems > 0 ? Math.round((checkedCount / totalItems) * 100) : 0;
-  }, [shoppingData, checkedItems]);
-
-  // Reset checked items
-  const resetCheckedItems = () => {
-    if (window.confirm("Are you sure you want to reset your shopping list progress?")) {
-      setCheckedItems({});
-      localStorage.removeItem(`shopping-checks-${mealPlanId}`);
-    }
-  };
+  }, [shoppingData]);
 
   // Download shopping list as text
-  const downloadShoppingList = async () => {
-    if (!token) return;
+  const downloadShoppingList = () => {
+    if (!shoppingData) return;
     
     try {
-      const response = await getPrintableShoppingList(
-        token,
-        mealPlanId
-      );
+      // Convert to plain text format
+      let textOutput = `SHOPPING LIST FOR: ${shoppingData.mealPlanName}\n`;
+      textOutput += `WEEK OF: ${format(new Date(shoppingData.week), "MMMM d, yyyy")}\n\n`;
       
-      if (response && response.data && response.data.success) {
-        // Convert to plain text format
-        let textOutput = `SHOPPING LIST FOR: ${response.data.data.mealPlanName}\n`;
-        textOutput += `WEEK OF: ${response.data.data.week}\n\n`;
+      Object.entries(shoppingData.categorizedIngredients).forEach(([category, items]) => {
+        textOutput += `==== ${category} ====\n\n`;
         
-        response.data.data.items.forEach((item: any) => {
+        items.forEach(item => {
           textOutput += `□ ${item.name}:\n`;
-          item.items.forEach((subItem: any) => {
+          item.items.forEach(subItem => {
             textOutput += `    ${subItem.quantity} ${subItem.unit}\n`;
           });
           textOutput += '\n';
         });
-        
-        // Create and download file
-        const blob = new Blob([textOutput], { type: "text/plain" });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `shopping-list-${format(new Date(), "yyyy-MM-dd")}.txt`;
-        document.body.appendChild(a);
-        a.click();
-        window.URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-      } else {
-        alert("Failed to generate downloadable shopping list");
-      }
+      });
+      
+      // Create and download file
+      const blob = new Blob([textOutput], { type: "text/plain" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `shopping-list-${format(new Date(), "yyyy-MM-dd")}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
     } catch (err) {
       console.error("Error downloading shopping list", err);
-      alert("An error occurred while downloading the shopping list");
+      toast.error("Failed to download shopping list");
     }
   };
 
   // Print shopping list
-  const printShoppingList = async () => {
-    if (!token || !shoppingData) return;
+  const printShoppingList = () => {
+    if (!shoppingData) return;
     
     const printWindow = window.open("", "_blank");
     
     if (!printWindow) {
-      alert("Please allow pop-ups to print the shopping list");
+      toast.error("Please allow pop-ups to print the shopping list");
       return;
     }
     
@@ -219,6 +356,7 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ mealPlanId }) => {
           ul { padding-left: 20px; }
           li { margin-bottom: 12px; list-style-type: none; position: relative; }
           li::before { content: "□"; position: absolute; left: -20px; }
+          .checked::before { content: "☑"; }
           .item-detail { color: #666; font-size: 14px; margin-left: 10px; }
           .recipe-ref { font-style: italic; font-size: 13px; color: #888; margin-top: 5px; }
           @media print {
@@ -237,8 +375,8 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ mealPlanId }) => {
               <h2>${category}</h2>
               <ul>
                 ${items.map(item => `
-                  <li>
-                    <div><strong>${item.name}</strong></div>
+                  <li class="${item.checked ? 'checked' : ''}">
+                    <div><strong>${item.name}</strong> ${item.checked ? '(Checked)' : ''}</div>
                     <div class="item-detail">
                       ${item.items.map(subItem => 
                         `${subItem.quantity} ${subItem.unit}`
@@ -267,27 +405,6 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ mealPlanId }) => {
     setTimeout(() => {
       printWindow.print();
     }, 500);
-  };
-  
-  // Mark all items in a category as checked/unchecked
-  const toggleAllInCategory = (category: string) => {
-    if (!shoppingData) return;
-    
-    const categoryItems = shoppingData.categorizedIngredients[category];
-    const newCheckedItems = { ...checkedItems };
-    
-    // Check if all items in category are already checked
-    const allChecked = categoryItems.every(
-      item => checkedItems[`${category}-${item.name.toLowerCase()}`]
-    );
-    
-    // Toggle all items
-    categoryItems.forEach(item => {
-      const key = `${category}-${item.name.toLowerCase()}`;
-      newCheckedItems[key] = !allChecked;
-    });
-    
-    setCheckedItems(newCheckedItems);
   };
 
   // Loading state
@@ -343,7 +460,13 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ mealPlanId }) => {
   const progress = calculateProgress();
 
   return (
-    <div className="bg-black/40 mt-3 backdrop-blur-sm border border-purple-900/30 rounded-xl overflow-hidden">
+    <div className={`bg-black/40 mt-3 backdrop-blur-sm border border-purple-900/30 rounded-xl overflow-hidden ${isSaving ? 'opacity-70 pointer-events-none' : ''}`}>
+      {isSaving && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/20 z-10">
+          <div className="w-8 h-8 border-4 border-t-purple-500 border-purple-500/30 rounded-full animate-spin"></div>
+        </div>
+      )}
+      
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600/80 to-pink-600/80 p-4">
         <div className="flex items-center justify-between mb-3">
@@ -354,6 +477,11 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ mealPlanId }) => {
             </h3>
             <p className="text-xs text-white/70">
               Week of {format(new Date(shoppingData.week), "MMMM d, yyyy")}
+              {shoppingData.lastUpdated && (
+                <span className="ml-2 opacity-60">
+                  • Updated {format(new Date(shoppingData.lastUpdated), "MMM d, h:mm a")}
+                </span>
+              )}
             </p>
           </div>
           
@@ -363,22 +491,25 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ mealPlanId }) => {
               className="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
               title="Print shopping list"
               aria-label="Print shopping list"
+              disabled={isSaving}
             >
-              <Printer className="w-4 h-4 text-white" />2
+              <Printer className="w-4 h-4 text-white" />
             </button>
             <button
               onClick={downloadShoppingList}
               className="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
               title="Download as text"
               aria-label="Download as text"
+              disabled={isSaving}
             >
               <Download className="w-4 h-4 text-white" />
             </button>
             <button
-              onClick={resetCheckedItems}
+              onClick={handleResetCheckedItems}
               className="p-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors"
               title="Reset progress"
               aria-label="Reset progress"
+              disabled={isSaving}
             >
               <X className="w-4 h-4 text-white" />
             </button>
@@ -404,13 +535,10 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ mealPlanId }) => {
       <div className="p-4 space-y-4">
         <AnimatePresence>
           {Object.entries(shoppingData.categorizedIngredients).map(([category, items]) => {
-            // Check if all items in this category are checked
-            const allChecked = items.every(
-              (item) => checkedItems[`${category}-${item.name.toLowerCase()}`]
-            );
-            const anyChecked = items.some(
-              (item) => checkedItems[`${category}-${item.name.toLowerCase()}`]
-            );
+            // Get category stats
+            const stats = shoppingData.categoryStats?.[category] || { total: items.length, checked: 0 };
+            const allChecked = stats.checked === stats.total;
+            const anyChecked = stats.checked > 0;
             
             return (
               <motion.div
@@ -437,6 +565,11 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ mealPlanId }) => {
                     <span className="ml-2 text-xs bg-purple-700/40 px-2 py-0.5 rounded-full text-white">
                       {items.length}
                     </span>
+                    {stats.checked > 0 && (
+                      <span className="ml-2 text-xs bg-green-700/40 px-2 py-0.5 rounded-full text-white">
+                        {stats.checked}/{stats.total} checked
+                      </span>
+                    )}
                   </button>
                   
                   <button
@@ -449,6 +582,7 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ mealPlanId }) => {
                           : "bg-purple-700/20 text-purple-300 hover:bg-purple-700/30"
                     }`}
                     title={allChecked ? "Uncheck all" : "Check all"}
+                    disabled={isSaving}
                   >
                     {allChecked ? (
                       <>
@@ -474,64 +608,60 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ mealPlanId }) => {
                       transition={{ duration: 0.2 }}
                     >
                       <div className="p-3 space-y-2">
-                        {items.map((item) => {
-                          const itemKey = `${category}-${item.name.toLowerCase()}`;
-                          const isChecked = !!checkedItems[itemKey];
-                          
-                          return (
-                            <motion.div
-                              key={itemKey}
-                              className={`p-3 border ${
-                                isChecked 
-                                  ? "bg-green-900/10 border-green-700/30" 
-                                  : "bg-purple-900/10 border-purple-800/30"
-                              } rounded-lg flex items-start`}
-                              whileHover={{ scale: 1.005 }}
-                              transition={{ duration: 0.1 }}
+                        {items.map((item) => (
+                          <motion.div
+                            key={`${category}-${item.name}`}
+                            className={`p-3 border ${
+                              item.checked 
+                                ? "bg-green-900/10 border-green-700/30" 
+                                : "bg-purple-900/10 border-purple-800/30"
+                            } rounded-lg flex items-start`}
+                            whileHover={{ scale: 1.005 }}
+                            transition={{ duration: 0.1 }}
+                          >
+                            <button
+                              onClick={() => handleToggleItem(category, item.name, item.checked)}
+                              className={`flex-shrink-0 w-5 h-5 rounded mr-3 flex items-center justify-center ${
+                                item.checked 
+                                  ? "bg-green-500" 
+                                  : "border border-purple-500/50"
+                              }`}
+                              aria-checked={item.checked}
+                              role="checkbox"
+                              disabled={isSaving}
                             >
-                              <button
-                                onClick={() => toggleItemCheck(category, item.name.toLowerCase())}
-                                className={`flex-shrink-0 w-5 h-5 rounded mr-3 flex items-center justify-center ${
-                                  isChecked 
-                                    ? "bg-green-500" 
-                                    : "border border-purple-500/50"
-                                }`}
-                                aria-checked={isChecked}
-                                role="checkbox"
-                              >
-                                {isChecked && <Check className="w-3 h-3 text-white" />}
-                              </button>
-                              
-                              <div className="flex-1">
-                                <div className={`font-medium ${isChecked ? "text-green-200 line-through" : "text-white"}`}>
-                                  {item.name}
-                                </div>
-                                
-                                <div className="mt-1.5 space-y-1.5">
-                                  {item.items.map((subItem, idx) => (
-                                    <div
-                                      key={idx}
-                                      className={`text-sm ${
-                                        isChecked 
-                                          ? "text-green-300/60 line-through" 
-                                          : "text-purple-300"
-                                      }`}
-                                    >
-                                      {subItem.quantity} {subItem.unit}
-                                      <span className="text-xs ml-1.5 text-purple-400/60">
-                                        ({subItem.recipe})
-                                      </span>
-                                    </div>
-                                  ))}
-                                </div>
-                                
-                                <div className="mt-2 text-xs text-purple-400/60">
-                                  Used in: {item.recipes.join(", ")}
-                                </div>
+                              {item.checked && <Check className="w-3 h-3 text-white" />}
+                            </button>
+                            
+                            <div className="flex-1">
+                              <div className={`font-medium ${item.checked ? "text-green-200 line-through" : "text-white"}`}>
+                                {item.name}
                               </div>
-                            </motion.div>
-                          );
-                        })}
+                              
+                              <div className="mt-1.5 space-y-1.5">
+                                {item.items.map((subItem, idx) => (
+                                  <div
+                                    key={idx}
+                                    className={`text-sm ${
+                                      item.checked 
+                                        ? "text-green-300/60 line-through" 
+                                        : "text-purple-300"
+                                    }`}
+                                  >
+                                    {subItem.quantity} {subItem.unit}
+                                    <span className="text-xs ml-1.5 text-purple-400/60">
+                                      ({subItem.recipe})
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                              
+                              <div className="mt-2 text-xs text-purple-400/60">
+                                Used in: {item.recipes.join(", ")}
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
                       </div>
                     </motion.div>
                   )}

@@ -245,7 +245,7 @@ export const RecipeCardEditDelete = ({
 
           {/* Date */}
           <p className="text-gray-400 text-xs">
-            Created on {formatDate(recipe.createdAt)}
+            Plan for {formatDate(recipe.createdAt)}
           </p>
 
           {/* Actions */}
