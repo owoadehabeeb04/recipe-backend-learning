@@ -168,7 +168,7 @@ const MealPlannerPage = () => {
     const { day, mealType } = selectedMealInfo;
 
     setAllWeekPlans((prev) => {
-      const newAllPlans = { ...prev };
+      const newAllPlans = { ...prev }; 
       const currentPlan = { ...newAllPlans[currentWeekKey] };
 
       if (currentPlan[day]) {
@@ -363,7 +363,6 @@ const MealPlannerPage = () => {
         return;
       }
 
-      // Check for specific message about existing plan
       if (
         response.message &&
         response.message.includes("already have a meal plan")
@@ -377,6 +376,7 @@ const MealPlannerPage = () => {
             color: "#fff"
           }
         });
+        console.log(response.existingPlan, "EXISTING PLAN");
 
         if (response.existingPlan && response.existingPlan.id) {
           if (
@@ -467,17 +467,18 @@ const MealPlannerPage = () => {
           }
         }
       });
-
+      console.log({backendPlan})
       const updateData = {
         name,
         plan: backendPlan,
-        notes: notes || ""
+        notes: notes || "",
+        isActive: true,
       };
+      console.log(updateData, 'FUCKING DEBUG THIS SHIII !')
 
       const response = await updateMealPlan(planId, updateData, token);
 
       if (response.success && response.data) {
-        // Update the saved plan in state with the raw response data
         setSavedPlans((prev) =>
           prev.map((plan) => {
             if (plan.id === planId || plan._id === planId) {
@@ -1017,150 +1018,3 @@ const MealPlannerPage = () => {
 };
 
 export default MealPlannerPage;
-//   if (!token || !plan.id) {
-//     toast.error("Unable to load meal plan");
-//     return;
-//   }
-
-//   setIsLoading(true);
-//   toast.loading("Loading meal plan...", { id: "loadplan" });
-
-//   try {
-//     // Get the full plan details from the API
-//     const response = await getMealPlanById(plan.id, token);
-
-//     if (response.success && response.data) {
-//       //("Loaded plan data:", response.data);
-
-//       // Directly convert to frontend format with a simple transformation
-
-//       // Update the meal planner with the loaded plan
-//       setAllWeekPlans(prev => ({
-//         ...prev,
-//         [currentWeekKey]: response.data.plan
-//       }));
-//       //({weekPlans: allWeekPlans})
-
-//       // Set the current date to match the plan's week
-//       if (response.data.week) {
-//         setCurrentDate(startOfWeek(new Date(response.data.week), { weekStartsOn: 1 }));
-//       }
-
-//       // Switch view to the planner tab
-//       setActiveTab("planner");
-
-//       toast.success(`Loaded plan "${response.data.name}"`, { id: "loadplan" });
-//     } else {
-//       toast.error(response.message || "Failed to load meal plan", { id: "loadplan" });
-//     }
-//   } catch (error) {
-//     console.error("Error loading meal plan:", error);
-//     toast.error("Failed to load meal plan. Please try again.", { id: "loadplan" });
-//   } finally {
-//     setIsLoading(false);
-//   }
-// };
-
-// // Simple helper function to convert plan format - this is contained within handleLoadPlan
-// const convertPlanToFrontendFormat = (backendPlan) => {
-//   const frontendPlan = {};
-
-//   // Day name mapping
-//   const dayMap = {
-//     'monday': 'Mon',
-//     'tuesday': 'Tue',
-//     'wednesday': 'Wed',
-//     'thursday': 'Thu',
-//     'friday': 'Fri',
-//     'saturday': 'Sat',
-//     'sunday': 'Sun'
-//   };
-
-//   // Convert each day and meal
-//   for (const [backendDay, meals] of Object.entries(backendPlan)) {
-//     const frontendDay = dayMap[backendDay.toLowerCase()];
-
-//     if (frontendDay) {
-//       frontendPlan[frontendDay] = {};
-
-//       // Convert meals for this day
-//       for (const [mealType, mealData] of Object.entries(meals)) {
-//         const recipe = mealData.recipe;
-
-//         // Create a recipe object - either use what we have or create a placeholder
-//         let recipeObject;
-
-//         if (typeof recipe === 'string') {
-//           // If it's just an ID, create a placeholder recipe
-//           recipeObject = {
-//             _id: recipe,
-//             id: recipe,
-//             title: `${mealType.charAt(0).toUpperCase() + mealType.slice(1)} Recipe`,
-//             description: "Recipe will be loaded when viewed",
-//             image: "",
-//             category: mealType,
-//             ingredients: [],
-//             instructions: [],
-//             tags: []
-//           };
-//         } else if (recipe && typeof recipe === 'object') {
-//           // If it's already an object, use it
-//           recipeObject = recipe;
-//         } else {
-//           // Fallback - create a minimal placeholder
-//           recipeObject = {
-//             id: `temp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
-//             _id: `temp-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`,
-//             title: `${mealType.charAt(0).toUpperCase() + mealType.slice(1)} Recipe`,
-//             description: "Missing recipe data",
-//             image: "",
-//             category: mealType,
-//             tags: []
-//           };
-//         }
-
-//         // Add to the frontend plan
-//         frontendPlan[frontendDay][mealType] = {
-//           mealType,
-//           recipe: recipeObject
-//         };
-//       }
-//     }
-//   }
-
-//   return frontendPlan;
-// };
-
-// // Add this debugging function
-// const debugPlanData = (data: any, source: string) => {
-// console.group(`Plan Data: ${source}`);
-// //("Raw Data:", data);
-
-// if (data.plan) {
-//   // Sample one day to check data structure
-//   const sampleDay = Object.keys(data.plan)[0];
-//   if (sampleDay) {
-//     const sampleDayData = data.plan[sampleDay];
-//     //(`Sample day (${sampleDay}):`, sampleDayData);
-
-//     // Sample one meal to check recipe structure
-//     const sampleMealType = Object.keys(sampleDayData)[0];
-//     if (sampleMealType) {
-//       const sampleMeal = sampleDayData[sampleMealType];
-//       //(`Sample meal (${sampleMealType}):`, sampleMeal);
-
-//       if (sampleMeal.recipe) {
-//         //("Recipe data:", sampleMeal.recipe);
-//         //("Recipe ID:", sampleMeal.recipe._id || sampleMeal.recipe.id);
-//         //("Recipe title:", sampleMeal.recipe.title);
-//         //("Is title undefined?", sampleMeal.recipe.title === undefined);
-//       }
-
-//       if (sampleMeal.recipeDetails) {
-//         //("RecipeDetails data:", sampleMeal.recipeDetails);
-//       }
-//     }
-//   }
-// }
-// console.groupEnd();
-// };
