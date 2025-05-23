@@ -1,6 +1,12 @@
 
 // Recipe type definition
 export interface Recipe {
+  userDetails?: {
+    name: string;
+    email: string;
+    role: string;
+    profileImage?: string;
+  }
   _id: string;
   title: string;
   category: string;
@@ -57,6 +63,7 @@ export interface Ingredient {
   name: string;
 }
 export interface SavedPlan {
+  _id: string;
   id: string;
   name: string;
   date: Date;

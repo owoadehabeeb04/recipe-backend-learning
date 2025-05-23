@@ -42,6 +42,7 @@ import { DuplicatePlanModal } from "@/components/meal-planner/duplicatePlanModal
 
 // Types
 interface Recipe {
+  _id: string;
   id: string;
   title: string;
   tags: string[];
@@ -276,7 +277,7 @@ const MealPlannerPage = () => {
       setIsLoadingRecipes(true);
       try {
         // Fetch user recipes
-        const recipeResponse = await getAllRecipes(token);
+        const recipeResponse = await getAllRecipes();
         if (recipeResponse.success && recipeResponse.data) {
           setRecipes(recipeResponse.data);
         }
