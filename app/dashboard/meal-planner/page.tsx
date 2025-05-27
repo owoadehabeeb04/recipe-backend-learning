@@ -253,7 +253,11 @@ const MealPlannerPage = () => {
             date: new Date(plan.week), 
             week: new Date(plan.week),
             plan: plan.plan, 
-            notes: plan.notes
+            notes: plan.notes,
+            connectedToCalendar: plan.connectedToCalendar || false,
+            calendarEvents: plan.calendarEvents || [],
+            createdAt: new Date(plan.createdAt || new Date()),
+            updatedAt: new Date(plan.updatedAt || new Date()) ,
           }));
 
           setSavedPlans(formattedPlans);
@@ -390,7 +394,11 @@ const MealPlannerPage = () => {
           date: new Date(response.data.week),
           week: new Date(response.data.week),
           plan: response.data.plan,
-          notes: response.data.notes
+          notes: response.data.notes,
+          connectedToCalendar: response.data.connectedToCalendar || false,
+          calendarEvents: response.data.calendarEvents || [],
+          createdAt: new Date(response.data.createdAt || new Date()),
+          updatedAt: new Date(response.data.updatedAt || new Date())
         };
 
         setSavedPlans((prev) => [...prev, savedPlan]);
@@ -525,7 +533,13 @@ const MealPlannerPage = () => {
                 ...plan,
                 name: response.data.name,
                 plan: response.data.plan,
-                notes: response.data.notes
+                notes: response.data.notes,
+                date: new Date(response.data.week),
+                week: new Date(response.data.week),
+                connectedToCalendar: response.data.connectedToCalendar || false,
+                calendarEvents: response.data.calendarEvents || [],
+                createdAt: new Date(response.data.createdAt || new Date()),
+                updatedAt: new Date(response.data.updatedAt || new Date())
               };
             }
             return plan;
@@ -870,6 +884,9 @@ const MealPlannerPage = () => {
     setPlanToDuplicate(null);
   };
 
+  useEffect(()=> {
+console.log({savedPlans})
+  }, [])
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white p-6 rounded-xl mb-8 shadow-lg">

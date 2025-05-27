@@ -301,6 +301,7 @@ export const SavedPlanDetailsModal: React.FC<SavedPlanDetailsModalProps> = ({
       }
     }));
   };
+  console.log('connected to calendar', plan)
 
   return (
     <motion.div 
@@ -330,7 +331,8 @@ export const SavedPlanDetailsModal: React.FC<SavedPlanDetailsModalProps> = ({
           </button>
         </div>
         
-        <div className="p-5 grid grid-cols- gap-4">
+        <div className="p-5 grid sm:h-fit h-[450px] sm:scroll-auto overflow-y-scroll sm:overflow-y-auto sm:grid-cols-2 gap-4">
+          <div>
           {/* Top grid: Statistics */}
           <div className="grid grid-cols-2 gap-3">
             <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-3 border border-indigo-100/50 flex flex-col items-center justify-center">
@@ -343,23 +345,9 @@ export const SavedPlanDetailsModal: React.FC<SavedPlanDetailsModalProps> = ({
               <div className="text-2xl font-bold text-purple-600 mb-1">7</div>
               <div className="text-xs text-gray-600">Days planned</div>
             </div>
-          </div>
-          
-          {/* Middle grid: Notes (if any) */}
-          {plan.notes && (
-            <div className="bg-indigo-50 rounded-xl p-3 border border-indigo-100 flex">
-              <div className="mr-2 mt-0.5">
-                <FileText className="h-4 w-4 text-indigo-600" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-sm font-medium text-indigo-800 mb-1">Notes</h3>
-                <p className="text-xs text-gray-700">{plan.notes}</p>
-              </div>
-            </div>
-          )}
-          
-          {/* Google Calendar Section */}
-          <div className={`rounded-xl border p-3 ${
+          </div >
+            {/* Google Calendar Section */}
+            <div className={`rounded-xl mt-3 border p-3 ${
             plan.connectedToCalendar 
               ? "bg-green-50 border-green-100" 
               : googleAuthError 
@@ -533,9 +521,24 @@ export const SavedPlanDetailsModal: React.FC<SavedPlanDetailsModalProps> = ({
               </div>
             )}
           </div>
-          
+        
+          </div>
+          <div>
+        
+            {/* Middle grid: Notes (if any) */}
+            {plan.notes && (
+            <div className="bg-indigo-50 rounded-xl p-3 border border-indigo-100 flex">
+              <div className="mr-2 mt-0.5">
+                <FileText className="h-4 w-4 text-indigo-600" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-sm font-medium text-indigo-800 mb-1">Notes</h3>
+                <p className="text-xs text-gray-700">{plan.notes}</p>
+              </div>
+            </div>
+          )}
           {/* Primary Action Grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid mt-3 grid-cols-2 gap-3">
             <button
               onClick={() => {
                 onLoad(plan);
@@ -565,7 +568,7 @@ export const SavedPlanDetailsModal: React.FC<SavedPlanDetailsModalProps> = ({
                 onViewDetails();
                 onClose();
               }}
-              className="py-2.5 px-3 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition duration-200 flex items-center justify-center shadow-sm font-medium"
+              className="py-2.5 px-3  bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition duration-200 flex items-center justify-center shadow-sm font-medium"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -592,7 +595,7 @@ export const SavedPlanDetailsModal: React.FC<SavedPlanDetailsModalProps> = ({
           </div>
           
           {/* Secondary Action Grid */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid  mt-3 grid-cols-2 gap-3">
             <button
               onClick={onDuplicate}
               className="py-2 px-3 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition duration-200 flex items-center justify-center shadow-sm text-sm"
@@ -638,11 +641,12 @@ export const SavedPlanDetailsModal: React.FC<SavedPlanDetailsModalProps> = ({
           
           {/* Cancel button */}
           <button
-            onClick={onClose}
-            className="py-2 px-3 text-gray-500 hover:text-gray-700 rounded-lg transition-colors text-sm font-medium"
-          >
-            Cancel
-          </button>
+  onClick={onClose}
+  className="py-2 mt-3 px-3 bg-purple-50 border border-purple-200 text-purple-600 hover:bg-purple-100 hover:text-purple-700 rounded-lg transition-colors text-sm font-medium"
+>
+  Cancel
+</button>
+          </div>
         </div>
       </motion.div>
     </motion.div>

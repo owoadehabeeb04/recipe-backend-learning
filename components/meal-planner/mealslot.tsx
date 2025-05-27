@@ -20,11 +20,9 @@ interface MealSlotItemProps {
 
 export const MealSlotItem: React.FC<MealSlotItemProps> = ({ mealData, onClick, mealLabel, icon }) => {
     const handleClick = () => {
-      // Pass the recipe if it exists, allowing the parent to know if it's a new selection or edit
       onClick(mealData.recipe || null);
     };
 
-    // Determine background gradient based on meal type
     const getMealGradient = () => {
       switch(mealLabel.toLowerCase()) {
         case 'breakfast':
@@ -37,15 +35,14 @@ export const MealSlotItem: React.FC<MealSlotItemProps> = ({ mealData, onClick, m
           return 'from-purple-600/20 to-pink-700/20 hover:from-purple-600/30 hover:to-pink-700/30';
       }
     };
-    // console.log('Meal Slot Item:', mealData, mealLabel);
-    // console.log('meal featured image', mealData.recipe?.featuredImage);
+
     return (
       <div 
         onClick={handleClick}
         className={`transition cursor-pointer group relative overflow-hidden rounded-xl
           ${mealData.recipe 
             ? `bg-gradient-to-br ${getMealGradient()} backdrop-blur-sm border border-white/10 shadow-lg hover:shadow-xl` 
-            : 'bg-gray-900/30 border border-dashed border-gray-700 hover:border-purple-400 hover:bg-gray-800/40 p-4'
+            :'bg-purple-900/30 border border-dashed border-purple-700 hover:border-purple-400 hover:bg-purple-800/40 p-4'
           }`
         }
       >

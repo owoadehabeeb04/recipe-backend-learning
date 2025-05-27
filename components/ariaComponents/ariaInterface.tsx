@@ -13,7 +13,7 @@ interface Message {
   role: 'user' | 'assistant';
   message: string;
   timestamp: Date;
-  isNew?: boolean; // Added isNew property
+  isNew?: boolean; 
 }
 
 interface ChatInfo {
