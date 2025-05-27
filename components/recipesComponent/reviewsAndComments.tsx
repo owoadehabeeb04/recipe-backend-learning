@@ -485,7 +485,7 @@ console.log({currentUser})
       <div className="mb-6 pb-6 border-b border-gray-700">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Rating overview */}
-          <div>
+        {reviews.length > 0 &&  <div>
             <div className="flex items-center mb-4">
               <div className="mr-4">
                 <span className="text-4xl font-bold text-white">
@@ -516,10 +516,10 @@ console.log({currentUser})
                 </div>
               </div>
             </div>
-          </div>
+          </div>}
 
           {/* Rating distribution */}
-          <div className="space-y-2">
+        {reviews.length > 0 &&    <div className="space-y-2">
             {[5, 4, 3, 2, 1].map((rating) => (
               <div key={rating} className="flex items-center">
                 <div className="w-4 mr-2 text-gray-300 text-sm">{rating}</div>
@@ -538,10 +538,10 @@ console.log({currentUser})
                 </div>
               </div>
             ))}
-          </div>
+          </div>}
         </div>
 
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+        {reviews.length > 0 &&  <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
           {currentUser && (
             <div className="mt-5">
               <button
@@ -598,7 +598,7 @@ console.log({currentUser})
               Most Helpful
             </button> */}
           </div>
-        </div>
+        </div>}
       </div>
 
       {/* Review Form */}
