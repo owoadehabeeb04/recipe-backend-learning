@@ -157,7 +157,7 @@ export const generateCompleteRecipe = async ({
     const genAI = new GoogleGenerativeAI(
       process.env.NEXT_PUBLIC_GEMINI_API_KEY || ""
     );
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
     // Create a structured prompt for the AI
     const prompt = `Create a detailed recipe for "${titleForGeneration}".
@@ -398,7 +398,7 @@ export const calculateNutrition = async (
     const genAI = new GoogleGenerativeAI(
       process.env.NEXT_PUBLIC_GEMINI_API_KEY || ""
     );
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
 
     // Create the prompt for nutrition calculation
 // Create an advanced prompt for accurate nutrition calculation
