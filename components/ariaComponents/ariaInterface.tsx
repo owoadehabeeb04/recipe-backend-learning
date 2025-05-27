@@ -45,7 +45,7 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({ selectedChatId, setSelect
   ]);
   console.log({messages})
   const messagesEndRef = useRef<HTMLDivElement>(null);
-
+  
   // Scroll to bottom whenever messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

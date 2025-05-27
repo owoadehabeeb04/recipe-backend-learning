@@ -293,26 +293,25 @@ function isLastMonth(date: Date, now: Date): boolean {
     return format(date, "MMM d, yyyy");
   };
 
-  // Render a category section
   const renderCategorySection = (title: string, chats: ApiChat[], categoryKey: keyof CategorizedChats) => {
     if (chats.length === 0) return null;
 
     return (
       <div className="mb-2">
-        <button
-          onClick={() => toggleCategory(categoryKey)}
-          className="w-full flex items-center text-xs text-purple-300 py-1 px-2 mb-1 hover:bg-purple-900/20 rounded-md"
-        >
-          {expandedCategories[categoryKey] ? (
-            <ChevronDown className="w-3.5 h-3.5 mr-1" />
-          ) : (
-            <ChevronRight className="w-3.5 h-3.5 mr-1" />
-          )}
-          <span className="font-medium">{title}</span>
-          <span className="ml-auto bg-purple-900/40 px-2 py-0.5 rounded-full text-xs">
-            {chats.length}
-          </span>
-        </button>
+    <button
+  onClick={() => toggleCategory(categoryKey)}
+  className="w-full flex items-center text-xs text-purple-300 py-1.5 md:py-1 px-2 mb-1 hover:bg-purple-900/20 rounded-md min-h-[32px]"
+>
+  {expandedCategories[categoryKey] ? (
+    <ChevronDown className="w-3.5 h-3.5 mr-1" />
+  ) : (
+    <ChevronRight className="w-3.5 h-3.5 mr-1" />
+  )}
+  <span className="font-medium">{title}</span>
+  <span className="ml-auto bg-purple-900/40 px-2 py-0.5 rounded-full text-xs">
+    {chats.length}
+  </span>
+</button>
 
         {expandedCategories[categoryKey] && (
           <div className="space-y-1">
@@ -320,23 +319,23 @@ function isLastMonth(date: Date, now: Date): boolean {
               <div
                 key={chat._id}
                 onClick={() => onSelectChat(chat._id)}
-                className={`p-3 rounded-lg cursor-pointer ${
+                className={`p-2.5 md:p-3 rounded-lg cursor-pointer ${
                   selectedChatId === chat._id
                     ? "bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30"
                     : "hover:bg-purple-900/20 border border-transparent"
                 }`}
               >
                 <div className="flex justify-between items-start">
-                  <h3 className="font-medium text-white text-sm truncate">
+                  <h3 className="font-medium text-white text-sm truncate max-w-[65%] md:max-w-[70%]">
                     {chat.title}
                   </h3>
                   <div className="flex items-center">
-                    <span className="text-xs text-purple-400 mr-2">
+                    <span className="text-xs text-purple-400 mr-2 hidden xs:inline">
                       {formatDate(chat.updatedAt)}
                     </span>
                     <button
                       onClick={(e) => deleteChat(chat._id, e)}
-                      className={`p-1 ${
+                      className={`p-1.5 md:p-1 ${
                         isDeleting === chat._id ? 'text-pink-500' : 'text-purple-400 hover:text-pink-400'
                       } rounded-full hover:bg-purple-800/30`}
                       disabled={isDeleting !== null}
@@ -349,6 +348,10 @@ function isLastMonth(date: Date, now: Date): boolean {
                     </button>
                   </div>
                 </div>
+                {/* Show date for mobile as a separate row */}
+                <span className="text-xs text-purple-400 xs:hidden">
+                  {formatDate(chat.updatedAt)}
+                </span>
                 <p className="text-xs text-purple-300 truncate mt-1">
                   {chat.lastMessage || "No messages yet"}
                 </p>
@@ -374,28 +377,26 @@ function isLastMonth(date: Date, now: Date): boolean {
   };
 
   return (
-    <div className="h-[70vh] bg-black/40 backdrop-blur-sm border border-purple-900/30 rounded-xl flex flex-col">
-      {/* Header */}
-      <div className="p-4 border-b border-purple-800/30">
-        <h2 className="font-medium text-white mb-3">Recent Conversations</h2>
+    <div className="h-[70vh] md:h-[70vh] bg-black/40 backdrop-blur-sm border border-purple-900/30 rounded-xl flex flex-col max-h-[calc(100vh-140px)] overflow-hidden">
+      {/* Header - slight padding adjustments for mobile */}
+      <div className="p-3 md:p-4 border-b border-purple-800/30">
+        <h2 className="font-medium text-white mb-2 md:mb-3">Recent Conversations</h2>
 
-        {/* Search */}
         <div className="relative">
-          <Search className="absolute left-2 top-2.5 w-4 h-4 text-purple-400" />
+          <Search className="absolute left-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-purple-400" />
           <input
             type="text"
             placeholder="Search conversations..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-purple-900/20 border border-purple-700/30 rounded-lg pl-8 pr-3 py-2 text-sm text-white focus:outline-none focus:border-purple-500/50"
+            className="w-full bg-purple-900/20 border border-purple-700/30 rounded-lg pl-8 pr-3 py-2 md:py-2 text-sm text-white focus:outline-none focus:border-purple-500/50"
             disabled={isLoading}
           />
           {isSearching && (
-            <Loader2 className="absolute right-2 top-2.5 w-4 h-4 text-purple-400 animate-spin" />
+            <Loader2 className="absolute right-2 top-1/2 transform -translate-y-1/2 w-4 h-4 text-purple-400 animate-spin" />
           )}
         </div>
 
-        {/* Error message */}
         {error && (
           <div className="mt-2 p-2 bg-red-900/20 text-red-300 text-xs rounded-lg flex items-center">
             <AlertCircle className="w-3 h-3 mr-1 flex-shrink-0" />
@@ -404,12 +405,11 @@ function isLastMonth(date: Date, now: Date): boolean {
         )}
       </div>
 
-      {/* New chat button */}
-      <div className="px-4 pt-3 pb-1">
+      <div className="px-3 md:px-4 pt-3 pb-1">
         <button
           onClick={startNewChat}
           disabled={isCreating}
-          className="w-full px-3 py-2 bg-gradient-to-r from-purple-600/20 to-pink-600/20 hover:from-purple-600/30 hover:to-pink-600/30 text-white rounded-lg border border-purple-600/30 flex items-center justify-center text-sm transition-colors disabled:opacity-50"
+          className="w-full px-3 py-2.5 md:py-2 bg-gradient-to-r from-purple-600/20 to-pink-600/20 hover:from-purple-600/30 hover:to-pink-600/30 text-white rounded-lg border border-purple-600/30 flex items-center justify-center text-sm transition-colors disabled:opacity-50"
         >
           {isCreating ? (
             <>
@@ -425,8 +425,8 @@ function isLastMonth(date: Date, now: Date): boolean {
         </button>
       </div>
 
-      {/* Chat list */}
-      <div className="flex-1 overflow-y-auto p-2">
+      {/* Chat list - optimized scrolling for mobile */}
+      <div className="flex-1 overflow-y-auto p-1.5 md:p-2 overscroll-contain">
         {isLoading ? (
           // Loading skeleton
           <div className="space-y-2">
@@ -455,23 +455,23 @@ function isLastMonth(date: Date, now: Date): boolean {
                 <div
                   key={chat._id}
                   onClick={() => onSelectChat(chat._id)}
-                  className={`p-3 rounded-lg cursor-pointer ${
+                  className={`p-2.5 md:p-3 rounded-lg cursor-pointer ${
                     selectedChatId === chat._id
                       ? "bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30"
                       : "hover:bg-purple-900/20 border border-transparent"
                   }`}
                 >
                   <div className="flex justify-between items-start">
-                    <h3 className="font-medium text-white text-sm truncate">
+                    <h3 className="font-medium text-white text-sm truncate max-w-[65%] md:max-w-[70%]">
                       {chat.title}
                     </h3>
                     <div className="flex items-center">
-                      <span className="text-xs text-purple-400 mr-2">
+                      <span className="text-xs text-purple-400 mr-2 hidden xs:inline">
                         {formatDate(chat.updatedAt)}
                       </span>
                       <button
                         onClick={(e) => deleteChat(chat._id, e)}
-                        className={`p-1 ${
+                        className={`p-1.5 md:p-1 ${
                           isDeleting === chat._id ? 'text-pink-500' : 'text-purple-400 hover:text-pink-400'
                         } rounded-full hover:bg-purple-800/30`}
                         disabled={isDeleting !== null}
@@ -484,6 +484,10 @@ function isLastMonth(date: Date, now: Date): boolean {
                       </button>
                     </div>
                   </div>
+                  {/* Show date for mobile as a separate row */}
+                  <span className="text-xs text-purple-400 xs:hidden">
+                    {formatDate(chat.updatedAt)}
+                  </span>
                   <p className="text-xs text-purple-300 truncate mt-1">
                     {chat.lastMessage || "No messages yet"}
                   </p>
@@ -493,7 +497,6 @@ function isLastMonth(date: Date, now: Date): boolean {
                       {chat.messageCount || 0} messages
                     </span>
 
-                    {/* Show if this was a message match from search */}
                     {chat.messageMatchCount && chat.messageMatchCount > 0 && searchTerm && (
                       <span className="ml-2 bg-purple-700/40 text-purple-300 text-xs px-1.5 py-0.5 rounded-full">
                         {chat.messageMatchCount} matches
@@ -505,14 +508,12 @@ function isLastMonth(date: Date, now: Date): boolean {
             )}
           </div>
         ) : (
-          // Categorized list when not searching
           <>
-  {renderCategorySection("Today", categorizedChats.today, "today")}
-{renderCategorySection("Yesterday", categorizedChats.yesterday, "yesterday")}
-{renderCategorySection("Previous 7 Days", categorizedChats.thisWeek, "thisWeek")}
-{renderCategorySection("Previous 30 Days", categorizedChats.thisMonth, "thisMonth")}
-{renderCategorySection("Earlier", categorizedChats.earlier, "earlier")}
-            {/* Show empty state if no chats at all */}
+            {renderCategorySection("Today", categorizedChats.today, "today")}
+            {renderCategorySection("Yesterday", categorizedChats.yesterday, "yesterday")}
+            {renderCategorySection("Previous 7 Days", categorizedChats.thisWeek, "thisWeek")}
+            {renderCategorySection("Previous 30 Days", categorizedChats.thisMonth, "thisMonth")}
+            {renderCategorySection("Earlier", categorizedChats.earlier, "earlier")}
             {chats.length === 0 && (
               <div className="h-full flex flex-col items-center justify-center text-center p-4">
                 <MessageSquare className="w-8 h-8 text-purple-500/50 mb-2" />
