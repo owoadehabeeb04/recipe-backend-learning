@@ -198,3 +198,111 @@ body {
   opacity: 1;
   transform: translateY(0);
 }
+
+
+@keyframes blinking-cursor {
+  0% { border-right-color: rgba(139, 92, 246, 0.8); }
+  50% { border-right-color: transparent; }
+  100% { border-right-color: rgba(139, 92, 246, 0.8); }
+}
+
+.streaming-text {
+  border-right: 2px solid rgba(139, 92, 246, 0.8);
+  animation: blinking-cursor 1s step-end infinite;
+}
+
+@keyframes appear {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-appear {
+  animation: appear 0.3s ease-out forwards;
+}
+
+
+@keyframes blinking-cursor {
+  0% { border-right-color: rgba(139, 92, 246, 0.8); }
+  50% { border-right-color: transparent; }
+  100% { border-right-color: rgba(139, 92, 246, 0.8); }
+}
+
+.streaming-text {
+  border-right: 2px solid rgba(139, 92, 246, 0.8);
+  animation: blinking-cursor 1s step-end infinite;
+}
+
+@keyframes appear {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-appear {
+  animation: appear 0.3s ease-out forwards;
+}
+
+/* Better table styling */
+.formatted-message table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+}
+
+.formatted-message th,
+.formatted-message td {
+  padding: 0.5rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.formatted-message th {
+  background-color: rgba(139, 92, 246, 0.2);
+  font-weight: 600;
+  color: #e9d5ff;
+}
+
+.formatted-message tr:nth-child(even) {
+  background-color: rgba(139, 92, 246, 0.1);
+}
+
+/* Proper list styling */
+.formatted-message ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.formatted-message ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.formatted-message li {
+  margin-bottom: 0.25rem;
+}
+
+/* Code block styling */
+.formatted-message code {
+  font-family: monospace;
+  background-color: rgba(30, 30, 30, 0.6);
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-size: 0.875em;
+}
+
+.formatted-message pre {
+  background-color: rgba(30, 30, 30, 0.6);
+  padding: 0.75rem;
+  border-radius: 0.25rem;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+.formatted-message pre code {
+  background-color: transparent;
+  padding: 0;
+  border-radius: 0;
+  font-size: 0.875em;
+}

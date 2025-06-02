@@ -3,6 +3,9 @@ import { motion } from "framer-motion";
 import { ChefHat, Copy, ThumbsUp, ThumbsDown, Check } from "lucide-react";
 import { format } from "date-fns";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import axios from "axios";
+import { useAuthStore } from "@/app/store/authStore";
 
 interface MessageProps {
   id: string;
@@ -23,25 +26,31 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   const [isTyping, setIsTyping] = useState(false);
   const [typingComplete, setTypingComplete] = useState(false);
   const fullMessageRef = useRef(message.message);
-  
+
   // Debug info
-  console.log(`Message ${message.id.substring(0,5)}... - isNew: ${message.isNew}, isAssistant: ${isAssistant}`);
+  console.log(
+    `Message ${message.id.substring(0, 5)}... - isNew: ${message.isNew}, isAssistant: ${isAssistant}`
+  );
 
   // Initialize state when the message changes
   useEffect(() => {
-    console.log(`Setting up message ${message.id.substring(0,5)}...`);
+    console.log(`Setting up message ${message.id.substring(0, 5)}...`);
     fullMessageRef.current = message.message;
 
     // Default to treating messages as new if isNew is undefined (for backward compatibility)
-    const shouldAnimate = (message.isNew !== false) && isAssistant;
-    
+    const shouldAnimate = message.isNew !== false && isAssistant;
+
     if (shouldAnimate) {
-      console.log(`Starting typing animation for message ${message.id.substring(0,5)}...`);
-      setDisplayText(""); 
+      console.log(
+        `Starting typing animation for message ${message.id.substring(0, 5)}...`
+      );
+      setDisplayText("");
       setTypingComplete(false);
       setIsTyping(true);
     } else {
-      console.log(`Showing full message immediately for ${message.id.substring(0,5)}...`);
+      console.log(
+        `Showing full message immediately for ${message.id.substring(0, 5)}...`
+      );
       setDisplayText(message.message);
       setTypingComplete(true);
       setIsTyping(false);
@@ -51,16 +60,25 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   // Typing effect
   useEffect(() => {
     if (!isAssistant || typingComplete || !isTyping) return;
-    
-    console.log(`Typing effect running for message ${message.id.substring(0,5)}...`);
-    
+
+    console.log(
+      `Typing effect running for message ${message.id.substring(0, 5)}...`
+    );
+
     let i = 0;
     const fullText = fullMessageRef.current;
-    const speed = 25; // Increased speed for better visibility
+    const speed = 35; // Increased speed for better visibility
     let timeout: NodeJS.Timeout;
 
-    // Skip animation for very short messages
-    if (fullText.length < 20) {
+    // Only skip animation for complex tables or very short messages
+    const hasComplexTable =
+      fullText.split("\n").filter((line) => line.trim().startsWith("|"))
+        .length > 3;
+
+    if (fullText.length < 15 || hasComplexTable) {
+      console.log(
+        `Skipping animation for ${hasComplexTable ? "complex table" : "short message"}`
+      );
       setDisplayText(fullText);
       setTypingComplete(true);
       setIsTyping(false);
@@ -82,7 +100,9 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
 
         timeout = setTimeout(type, delay);
       } else {
-        console.log(`Typing complete for message ${message.id.substring(0,5)}...`);
+        console.log(
+          `Typing complete for message ${message.id.substring(0, 5)}...`
+        );
         setTypingComplete(true);
         setIsTyping(false);
       }
@@ -90,16 +110,22 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
 
     // Start typing after a short delay
     timeout = setTimeout(() => {
-      console.log(`Starting actual typing for message ${message.id.substring(0,5)}...`);
+      console.log(
+        `Starting actual typing for message ${message.id.substring(0, 5)}...`
+      );
       type();
-    }, 300);
+    }, 100);
 
     return () => {
-      clearTimeout(timeout);
+      if (timeout) {
+        clearTimeout(timeout);
+      }
     };
   }, [isAssistant, typingComplete, isTyping, message.id]);
 
   const preprocessMarkdown = (content: string) => {
+    if (!content) return "";
+
     // Replace triple newlines with horizontal rules for better section separation
     let processed = content.replace(/\n\s*\n\s*\n/g, "\n\n---\n\n");
 
@@ -108,6 +134,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
 
     // Ensure bullet points have proper spacing
     processed = processed.replace(/\n\*/g, "\n\n*");
+
+    // Ensure proper table formatting - add a newline before tables if needed
+    processed = processed.replace(/([^\n])\n(\|[^\n]+\|)/g, "$1\n\n$2");
+    processed = processed.replace(/(\|[^\n]+\|)\n([^\n|])/g, "$1\n\n$2");
 
     return processed;
   };
@@ -124,7 +154,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
 
   // Show full text immediately function (like a "Skip" button)
   const showFullText = () => {
-    console.log(`Skipping typing for message ${message.id.substring(0,5)}...`);
+    console.log(`Skipping typing for message ${message.id.substring(0, 5)}...`);
     setDisplayText(fullMessageRef.current);
     setTypingComplete(true);
     setIsTyping(false);
@@ -166,6 +196,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
           {isAssistant ? (
             <div className="prose text-[0.8rem] prose-invert prose-sm max-w-none relative">
               <ReactMarkdown
+                remarkPlugins={[remarkGfm]}
                 components={{
                   p: ({ node, ...props }) => <p className="mb-4" {...props} />,
                   h3: ({ node, ...props }) => (
@@ -189,7 +220,67 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
                   li: ({ node, ...props }) => (
                     <li className="mb-1" {...props} />
                   ),
-                  br: ({ node, ...props }) => <br className="mb-2" {...props} />
+                  br: ({ node, ...props }) => (
+                    <br className="mb-2" {...props} />
+                  ),
+                  // Table components with improved styling
+                  table: ({ node, ...props }) => (
+                    <div className="overflow-x-auto mb-4 w-full">
+                      <table
+                        className="min-w-full border-collapse text-left text-[0.7rem]"
+                        {...props}
+                      />
+                    </div>
+                  ),
+                  thead: ({ node, ...props }) => (
+                    <thead className="bg-purple-900/30" {...props} />
+                  ),
+                  tbody: ({ node, ...props }) => <tbody {...props} />,
+                  tr: ({ node, children, ...props }) => {
+                    // Get the index from the parent tbody's children array
+                    const parentNode = node as any;
+                    const index =
+                      parentNode?.parent?.children?.indexOf(parentNode) ?? 0;
+                    return (
+                      <tr
+                        className={index % 2 ? "bg-purple-900/10" : undefined}
+                        {...props}
+                      />
+                    );
+                  },
+                  th: ({ node, ...props }) => (
+                    <th
+                      className="py-2 px-3 text-left font-medium text-purple-200 border-b border-purple-800/50"
+                      {...props}
+                    />
+                  ),
+                  td: ({ node, ...props }) => (
+                    <td
+                      className="py-1.5 px-2 border-b border-purple-800/20 align-top"
+                      {...props}
+                    />
+                  ),
+                  code: ({ node, ...props }) => (
+                    <code
+                      className="px-1 py-0.5 bg-black/30 rounded text-pink-300 font-mono text-[0.75rem]"
+                      {...props}
+                    />
+                  ),
+                  pre: ({ node, ...props }) => (
+                    <pre
+                      className="p-3 bg-black/30 rounded-md overflow-x-auto mb-4 font-mono text-[0.75rem]"
+                      {...props}
+                    />
+                  ),
+                  em: ({ node, ...props }) => (
+                    <em className="text-purple-300" {...props} />
+                  ),
+                  strong: ({ node, ...props }) => (
+                    <strong
+                      className="text-purple-200 font-semibold"
+                      {...props}
+                    />
+                  )
                 }}
               >
                 {preprocessMarkdown(displayText)}

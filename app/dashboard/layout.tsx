@@ -289,10 +289,12 @@ export default function DashboardLayout({ children }: any) {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 border-r border-white/10 bg-black/30 backdrop-blur-xl transition-transform ${
-          isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0`}
-      >
+  className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 border-r border-white/10 bg-black/30 backdrop-blur-xl transition-transform ${
+    pathname.startsWith('/dashboard/aria') 
+      ? '-translate-x-full' 
+      : isMobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+  }`}
+>
         <div className="h-full px-3 overflow-y-auto">
           <div className="flex flex-col h-full justify-between">
             {/* Main menu items */}
@@ -383,9 +385,8 @@ export default function DashboardLayout({ children }: any) {
       </aside>
 
       {/* Content area */}
-      <div className="p-4 md:ml-64 pt-20">
-        <div className="p-4 rounded-lg">{children}</div>
-      </div>
+      <div className={` ${pathname.startsWith('/dashboard/aria') ? 'pt-16 p-2 sm:p-4  sm:pt-20' : 'md:ml-64 p-4 pt-20'} `}>  <div className="p-4 rounded-lg">{children}</div>
+</div>
     </div>
   );
 }

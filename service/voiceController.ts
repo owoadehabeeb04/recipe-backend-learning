@@ -24,7 +24,8 @@ export class SpeechService {
   }
 
   private initSpeechRecognition() {
-    if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+    
+    if (typeof window !== 'undefined' && 'SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
       // Create speech recognition instance
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       this.recognition = new SpeechRecognition();
@@ -209,97 +210,115 @@ export class SpeechService {
   }
 }
 
-export const sendVoiceMessage = async (token: string, chatId: string, transcription: string) => {
-    try {
-      const response = await axios.post(
-        `${API_URL}/chatbot/chats/${chatId}/voice`, 
-        { transcription }, 
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      return response.data;
-    } catch (error) {
-      console.error('Error sending voice message', error);
-      throw error;
-    }
-  };
+// export const sendVoiceMessage = async (token: string, chatId: string, transcription: string) => {
+//     try {
+//       const response = await axios.post(
+//         `${API_URL}/chatbot/chats/${chatId}/voice`, 
+//         { transcription }, 
+//         { headers: { Authorization: `Bearer ${token}` } }
+//       );
+//       return response.data;
+//     } catch (error) {
+//       console.error('Error sending voice message', error);
+//       throw error;
+//     }
+//   };
   
-  // Add streaming support
-  export const sendVoiceMessageStream = async (
-    token: string, 
-    chatId: string, 
-    transcription: string,
-    onChunk: (chunk: string) => void,
-    onComplete: (message: any) => void
-  ) => {
-    try {
-      const response = await fetch(`${API_URL}/chatbot/chats/${chatId}/voice-stream`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ transcription }),
-      });
+// // Add streaming support with improved chunk handling
+// export const sendVoiceMessageStream = async (
+//     token: string,
+//     chatId: string,
+//     transcription: string,
+//     onChunk: (chunk: string) => void,
+//     onComplete: (message: any) => void,
+//     onError?: (error: string) => void
+//   ) => {
+//     try {
+//       const response = await fetch(`${API_URL}/chatbot/chats/${chatId}/voice-stream`, {
+//         method: 'POST',
+//         headers: {
+//           'Authorization': `Bearer ${token}`,
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({ transcription }),
+//       });
   
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
-      }
+//       if (!response.ok) {
+//         throw new Error(`Error: ${response.status}`);
+//       }
   
-      // Get the reader from the response body stream
-      const reader = response.body?.getReader();
-      if (!reader) throw new Error('Response body is null');
+//       const reader = response.body?.getReader();
+//       if (!reader) throw new Error('Response body is null');
   
-      const decoder = new TextDecoder();
-      let buffer = '';
+//       const decoder = new TextDecoder();
+//       let buffer = '';
   
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
+//       try {
+//         while (true) {
+//           const { done, value } = await reader.read();
+//           if (done) break;
   
-        // Decode the chunk and add to buffer
-        buffer += decoder.decode(value, { stream: true });
+//           // Decode the received chunk
+//           const chunk = decoder.decode(value, { stream: true });
+//           buffer += chunk;
+  
+//           // Process complete lines
+//           const lines = buffer.split('\n');
+//           buffer = lines.pop() || ''; // Keep incomplete line in buffer
+//           for (const line of lines) {
+//             if (!line.trim() || !line.startsWith('data: ')) continue;
         
-        // Process complete lines
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || ''; // Keep the last incomplete line in the buffer
+//             try {
+//               const jsonData = JSON.parse(line.substring(6));
         
-        for (const line of lines) {
-          if (!line.trim() || !line.startsWith('data: ')) continue;
-          
-          try {
-            const jsonData = JSON.parse(line.substring(6));
-            
-            if (jsonData.type === 'chunk' && jsonData.data.content) {
-              // Send each chunk to the UI immediately
-              onChunk(jsonData.data.content);
-            } else if (jsonData.type === 'complete') {
-              // Handle completion
-              onComplete(jsonData.data.aiMessage);
-            }
-          } catch (e) {
-            console.error('Error parsing JSON from stream:', e);
-          }
-        }
-      }
-      
-      // Process any remaining data in the buffer
-      if (buffer.trim().startsWith('data: ')) {
-        try {
-          const jsonData = JSON.parse(buffer.substring(6));
-          if (jsonData.type === 'complete') {
-            onComplete(jsonData.data.aiMessage);
-          }
-        } catch (e) {
-          console.error('Error parsing final JSON chunk:', e);
-        }
-      }
-      
-      return true;
-    } catch (error) {
-      console.error('Error streaming voice message:', error);
-      throw error;
-    }
-  };// Create a singleton instance
+//               switch (jsonData.type) {
+//                 case 'chunk':
+//                   if (jsonData.data?.content) {
+//                     onChunk(jsonData.data.content);
+//                   }
+//                   break;
+        
+                
+//                 case 'complete':
+//                   if (jsonData.data?.aiMessage) {
+//                     onComplete(jsonData.data.aiMessage);
+//                   }
+//                   return; // Exit the function on completion
+                
+//                 case 'error':
+//                   if (onError) {
+//                     onError(jsonData.data?.message || 'Stream error occurred');
+//                   }
+//                   return;
+                
+//                 case 'status':
+//                   // Handle status messages if needed
+//                   console.log('Status:', jsonData.data?.message);
+//                   break;
+                
+//                 default:
+//                   console.log('Unknown message type:', jsonData.type);
+//               }
+//             } catch (parseError) {
+//               console.error('Error parsing JSON from stream:', parseError, 'Line:', line);
+//             }
+//           }
+//         }
+//       } finally {
+//         reader.releaseLock();
+//       }
+  
+//       return true;
+//     } catch (error) {
+//       console.error('Error streaming voice message:', error);
+//       if (onError) {
+//         onError(error instanceof Error ? error.message : 'Unknown streaming error');
+//       }
+//       throw error;
+//     }
+//   };
+  
+
 export const speechService = new SpeechService();
 
 interface SpeechRecognitionErrorEvent extends Event {
