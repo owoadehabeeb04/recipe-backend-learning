@@ -37,6 +37,8 @@ interface Message {
   isNew?: boolean;
   fullMessage?: string;
   imageUrls?: any;
+  images?: Array<{ url: string }>;
+  hasImage?: boolean;
 }
 
 interface ChatInfo {
@@ -145,7 +147,10 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
       message: message || "Shared image(s)",
       timestamp: new Date(),
       isNew: true,
-      imageUrls: imagePreviewUrls
+      images: imagePreviewUrls.map(url => ({ url })), // Create array of objects with url property
+
+      hasImage: true,
+      
     };
     
     // Add message to state
@@ -165,20 +170,22 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
       // Structure the payload for the API
       const payload = {
         message: message || (images.length === 1 ? "Shared an image" : `Shared ${images.length} images`),
+        imageUrl: images.length > 1 ? cloudinaryUrls : cloudinaryUrls[0], // Use imageUrl for single image
       };
       
       // Add the appropriate image data based on count
       if (images.length === 1) {
         payload.imageUrl = cloudinaryUrls[0]; // FIXED property name
       } else {
-        payload.imageUrls = cloudinaryUrls.map(url => ({ url }));
+        // Send as plain string array instead of objects with url property
+        payload.imageUrl = cloudinaryUrls; // Direct array of strings
       }
       
       console.log('Sending payload to API:', payload);
       
       // Make the API call
-      const response = await axios.post(
-        `${API_URL}/chatbot/chats/${chatId}/message`,
+   const response = await axios.post(
+        `${API_URL}/chatbot/chats/${chatId}/${images.length > 1 ? 'images' : 'image'}`,
         payload,
         {
           headers: {
@@ -249,8 +256,9 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
               timestamp: new Date(apiUserMsg.createdAt),
               isNew: true,
               // Always include the image URLs we originally uploaded
-              imageUrls: imageUrls
-            }
+              images: imageUrls.map((url: any) => ({ url })), // Create array of objects with url property
+
+              hasImage: true,            }
           : msg
       )
     );
@@ -333,6 +341,7 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
       if (result.success && result.data) {
         console.log(result.data);
         const messages = result?.data || [];
+        console.log({messages})
 
         // Format messages for display
         const formattedMessages: Message[] = messages.map((msg: any) => ({
@@ -340,7 +349,9 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
           role: msg.role,
           message: msg.content,
           timestamp: new Date(msg.createdAt),
-          isNew: false // Mark existing messages as not new, so they don't animate
+          isNew: false,
+          images: msg.images,
+          hasImage: msg.hasImages
         }));
 
         // Update messages and chat info
@@ -497,7 +508,10 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
       role: "user",
       message: message,
       timestamp: new Date(),
-      isNew: true
+      isNew: true,
+      images: imagePreviewUrls.map(url => ({ url })), // Create array of objects with url property
+      hasImage: true,
+    
     };
 
     setMessages((prev) => [...prev, userMessage]);

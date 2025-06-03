@@ -197,33 +197,35 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
           } px-4 py-3`}
         >
           {/* Render images if present - MOVED OUTSIDE the isAssistant conditional */}
-          {message.imageUrls && message.imageUrls.length > 0 && (
+          {message?.images && message?.images.length > 0 && (
             <div
               className={`grid gap-2 mb-3 ${
-                message.imageUrls.length === 1
+                message?.images.length === 1
                   ? "grid-cols-1"
-                  : message.imageUrls.length === 2
+                  : message.images.length === 2
                   ? "grid-cols-2"
                   : "grid-cols-3"
               }`}
             >
-              {message.imageUrls.map((url, index) => (
+              {message.images.map((img, index) => {
+                console.log({img})
+              return  (
                 <div
                   key={index}
                   className={`rounded-lg overflow-hidden ${
-                    message.imageUrls && message.imageUrls.length > 2
+                    message.images && message.images.length > 2
                       ? "max-h-24 md:max-h-32"
                       : "max-h-48 md:max-h-64"
                   }`}
                 >
                   <img
-                    src={url.startsWith("blob:") ? url : `${process.env.NEXT_PUBLIC_API_URL}${url}`}
+                    src={img?.url}
                     alt={`Shared image ${index + 1}`}
                     className="w-full h-full object-cover"
-                    onClick={() => window.open(url.startsWith("blob:") ? url : `${process.env.NEXT_PUBLIC_API_URL}${url}`, '_blank')}
+                    onClick={() => window.open(img?.url, "_blank")}
                   />
                 </div>
-              ))}
+              )})}
             </div>
           )}
 
