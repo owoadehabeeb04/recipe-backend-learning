@@ -10,7 +10,9 @@ import {
   X,
   AlertCircle,
   MessageSquare,
-  AlertTriangle
+  AlertTriangle,
+  XCircle,
+  Upload
 } from "lucide-react";
 import axios from "axios";
 import ChatMessage from "./chatMessage";
@@ -23,6 +25,7 @@ import {
 } from "@/app/api/(chatbot)/chat";
 import { speechService } from "@/service/voiceController";
 import toast from "react-hot-toast";
+import { uploadToCloudinary } from "@/app/api/(recipe)/uploadImage";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
@@ -33,6 +36,7 @@ interface Message {
   timestamp: Date;
   isNew?: boolean;
   fullMessage?: string;
+  imageUrls?: any;
 }
 
 interface ChatInfo {
@@ -69,33 +73,202 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
   const [transcript, setTranscript] = useState("");
   const [isProcessingVoice, setIsProcessingVoice] = useState(false);
   const [isThinking, setIsThinking] = useState(false);
-  const testEnbdpoin = async () => {
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
+  const [isUploadingImages, setIsUploadingImages] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files?.length) return;
+    
+    const files = Array.from(e.target.files);
+    setSelectedImages(prev => [...prev, ...files]);
+    
+    // Generate preview URLs
+    const newPreviewUrls = files.map(file => URL.createObjectURL(file));
+    setImagePreviewUrls(prev => [...prev, ...newPreviewUrls]);
+    
+    // Clear the input so the same file can be selected again
+    e.target.value = '';
+  };
+  
+  // Remove selected image
+  const removeSelectedImage = (index: number) => {
+    // Revoke the object URL to avoid memory leaks
+    URL.revokeObjectURL(imagePreviewUrls[index]);
+    
+    setSelectedImages(prev => prev.filter((_, i) => i !== index));
+    setImagePreviewUrls(prev => prev.filter((_, i) => i !== index));
+  };
+  
+
+  // Submit handler with images
+  const handleSubmitWithImages = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if ((!input.trim() && selectedImages.length === 0) || isLoading || isProcessingVoice) return;
+    
+    // Create or select chat
+    if (!selectedChatId || selectedChatId === "new") {
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        const result: any = await createChat(token);
+        
+        if (result.success && result.data) {
+          setSelectedChatId(result.data._id);
+          await sendImageMessageToChat(result.data._id, input, selectedImages);
+        } else {
+          throw new Error("Failed to create new chat");
+        }
+      } catch (err) {
+        console.error("Error creating chat:", err);
+        setError("Failed to create a new chat. Please try again.");
+        setIsLoading(false);
+      }
+    } else {
+      await sendImageMessageToChat(selectedChatId, input, selectedImages);
+    }
+  };
+
+  // Updated function for Cloudinary images
+  const sendImageMessageToChat = async (chatId: string, message: string, images: File[]) => {
+    if (!token) return;
+    
+    const tempMessageId = Date.now().toString();
+    
+    // Create a temporary user message with local image previews
+    const userMessage: Message = {
+      id: tempMessageId,
+      role: "user",
+      message: message || "Shared image(s)",
+      timestamp: new Date(),
+      isNew: true,
+      imageUrls: imagePreviewUrls
+    };
+    
+    // Add message to state
+    setMessages(prev => [...prev, userMessage]);
+    setInput("");
+    setIsThinking(true);
+    setIsLoading(true);
+    setIsUploadingImages(true);
+    setError(null);
+    
     try {
+      // Upload all images to Cloudinary first
+      const uploadPromises = images.map(image => uploadToCloudinary(image));
+      const cloudinaryUrls = await Promise.all(uploadPromises);
+      console.log('Uploaded images to Cloudinary:', cloudinaryUrls);
+      
+      // Structure the payload for the API
+      const payload = {
+        message: message || (images.length === 1 ? "Shared an image" : `Shared ${images.length} images`),
+      };
+      
+      // Add the appropriate image data based on count
+      if (images.length === 1) {
+        payload.imageUrl = cloudinaryUrls[0]; // FIXED property name
+      } else {
+        payload.imageUrls = cloudinaryUrls.map(url => ({ url }));
+      }
+      
+      console.log('Sending payload to API:', payload);
+      
+      // Make the API call
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/chatbot/test-intent`,
-        {
-          text: {
-            text: "show me my recipes."
-          }
-        },
+        `${API_URL}/chatbot/chats/${chatId}/message`,
+        payload,
         {
           headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token || ""}`
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
           }
         }
       );
-
-      console.log(response);
-    } catch (error) {
-      console.error("Error in testEnbdpoin:", error);
-      throw error;
+      
+      console.log('API response:', response.data);
+      
+      // Update the messages in the UI with the actual Cloudinary URLs
+      handleImageResponse(response.data, tempMessageId, cloudinaryUrls);
+      
+    } catch (err: any) {
+      console.error("Error sending image message:", err);
+      
+      let errorMessage = "Failed to send image(s). Please try again.";
+      if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      } else if (err.message) {
+        errorMessage = `Error: ${err.message}`;
+      }
+      
+      setError(errorMessage);
+      toast.error(errorMessage);
+      
+      // Remove the temporary message
+      setMessages(prev => prev.filter(msg => msg.id !== tempMessageId));
+    } finally {
+      setIsLoading(false);
+      setIsThinking(false);
+      setIsUploadingImages(false);
+      // Clear selected images
+      setSelectedImages([]);
+      // Clear preview URLs and revoke object URLs
+      imagePreviewUrls.forEach(url => URL.revokeObjectURL(url));
+      setImagePreviewUrls([]);
+      
+      // Scroll to bottom after message is added
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
     }
   };
-  useEffect(() => {
-    console.log("reach");
-    testEnbdpoin();
-  }, []);
+  
+  // Handle API response
+ const handleImageResponse = (data: any, tempMessageId: string, cloudinaryUrls?: string[]) => {
+  if (data.success && data.data) {
+    const { userMessage: apiUserMsg, aiMessage: assistantMessage } = data.data;
+    
+    console.log('API response userMessage:', apiUserMsg);
+    
+    // Make sure we have image URLs regardless of API response
+    const imageUrls = cloudinaryUrls || 
+      (apiUserMsg.images && apiUserMsg.images.length > 0 
+        ? apiUserMsg.images.map((img: any) => img.url) 
+        : []);
+    
+    // Replace temporary message with actual message from API
+    setMessages(prev => 
+      prev.map(msg => 
+        msg.id === tempMessageId 
+          ? {
+              id: apiUserMsg._id,
+              role: "user",
+              message: apiUserMsg.content,
+              timestamp: new Date(apiUserMsg.createdAt),
+              isNew: true,
+              // Always include the image URLs we originally uploaded
+              imageUrls: imageUrls
+            }
+          : msg
+      )
+    );
+    
+    if (assistantMessage) {
+      const formattedAssistantMessage: Message = {
+        id: assistantMessage._id,
+        role: "assistant",
+        message: assistantMessage.content,
+        timestamp: new Date(assistantMessage.createdAt),
+        isNew: true
+      };
+      
+      setMessages(prev => [...prev, formattedAssistantMessage]);
+    }
+  }
+};
+
   // Initialize speech service
   useEffect(() => {
     // Set up handlers for the speech service
@@ -549,82 +722,153 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
             </div>
           </div>
         )}
-        <form onSubmit={handleSubmit} className="flex space-x-2 items-center">
-          <div className="flex-1 bg-purple-900/30 border-2 border-purple-600/40 hover:border-purple-500/50 focus-within:border-purple-400 shadow-[0_0_10px_rgba(147,51,234,0.2)] transition-all duration-200 rounded-xl flex items-center overflow-hidden">
-            <input
-              type="text"
-              value={isRecording ? transcript || "Listening..." : input}
-              onChange={(e) => !isRecording && setInput(e.target.value)}
-              placeholder={
-                isRecording ? "Listening..." : "Ask Aria about cooking..."
-              }
-              className="flex-1 bg-transparent px-4 py-3 text-base text-white placeholder:text-purple-300/80 focus:outline-none min-w-0"
-              disabled={isLoading || isProcessingVoice || isRecording}
-            />
-
-            <div className="flex shrink-0 mr-1">
-              {input && !isRecording && (
-                <button
-                  type="button"
-                  onClick={() => setInput("")}
-                  className="p-2 text-purple-300 hover:text-white active:text-pink-300 transition-colors"
-                  disabled={isLoading || isProcessingVoice}
-                >
-                  <X className="w-4 h-4 sm:w-5 sm:h-5" />
-                </button>
-              )}
-              <button
-                type="button"
-                onClick={toggleRecording}
-                className={`p-2 ${
-                  isRecording
-                    ? "text-pink-400 bg-pink-500/20 rounded-full"
-                    : "text-purple-300 hover:text-white active:bg-purple-800/30"
-                } transition-colors`}
-                disabled={isLoading || isProcessingVoice}
-              >
-                {isRecording ? (
-                  <MicOff className="w-4 h-4 sm:w-5 sm:h-5 animate-pulse" />
-                ) : (
-                  <Mic className="w-4 h-4 sm:w-5 sm:h-5" />
-                )}
-              </button>
-
-              <button
-                type="button"
-                className="p-2 text-purple-300 hover:text-white active:bg-purple-800/30 transition-colors"
-                disabled={isLoading || isProcessingVoice || isRecording}
-              >
-                <Image className="w-4 h-4 sm:w-5 sm:h-5" />
-              </button>
-            </div>
+     <form onSubmit={selectedImages.length > 0 ? handleSubmitWithImages : handleSubmit} className="flex flex-col space-y-2">
+  {/* Hidden file input for image selection */}
+  <input
+    type="file"
+    ref={fileInputRef}
+    onChange={handleImageSelect}
+    accept="image/*"
+    multiple
+    className="hidden"
+    disabled={isLoading || isProcessingVoice || isRecording}
+  />
+  
+  {/* Selected images preview */}
+  {selectedImages.length > 0 && (
+    <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-thin scrollbar-thumb-purple-500 scrollbar-track-purple-900/20">
+      {imagePreviewUrls.map((url, index) => (
+        <div key={index} className="relative flex-shrink-0 w-16 h-16 rounded-md overflow-hidden group border border-purple-500/30">
+          <img src={url} alt={`Selected ${index+1}`} className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+            <button
+              type="button"
+              onClick={() => removeSelectedImage(index)}
+              className="text-white/90 hover:text-white"
+            >
+              <XCircle className="w-5 h-5" />
+            </button>
           </div>
+        </div>
+      ))}
+    </div>
+  )}
 
-          <button
-            type="submit"
-            onClick={(e) => {
-              if (isRecording && transcript.trim()) {
-                e.preventDefault();
-                speechService.stopRecording();
-                handleVoiceSubmit(transcript);
-              }
-            }}
-            className={`p-3 rounded-xl shadow-lg ${
-              isLoading || isProcessingVoice || (!input.trim() && !isRecording)
-                ? "bg-purple-900/50 text-purple-300 cursor-not-allowed"
-                : "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 active:from-purple-800 active:to-pink-800 transform active:scale-95 transition-all shadow-[0_0_15px_rgba(219,39,119,0.3)]"
-            }`}
-            disabled={
-              isLoading || isProcessingVoice || (!input.trim() && !isRecording)
-            }
-          >
-            {isLoading || isProcessingVoice ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
-            ) : (
-              <SendHorizontal className="w-5 h-5" />
-            )}
-          </button>
-        </form>
+  {/* Textarea for message input */}
+  <div className="relative bg-purple-900/30 border-2 border-purple-600/40 hover:border-purple-500/50 focus-within:border-purple-400 shadow-[0_0_10px_rgba(147,51,234,0.2)] transition-all duration-200 rounded-xl overflow-hidden">
+    <textarea
+      value={isRecording ? transcript || "Listening..." : input}
+      onChange={(e) => !isRecording && setInput(e.target.value)}
+      placeholder={
+        isRecording ? "Listening..." : 
+        selectedImages.length > 0 ? "Add a comment about your image(s)..." : 
+        "Ask Aria about cooking..."
+      }
+      rows={1}
+      onInput={(e) => {
+        // Auto-resize the textarea
+        const target = e.target as HTMLTextAreaElement;
+        target.style.height = 'auto';
+        target.style.height = `${Math.min(target.scrollHeight, 150)}px`; // Max height of 150px
+      }}
+      className="w-full bg-transparent px-4 py-3 text-base text-white placeholder:text-purple-300/80 focus:outline-none resize-none min-h-[50px]"
+      disabled={isLoading || isProcessingVoice || isRecording}
+    />
+
+    {/* Clear button positioned at top right */}
+    {input && !isRecording && (
+      <button
+        type="button"
+        onClick={() => setInput("")}
+        className="absolute top-2 right-2 p-1.5 text-purple-300 hover:text-white active:text-pink-300 transition-colors rounded-full hover:bg-purple-800/30"
+        disabled={isLoading || isProcessingVoice}
+      >
+        <X className="w-4 h-4" />
+      </button>
+    )}
+  </div>
+
+  {/* Action buttons row below the textarea */}
+  <div className="flex items-center justify-between">
+    <div className="flex space-x-1">
+      <button
+        type="button"
+        onClick={toggleRecording}
+        className={`p-2 rounded-lg ${
+          isRecording
+            ? "bg-pink-500/20 text-pink-400"
+            : "bg-purple-900/40 text-purple-300 hover:bg-purple-800/50 hover:text-white"
+        } transition-all`}
+        disabled={isLoading || isProcessingVoice || selectedImages.length > 0}
+      >
+        <div className="flex items-center">
+          {isRecording ? (
+            <>
+              <MicOff className="w-4 h-4 sm:w-5 sm:h-5 animate-pulse mr-1.5" />
+              <span className="text-sm font-medium">Stop</span>
+            </>
+          ) : (
+            <>
+              <Mic className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5" />
+              <span className="text-sm font-medium">Voice</span>
+            </>
+          )}
+        </div>
+      </button>
+
+      <button
+        type="button"
+        onClick={() => fileInputRef.current?.click()}
+        className={`p-2 rounded-lg ${
+          selectedImages.length > 0
+            ? "bg-purple-500/20 text-purple-400"
+            : "bg-purple-900/40 text-purple-300 hover:bg-purple-800/50 hover:text-white"
+        } transition-all`}
+        disabled={isLoading || isProcessingVoice || isRecording}
+      >
+        <div className="flex items-center">
+          <Upload className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5" />
+          <span className="text-sm font-medium">
+            {selectedImages.length > 0 ? `${selectedImages.length} Image(s)` : "Image"}
+          </span>
+        </div>
+      </button>
+    </div>
+
+    <button
+      type="submit"
+      onClick={(e) => {
+        if (isRecording && transcript.trim()) {
+          e.preventDefault();
+          speechService.stopRecording();
+          handleVoiceSubmit(transcript);
+        }
+      }}
+      className={`px-4 py-2.5 rounded-xl shadow-lg ${
+        isLoading || isProcessingVoice || (!input.trim() && selectedImages.length === 0 && !isRecording)
+          ? "bg-purple-900/50 text-purple-300 cursor-not-allowed"
+          : "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 active:from-purple-800 active:to-pink-800 transform active:scale-95 transition-all shadow-[0_0_15px_rgba(219,39,119,0.3)]"
+      }`}
+      disabled={
+        isLoading || isProcessingVoice || (!input.trim() && selectedImages.length === 0 && !isRecording)
+      }
+    >
+      <div className="flex items-center">
+        {isLoading || isProcessingVoice ? (
+          <>
+            <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5 animate-spin" />
+            <span>{isUploadingImages ? "Uploading..." : "Processing..."}</span>
+          </>
+        ) : (
+          <>
+            <SendHorizontal className="w-4 h-4 sm:w-5 sm:h-5 mr-1.5" />
+            <span>Send</span>
+          </>
+        )}
+      </div>
+    </button>
+  </div>
+</form>
         {isProcessingVoice && (
           <div className="fixed bottom-4 sm:bottom-20 right-4 z-30 bg-purple-600/90 text-white px-4 py-2 rounded-full flex items-center shadow-lg">
             <span className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></span>

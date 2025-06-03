@@ -7,16 +7,19 @@ import remarkGfm from "remark-gfm";
 import axios from "axios";
 import { useAuthStore } from "@/app/store/authStore";
 
-interface MessageProps {
+// Update your Message interface to include imageUrls
+interface Message {
   id: string;
   role: "user" | "assistant";
   message: string;
   timestamp: Date;
   isNew?: boolean;
+  fullMessage?: string;
+  imageUrls?: string[]; // Add this field
 }
 
 interface ChatMessageProps {
-  message: MessageProps;
+  message: Message;
 }
 
 const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
@@ -27,10 +30,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   const [typingComplete, setTypingComplete] = useState(false);
   const fullMessageRef = useRef(message.message);
 
-  // Debug info
-  console.log(
-    `Message ${message.id.substring(0, 5)}... - isNew: ${message.isNew}, isAssistant: ${isAssistant}`
-  );
+  // // Debug info
+  // console.log(
+  //   `Message ${message.id.substring(0, 5)}... - isNew: ${message.isNew}, isAssistant: ${isAssistant}`
+  // );
 
   // Initialize state when the message changes
   useEffect(() => {
@@ -193,6 +196,38 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
               : "bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 rounded-bl-xl rounded-br-none"
           } px-4 py-3`}
         >
+          {/* Render images if present - MOVED OUTSIDE the isAssistant conditional */}
+          {message.imageUrls && message.imageUrls.length > 0 && (
+            <div
+              className={`grid gap-2 mb-3 ${
+                message.imageUrls.length === 1
+                  ? "grid-cols-1"
+                  : message.imageUrls.length === 2
+                  ? "grid-cols-2"
+                  : "grid-cols-3"
+              }`}
+            >
+              {message.imageUrls.map((url, index) => (
+                <div
+                  key={index}
+                  className={`rounded-lg overflow-hidden ${
+                    message.imageUrls && message.imageUrls.length > 2
+                      ? "max-h-24 md:max-h-32"
+                      : "max-h-48 md:max-h-64"
+                  }`}
+                >
+                  <img
+                    src={url.startsWith("blob:") ? url : `${process.env.NEXT_PUBLIC_API_URL}${url}`}
+                    alt={`Shared image ${index + 1}`}
+                    className="w-full h-full object-cover"
+                    onClick={() => window.open(url.startsWith("blob:") ? url : `${process.env.NEXT_PUBLIC_API_URL}${url}`, '_blank')}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Content based on role */}
           {isAssistant ? (
             <div className="prose text-[0.8rem] prose-invert prose-sm max-w-none relative">
               <ReactMarkdown
@@ -304,7 +339,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
               )}
             </div>
           ) : (
-            <p className="text-white text-[0.8rem]">{message.message}</p>
+            // Only render text message if there is content (otherwise just show the images)
+            message.message && <p className="text-white text-[0.8rem]">{message.message}</p>
           )}
         </div>
 
