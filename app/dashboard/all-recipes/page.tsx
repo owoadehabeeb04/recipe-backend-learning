@@ -228,7 +228,6 @@ const AllRecipesPage = () => {
         sort: sortBy
       });
 
-      console.log("API Response:", response);
       
       if (response && response.status === 200) {
         const allRecipes = response.data || [];

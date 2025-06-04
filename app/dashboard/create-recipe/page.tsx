@@ -20,8 +20,6 @@ import NutritionSection from "@/components/create-recipe-component/nutitionalSec
 import CalculateNutritionButton from "@/components/create-recipe-component/calculateNutritionButton";
 const CreateRecipePage = () => {
   const { user, token } = useAuthStore();
-  console.log(user?._id, 'id of the user');
-  console.log(user, token);
   const router = useRouter();
   const [ingredients, setIngredients] = useState([
     { name: "", quantity: "", unit: "" }
@@ -93,7 +91,6 @@ const CreateRecipePage = () => {
         return;
       }
 
-      console.log({ recipeData });
 
       const response = await createRecipe(recipeData, token);
 
@@ -201,7 +198,6 @@ const CreateRecipePage = () => {
 
           // Upload to Cloudinary
           const cloudinaryUrl = await uploadToCloudinary(file);
-          console.log({ cloudinaryUrl });
           setPreviewImage(cloudinaryUrl);
           setFeaturedImage(cloudinaryUrl);
 
@@ -279,7 +275,6 @@ const CreateRecipePage = () => {
       ...(user?.role === "user" && { isPrivate }),
 
     };    
-    console.log({ recipeData });
     // Submit with React Query mutation
     await handleCreateRecipe(recipeData);
   };
@@ -332,8 +327,7 @@ const CreateRecipePage = () => {
     // );
   };
 
-  console.log({ previewImage });
-  console.log({ recipeImage });
+
   return (
     <div className="pb-20">
       <motion.div

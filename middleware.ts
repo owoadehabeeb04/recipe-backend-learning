@@ -23,7 +23,6 @@ const PUBLIC_ROUTES = [
 ];
 
 export function middleware(request: NextRequest) {
-  console.log('Simple middleware test running for:', request.nextUrl.pathname);
   return NextResponse.next();
 }
 // export function middleware(request: NextRequest) {

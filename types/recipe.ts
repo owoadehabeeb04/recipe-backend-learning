@@ -1,6 +1,7 @@
 
 // Recipe type definition
 export interface Recipe {
+  createdBy?: string;
   userDetails?: {
     name: string;
     email: string;

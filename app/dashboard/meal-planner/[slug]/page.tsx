@@ -49,9 +49,7 @@ export default function MealPlanPage({
         setError("Response missing expected data structure");
         return;
       }
-      console.log({ mealPlan: response.data });
     
-      console.log('RESPONSE', response)
       // Finally, set the meal plan data
       setMealPlan(response.data);
       setError(null);
@@ -76,7 +74,6 @@ export default function MealPlanPage({
   }
 
   if (error) {
-    console.log({ error });
     console.error("API request failed:", error);
     return (
       <MealPlannerError

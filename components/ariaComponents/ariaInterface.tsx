@@ -4,7 +4,6 @@ import {
   Mic,
   MicOff,
   Sparkles,
-  Image,
   PlusCircle,
   Loader2,
   X,
@@ -12,8 +11,10 @@ import {
   MessageSquare,
   AlertTriangle,
   XCircle,
-  Upload
-} from "lucide-react";
+  Upload,
+  ImageIcon
+,} from "lucide-react";
+import Image from "next/image";
 import axios from "axios";
 import ChatMessage from "./chatMessage";
 import SuggestionChip from "./suggestionChip";
@@ -23,6 +24,7 @@ import {
   getChatMessages,
   sendMessage
 } from "@/app/api/(chatbot)/chat";
+
 import { speechService } from "@/service/voiceController";
 import toast from "react-hot-toast";
 import { uploadToCloudinary } from "@/app/api/(recipe)/uploadImage";
@@ -171,7 +173,6 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
       // Upload all images to Cloudinary first
       const uploadPromises = images.map((image) => uploadToCloudinary(image));
       const cloudinaryUrls = await Promise.all(uploadPromises);
-      console.log("Uploaded images to Cloudinary:", cloudinaryUrls);
 
       // Structure the payload for the API
       const payload: any = {
@@ -189,7 +190,6 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
         payload.imageUrls = cloudinaryUrls; // Direct array of strings
       }
 
-      console.log("Sending payload to API:", payload);
 
       // Make the API call
       const response = await axios.post(
@@ -203,7 +203,6 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
         }
       );
 
-      console.log("API response:", response.data);
 
       // Critical change: Reload all messages from server instead of trying to update locally
       if (response.data.success) {
@@ -285,7 +284,6 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
       const { userMessage: apiUserMsg, aiMessage: assistantMessage } =
         data.data;
 
-      console.log("API response userMessage:", apiUserMsg);
 
       // Make sure we have image URLs regardless of API response
       const imageUrls =
@@ -395,9 +393,7 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
 
       // Important: Check for both result.success and result.data
       if (result.success && result.data) {
-        console.log(result.data);
         const messages = result?.data || [];
-        console.log({ messages });
 
         // Format messages for display
         const formattedMessages: Message[] = messages.map((msg: any) => ({
@@ -469,7 +465,6 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
       setError(null);
 
       const result: any = await createChat(token);
-      console.log({ result });
       if (result.success && result.data) {
         setSelectedChatId(result.data._id);
       } else {
@@ -624,7 +619,8 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
     }
   };
 
-  const useSuggestion = (suggestion: string) => {
+ 
+  const applySuggestion = (suggestion: string) => {
     setInput(suggestion);
   };
 
@@ -739,12 +735,12 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
 
       {messages.length === 0 && !isLoading && (
         <div className="px-2  mt-auto sm:px-4 py-2 sm:py-3 border-t border-purple-800/30 flex overflow-x-auto no-scrollbar pb-1 -mx-0.5">
-          {suggestions.map((suggestion, index) => (
-            <SuggestionChip
-              key={index}
-              text={suggestion}
-              onClick={() => useSuggestion(suggestion)}
-            />
+         {suggestions.map((suggestion, index) => (
+          <SuggestionChip
+            key={index}
+            text={suggestion}
+            onClick={() => applySuggestion(suggestion)}
+          />
           ))}
         </div>
       )}
@@ -816,8 +812,10 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
                   key={index}
                   className="relative flex-shrink-0 w-16 h-16 rounded-md overflow-hidden group border border-purple-500/30"
                 >
-                  <img
+                  <Image
                     src={url}
+                    width={64}
+                    height={64}
                     alt={`Selected ${index + 1}`}
                     className="w-full h-full object-cover"
                   />

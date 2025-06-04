@@ -43,6 +43,9 @@ interface Recipe {
     role: string;
     _id: string;
   };
+  instructions?: string[];
+  reviews?: any;
+  images?: string[];
   userDetails?: {
     name: string;
     email: string;
@@ -87,7 +90,6 @@ const RecipeDetailPage = () => {
   }, [data]);
 
   const recipe: Recipe | null = data?.success ? data.data : null;
-  console.log({ recipe });
   const adjustServingQuantity = (
     ingredient: Ingredient,
     originalServings: number
@@ -137,8 +139,6 @@ const RecipeDetailPage = () => {
       if (!token) {
         throw new Error("Authentication required");
       }
-      console.log("token from the toggle endpoint", token);
-      console.log("TOKEN PROVIDED WHEN CALLING API:", token);
       return await toggleRecipePublishStatus(recipeId, token);
     },
     onMutate: () => {
@@ -173,7 +173,6 @@ const RecipeDetailPage = () => {
       toast.error("Recipe ID not found");
       return;
     }
-    console.log(token);
 
     togglePublishMutation.mutate({
       recipeId: recipe._id,
@@ -842,7 +841,6 @@ const RecipeDetailPage = () => {
         recipeImage={recipe.images?.[0] || ''}
         totalSteps={recipe.instructions?.length || 0}
         onCookingStatusChange={(status) => {
-          console.log('Cooking status changed:', status);
           // You can update UI or trigger other actions based on status changes
         }}
       />

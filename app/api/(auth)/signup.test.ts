@@ -7,7 +7,6 @@ async function testRegistration() {
       email: 'test@example.com',
       password: 'Test123'
     });
-    console.log('Registration response:', response.data);
   } catch (error) {
     if (axios.isAxiosError(error)) {
       console.error('Registration failed:', error.response?.data);

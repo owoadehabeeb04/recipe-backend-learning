@@ -31,7 +31,6 @@ export const uploadToCloudinary = async (file: File): Promise<string> => {
       }
   
       const data = await response.json();
-      console.log({data})
       if (!data.secure_url) {
         throw new Error('Upload succeeded but no URL was returned');
       }

@@ -1,11 +1,21 @@
 "use client";
 
-import AriaInterface from "@/components/ariaComponents/ariaInterface";
-import ChatHistory from "@/components/ariaComponents/chatHistory";
+// import AriaInterface from "@/components/ariaComponents/ariaInterface";
+// import ChatHistory from "@/components/ariaComponents/chatHistory";
 import React, { useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { Sparkles } from "lucide-react";
+import dynamic from 'next/dynamic';
 
+
+const AriaInterface = dynamic(
+  () => import('@/components/ariaComponents/ariaInterface'), 
+  { ssr: false }
+);
+const ChatHistory = dynamic(
+  () => import('@/components/ariaComponents/chatHistory'), 
+  { ssr: false }
+);
 const Aria = () => {
   const [selectedChat, setSelectedChat] = useState<string | null>(null);
   const [showSidebar, setShowSidebar] = useState<boolean>(false);
@@ -21,7 +31,7 @@ const Aria = () => {
   return (
     <div className="flex  overflow-y-auto">
       {/* Desktop sidebar - always fixed on desktop */}
-      <div className="hidden md:block w-[300px]  fixed overflow-y-scroll inset-y-0 left-0 border-r border-gray-800 flex flex-col">
+      <div className="hidden  w-[300px]  fixed overflow-y-scroll inset-y-0 left-0 border-r border-gray-800 md:flex flex-col">
         {/* Aria header for desktop sidebar */}
         <div className="px-3 py-4 border-b border-gray-800 flex items-center">
           {/* <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 flex items-center justify-center mr-2">

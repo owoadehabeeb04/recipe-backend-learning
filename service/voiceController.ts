@@ -20,10 +20,17 @@ export class SpeechService {
   private interimResults: boolean = true;
 
   constructor() {
-    this.initSpeechRecognition();
-  }
+    if (typeof window !== 'undefined') {
+      this.initSpeechRecognition();
+    }  }
+
 
   private initSpeechRecognition() {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      console.warn('Speech recognition not supported in this browser');
+      return;
+    }
     
     if (typeof window !== 'undefined' && 'SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
       // Create speech recognition instance
@@ -97,6 +104,15 @@ export class SpeechService {
   // Start recording
   public startRecording() {
     if (!this.recognition) {
+      if (typeof window !== 'undefined') {
+        this.initSpeechRecognition(); // Try to initialize if we're now in the browser
+        if (!this.recognition) {
+          if (this.onError) {
+            this.onError('Speech recognition not supported in your browser');
+          }
+          return false;
+        }
+      } 
       if (this.onError) {
         this.onError('Speech recognition not supported in this browser');
       }
@@ -105,7 +121,6 @@ export class SpeechService {
 
     // First check if already recording to prevent errors
     if (this.isRecording) {
-      console.log('Recognition already active, no need to start again');
       return true; // Return true since recording is active
     }
 
@@ -125,7 +140,6 @@ export class SpeechService {
       // Check for the specific "already started" error
       if (error.name === 'InvalidStateError' || 
           (error.message && error.message.includes('already started'))) {
-        console.log('Recognition was already running');
         this.isRecording = true;
         
         if (this.onRecordingStateChange) {

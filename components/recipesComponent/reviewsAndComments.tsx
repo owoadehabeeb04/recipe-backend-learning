@@ -65,9 +65,7 @@ const ReviewsAndRatings: React.FC<ReviewsProps> = ({
   const [currentUserReview, setCurrentUserReview] = useState<Review | null>(
     null
   );
-  useEffect(() => {
-    console.log({ currentUserReview });
-  }, []);
+
   // Pagination and sorting
   const [hasMore, setHasMore] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -398,7 +396,6 @@ const ReviewsAndRatings: React.FC<ReviewsProps> = ({
 
       // Log additional details for debugging
       if (error.response) {
-        console.log("Error response data:", error.response.data);
         console.log("Error response status:", error.response.status);
       }
     } finally {
@@ -454,7 +451,6 @@ const ReviewsAndRatings: React.FC<ReviewsProps> = ({
 //     }
 //   };
 
-console.log({currentUser})
   // Format date for display
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);

@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable react-hooks/exhaustive-deps */
 import { format, addWeeks, startOfWeek, subWeeks, addMonths, isSameDay } from 'date-fns';
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight, Calendar, ChevronDown } from 'lucide-react';

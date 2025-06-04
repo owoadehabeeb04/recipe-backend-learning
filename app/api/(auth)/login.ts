@@ -5,7 +5,6 @@ interface LoginFormData {
   password: string;
 }
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-console.log(API_URL, 'API URLL', process.env.NEXT_PUBLIC_API_URL, 'NEXT PUBLIC API URL')
 // Create axios instance
 const api = axios.create({
   baseURL: API_URL,
@@ -21,7 +20,6 @@ api.interceptors.request.use(
     
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
-      console.log('Added token from auth store');
     } else {
       console.log('No token in auth store');
     }

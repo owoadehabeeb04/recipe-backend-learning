@@ -137,8 +137,6 @@ const EditRecipe = () => {
       const ingredientsList = validIngredients
         .map((ing) => `${ing.quantity} ${ing.unit} ${ing.name}`)
         .join("\n");
-      console.log({ ingredientsList });
-      console.log("Ingredients list for AI:", ingredientsList);
 
       const prompt = `
       I need detailed nutritional information for a recipe with the following ingredients:
@@ -165,7 +163,6 @@ const EditRecipe = () => {
       const result = await model.generateContent(prompt);
       const response = result.response.text();
 
-      console.log("AI nutrition response:", response);
 
       const caloriesMatch = response.match(
         /CALORIES:?\s*(\d+)|calories:?\s*(\d+)|calories\D*(\d+)|(\d+)\s*calories/i
@@ -203,7 +200,6 @@ const EditRecipe = () => {
         fiber: extractFirstMatch(fiberMatch)
       };
 
-      console.log({ nutritionData });
       setNutrition(nutritionData);
 
       toast.success("Nutritional information calculated!", {
@@ -244,7 +240,6 @@ const EditRecipe = () => {
         const recipe = response.data;
         setRecipe(recipe);
         setRecipeId(recipe._id);
-        console.log(recipe.difficulty);
         setValue("title", recipe.title);
         setValue("description", recipe.description);
         setValue("cookingTime", recipe.cookingTime);
@@ -319,9 +314,7 @@ const EditRecipe = () => {
 
     fetchRecipe();
   }, [slug, setValue, router]);
-  useEffect(() => {
-    console.log({ nutrition });
-  }, []);
+
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -388,8 +381,7 @@ const EditRecipe = () => {
         isPrivate: isPrivate,
       };
 
-      console.log("Submitting recipe with ID:", recipeId);
-      console.log("Payload:", payload);
+      
       if (user?.role === "admin") {
         const response = await editRecipe(recipeId, payload, token);
 

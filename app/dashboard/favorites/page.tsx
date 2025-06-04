@@ -203,7 +203,6 @@ const FavoriteRecipes = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [categories, setCategories] = useState<string[]>([]);
   const recipesPerPage = 10;
-console.log({recipes})
 
 
 
@@ -241,13 +240,11 @@ console.log({recipes})
         }
 
         // Extract unique categories if available
-        console.log({favoriteRecipes})
         if (favoriteRecipes.length > 0) {
 
           const uniqueCategories = Array.from(
             new Set(favoriteRecipes.map((recipe: Recipe) => recipe.recipe.category))
           ).filter(Boolean);
-          console.log({uniqueCategories})
           setCategories(uniqueCategories as string[]);
         }
       } else {

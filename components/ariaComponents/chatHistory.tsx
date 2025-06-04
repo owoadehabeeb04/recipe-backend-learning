@@ -92,7 +92,6 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
     try {
       const response = await getChats(token);
       if (response.success) {
-        console.log({response})
         // Apply filtering to the chats before setting state
         // const filteredChats = filterChats(response.data || []);
         setChats(response.data || []);
@@ -206,7 +205,6 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
       return Math.floor(diffTime / (1000 * 60 * 60 * 24));
     };
 
-    console.log("Categorizing chats:", chats);
     chats?.forEach(chat => {
       const chatDate = new Date(chat.updatedAt);
       const daysDiff = getDaysDifference(now, chatDate);

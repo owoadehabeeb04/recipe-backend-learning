@@ -86,7 +86,6 @@ function getWeekDates(startDate: Date): Date[] {
 const countMeals = (weekPlan: WeekPlanStore[string]) => {
   let count = 0;
   for (const day in weekPlan) {
-    console.log(weekPlan[day], "weekPlan[day]");
     
     if (weekPlan[day]?.breakfast?.recipe?.length > 0) count++; 
     if (weekPlan[day]?.lunch?.recipe?.length > 0) count++;     
@@ -423,7 +422,6 @@ const MealPlannerPage = () => {
             color: "#fff"
           }
         });
-        console.log(response.existingPlan, "EXISTING PLAN");
 
         if (response.existingPlan && response.existingPlan.id) {
           if (
@@ -514,14 +512,12 @@ const MealPlannerPage = () => {
           }
         }
       });
-      console.log({backendPlan})
       const updateData = {
         name,
         plan: backendPlan,
         notes: notes || "",
         isActive: true,
       };
-      console.log(updateData, 'FUCKING DEBUG THIS SHIII !')
 
       const response = await updateMealPlan(planId, updateData, token);
 
@@ -659,12 +655,10 @@ const MealPlannerPage = () => {
             frontendPlan[frontendDay] = {};
 
             for (const [mealType, mealData] of Object.entries(meals as any)) {
-              console.log(mealType, mealData);
               const recipeRef = (mealData as any).recipeDetails;
               let recipeData = null;
 
               if (typeof recipeRef === "string") {
-                console.log({ recipeRef });
                 // Create a simple placeholder with the ID
                 recipeData = {
                   _id: recipeRef,
@@ -679,7 +673,6 @@ const MealPlannerPage = () => {
 
               if (recipeData) {
                 //({recipeData})
-                console.log({ recipeData });
                 // Create the meal data exactly matching the MealSlotItem expectations
                 frontendPlan[frontendDay][mealType] = {
                   mealType,
@@ -884,9 +877,7 @@ const MealPlannerPage = () => {
     setPlanToDuplicate(null);
   };
 
-  useEffect(()=> {
-console.log({savedPlans})
-  }, [])
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white p-6 rounded-xl mb-8 shadow-lg">

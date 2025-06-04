@@ -29,7 +29,6 @@ interface Statistics {
 
 const Dashboard = () => {
   const { user, token } = useAuthStore();
-  console.log(user, "USER");
   const [isClient, setIsClient] = useState(false);
 
   // Set isClient to true when the component mounts
@@ -118,8 +117,7 @@ const Dashboard = () => {
     }
   };
   useEffect(() => {
-    console.log(user, "THE USER");
-    console.log("token", token);
+  
 
     // No curly braces needed around the conditional
     if (user && user.role === "super_admin" && token) {

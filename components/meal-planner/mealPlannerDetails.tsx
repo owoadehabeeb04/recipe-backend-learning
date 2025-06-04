@@ -59,7 +59,6 @@ interface MealPlannerDetailsProps {
 const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
   mealPlan
 }) => {
-  console.log({mealPlan})
   const [activeTab, setActiveTab] = useState<"plan" | "shopping">("plan");
   const [normalizedIngredients, setNormalizedIngredients] = useState<any[]>([]);
   const [normalizedIngredientNames, setNormalizedIngredientNames] = useState<
@@ -82,7 +81,6 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
         fullDate: format(date, "yyyy-MM-dd")
       };
     });
-  console.log({ days });
   // Function to count total recipes
   // Function to count total recipes assigned in the meal plan
   const countRecipes = () => {
@@ -90,7 +88,6 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
     Object.values(mealPlan.plan).forEach((day) => {
       // For each day, count meal slots that have recipes assigned
       Object.values(day).forEach((meal) => {
-        console.log({ meal });
 
         // Check if this meal slot has a recipe assigned
         if (meal.recipeDetails && meal.recipe) {
@@ -165,12 +162,7 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
           (result: { [key: string]: any }, ing) => {
             const normalizedName = normalizationMap[ing.name] || ing.name;
             const category = categorizeIngredient(normalizedName);
-            console.log(
-              "Normalized name:",
-              normalizedName,
-              "Category:",
-              category
-            );
+          
             const key = `${normalizedName}-${ing.unit || "none"}`;
 
             if (result[key]) {
@@ -206,12 +198,10 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
         const uniqueNormalizedNames = Array.from(
           new Set(normalizedIngredientArray.map((ing) => ing.normalizedName))
         ).sort();
-        console.log({ normalizedIngredientArray });
-        console.log({ uniqueNormalizedNames });
+        
         setNormalizedIngredientNames(uniqueNormalizedNames);
         setNormalizedIngredients(normalizedIngredientArray);
 
-        console.log("Normalized ingredient names:", uniqueNormalizedNames);
       } catch (error) {
         console.error("Error normalizing ingredients:", error);
       } finally {

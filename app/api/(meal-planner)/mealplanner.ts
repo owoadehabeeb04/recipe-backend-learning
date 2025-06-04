@@ -62,7 +62,6 @@ export const createMealPlan = async (mealPlanData: MealPlanData, token: string):
         'Content-Type': 'application/json',
       },
     });
-    console.log({response})
     
     return response.data;
   } catch (error) {

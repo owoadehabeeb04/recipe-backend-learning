@@ -37,7 +37,6 @@ api.interceptors.request.use(
     
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`;
-      console.log('Added token from auth store');
     } else {
       console.log('No token in auth store');
     }
@@ -64,7 +63,6 @@ export const getAllRecipes = async (params?: RecipeQueryParams) => {
 
     const url = `/recipes${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
     
-    console.log("Fetching recipes from:", url);
     // We don't need to pass token - the interceptor will add it
     
     const response = await api.get(url);
@@ -92,7 +90,6 @@ export const getRecipeDetails = async (id: string | null) => {
   try {
     const response = await api.get(`/recipes/${id}`);
     
-    console.log("Recipe details response:", response.data);
     
     return {
       success: true,

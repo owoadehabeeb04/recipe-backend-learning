@@ -6,7 +6,7 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import axios from "axios";
 import { useAuthStore } from "@/app/store/authStore";
-
+import Image from "next/image";
 // Update your Message interface to include imageUrls
 interface Message {
   id: string;
@@ -38,23 +38,18 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
 
   // Initialize state when the message changes
   useEffect(() => {
-    console.log(`Setting up message ${message.id.substring(0, 5)}...`);
     fullMessageRef.current = message.message;
 
     // Default to treating messages as new if isNew is undefined (for backward compatibility)
     const shouldAnimate = message.isNew !== false && isAssistant;
 
     if (shouldAnimate) {
-      console.log(
-        `Starting typing animation for message ${message.id.substring(0, 5)}...`
-      );
+      
       setDisplayText("");
       setTypingComplete(false);
       setIsTyping(true);
     } else {
-      console.log(
-        `Showing full message immediately for ${message.id.substring(0, 5)}...`
-      );
+    
       setDisplayText(message.message);
       setTypingComplete(true);
       setIsTyping(false);
@@ -65,9 +60,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   useEffect(() => {
     if (!isAssistant || typingComplete || !isTyping) return;
 
-    console.log(
-      `Typing effect running for message ${message.id.substring(0, 5)}...`
-    );
 
     let i = 0;
     const fullText = fullMessageRef.current;
@@ -80,9 +72,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
         .length > 3;
 
     if (fullText.length < 15 || hasComplexTable) {
-      console.log(
-        `Skipping animation for ${hasComplexTable ? "complex table" : "short message"}`
-      );
+      
       setDisplayText(fullText);
       setTypingComplete(true);
       setIsTyping(false);
@@ -104,9 +94,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
 
         timeout = setTimeout(type, delay);
       } else {
-        console.log(
-          `Typing complete for message ${message.id.substring(0, 5)}...`
-        );
+        
         setTypingComplete(true);
         setIsTyping(false);
       }
@@ -114,9 +102,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
 
     // Start typing after a short delay
     timeout = setTimeout(() => {
-      console.log(
-        `Starting actual typing for message ${message.id.substring(0, 5)}...`
-      );
+     
       type();
     }, 100);
 
@@ -158,7 +144,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
 
   // Show full text immediately function (like a "Skip" button)
   const showFullText = () => {
-    console.log(`Skipping typing for message ${message.id.substring(0, 5)}...`);
     setDisplayText(fullMessageRef.current);
     setTypingComplete(true);
     setIsTyping(false);
@@ -221,7 +206,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
                         : "max-h-48 md:max-h-64"
                     }`}
                   >
-                    <img
+                    <Image
                       src={imgUrl}
                       alt={`Shared image ${index + 1}`}
                       className="w-full h-full object-cover cursor-pointer hover:opacity-90 transition-opacity"

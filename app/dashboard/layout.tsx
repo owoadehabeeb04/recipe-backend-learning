@@ -95,7 +95,6 @@ const BellIcon = () => (
 
 export default function DashboardLayout({ children }: any) {
   const { user } = useAuthStore();
-  console.log(user);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const { setAuth } = useAuthStore();
@@ -210,7 +209,6 @@ export default function DashboardLayout({ children }: any) {
   const finalMenuItems = menuItems.filter((item: any) =>
     item.roles.includes(user?.role)
   );
-  console.log("Final Menu Items: ", finalMenuItems);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">

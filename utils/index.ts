@@ -179,7 +179,6 @@ export const generateCompleteRecipe = async ({
     const result = await model.generateContent(prompt);
     const response = result.response.text();
 
-    console.log("AI response:", response);
 
     // Parse the response using a line-by-line approach instead of JSON parsing
     const sections: any = {
@@ -426,10 +425,8 @@ Do not include units in the actual values, additional explanations, serving size
 
     // Generate the nutrition information
     const result = await model.generateContent(prompt);
-    console.log({result})
     const response = result.response.text();
     
-    console.log("AI nutrition response:", response);
     
     // More flexible regex patterns that handle various formats
     const caloriesMatch = response.match(/CALORIES:?\s*(\d+)|calories:?\s*(\d+)|calories\D*(\d+)|(\d+)\s*calories/i);
@@ -439,11 +436,6 @@ Do not include units in the actual values, additional explanations, serving size
     const sugarMatch = response.match(/SUGAR:?\s*(\d+)|sugar:?\s*(\d+)|sugar\D*(\d+)|(\d+)\s*g\s*sugar/i);
     const fiberMatch = response.match(/FIBER:?\s*(\d+)|fiber:?\s*(\d+)|fiber\D*(\d+)|(\d+)\s*g\s*fiber/i);
     
-    console.log({caloriesMatch})
-    console.log({proteinMatch})
-    console.log({carbsMatch})
-    console.log({fatMatch})
-    console.log({sugarMatch})
     
     // Helper function to extract the first numeric match from multiple capture groups
     const extractFirstMatch = (match: RegExpMatchArray | null): number => {
@@ -468,7 +460,6 @@ Do not include units in the actual values, additional explanations, serving size
       fiber: extractFirstMatch(fiberMatch)
     };
     
-    console.log({nutritionData})
     setNutrition(nutritionData);
 
     

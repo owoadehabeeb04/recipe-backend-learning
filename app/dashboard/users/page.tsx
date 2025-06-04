@@ -102,7 +102,6 @@ const Users = () => {
 
   // Handle page change
   const handlePageChange = (page: number) => {
-    console.log(`Changing to page ${page}`);
     setCurrentPage(page);
   };
 

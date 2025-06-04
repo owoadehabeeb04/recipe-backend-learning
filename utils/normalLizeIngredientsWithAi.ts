@@ -52,13 +52,11 @@ Important: Return ONLY the JSON object itself, with NO code block formatting, NO
     const result = await model.generateContent(prompt);
     const responseText = result.response.text();
     
-    console.log("AI normalized ingredients response:", responseText);
     
     try {
       // First try: Direct parsing if the response is already clean
       try {
         const mapping = JSON.parse(responseText);
-        console.log("Normalized ingredients mapping (direct parse):", mapping);
         toast.success("Ingredients normalized successfully!", {
           id: loadingToastId,
           duration: 3000

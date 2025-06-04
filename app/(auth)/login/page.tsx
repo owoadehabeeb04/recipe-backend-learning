@@ -38,7 +38,6 @@ export default function Login() {
 
       if (response.access_token) {
         setAuth(response.access_token, response.user);
-        console.log("Login successful:", response);
         toast.success("Login successful");
         router.push("/dashboard");
       } else {

@@ -103,7 +103,6 @@ const SingleUser = () => {
   }
 
   const user = userData;
-  console.log(user, 'USERRR');
   const stats = userData?.recipeStats;
   const recentRecipes = userData?.recentRecipes || [];
 

@@ -18,7 +18,6 @@ export const DayColumn = ({ date, dayPlan, onAddMeal, isCurrentDay }: DayColumnP
     { type: 'lunch', label: 'Lunch', icon: <Clock size={16} /> },
     { type: 'dinner', label: 'Dinner', icon: <Clock size={16} /> }
   ];
-  console.log({dayPlan})
   return (
     <div className={`${isCurrentDay ? 'bg-purple-50 rounded-lg' : ''}`}>
       <WeekdayHeader date={date} isCurrentDay={isCurrentDay} />
