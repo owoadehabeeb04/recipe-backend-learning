@@ -943,107 +943,105 @@ const MealPlannerPage = () => {
           <h2 className="text-2xl text-gray-700  font-bold mb-4">
             Your Saved Plans
           </h2>
-
           {savedPlans.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {savedPlans.map((plan) => {
-                //(plan, 'PLAN AFTER MAPPINGGGG')
-
-                return (
-                  <div
-                    key={plan.id || plan._id}
-                    onClick={() => handleViewPlan(plan)}
-                    className="bg-gradient-to-b from-gray-900 to-gray-800 backdrop-blur-sm border border-[color:var(--purple-900)]/30 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-[color:var(--purple-600)]/20 cursor-pointer transition group"
-                  >
-                    <div className="p-5">
-                      <div className="flex justify-between items-start mb-3">
-                        <h4 className="font-semibold text-white text-lg group-hover:text-white/90 transition">
-                          {plan.name}
-                        </h4>
-                        <span className="text-xs bg-[color:var(--purple-900)]/40 text-white px-3 py-1 rounded-full border border-[color:var(--purple-700)]/40">
-                          {format(plan.date, "MMM d, yyyy")}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center text-sm text-white/80 mb-4">
-                        <div className="flex items-center mr-4">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4 mr-1.5 text-white"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                            />
-                          </svg>
-                          <span>7 days</span>
-                        </div>
-                        <div className="flex items-center">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="h-4 w-4 mr-1.5 text-white"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                            />
-                          </svg>
-                          <span>{countMeals(plan.plan)} meals</span>
-                        </div>
-                      </div>
-
-                      <div className="flex -space-x-1.5 mb-5">
-                        {["breakfast", "lunch", "dinner"].map((mealType) => (
-                          <div
-                            key={mealType}
-                            className={`w-5 h-5 rounded-full border ${
-                              mealType === "breakfast"
-                                ? "bg-[color:var(--amber-600)]/50 border-[color:var(--amber-500)]/30"
-                                : mealType === "lunch"
-                                  ? "bg-[color:var(--emerald-600)]/50 border-[color:var(--emerald-500)]/30"
-                                  : "bg-[color:var(--blue-600)]/50 border-[color:var(--blue-500)]/30"
-                            }`}
-                            title={`${mealType.charAt(0).toUpperCase() + mealType.slice(1)} meals`}
-                          ></div>
-                        ))}
-                        <div className="w-5 h-5 rounded-full bg-[color:var(--purple-800)]/50 border border-[color:var(--purple-700)]/30 text-white flex items-center justify-center text-xs">
-                          +
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+    {savedPlans.map((plan) => {
+      return (
+        <div
+          key={plan.id || plan._id}
+          onClick={() => handleViewPlan(plan)}
+          className="bg-gradient-to-b from-gray-900 to-gray-800 backdrop-blur-sm border border-[color:var(--purple-900)]/30 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-[color:var(--purple-600)]/20 cursor-pointer transition group"
+        >
+          <div className="p-3 sm:p-5">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between sm:mb-3 gap-2 sm:gap-0">
+              <h4 className="font-semibold text-white text-base sm:text-lg group-hover:text-white/90 transition line-clamp-1">
+                {plan.name}
+              </h4>
+              <span className="text-[10px] sm:text-xs bg-[color:var(--purple-900)]/40 text-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-full border border-[color:var(--purple-700)]/40 whitespace-nowrap flex-shrink-0 self-start">
+                {format(plan.date, "MMM d, yyyy")}
+              </span>
             </div>
-          ) : (
-            <div className="text-center py-12">
-              <div className="w-16 h-16 mx-auto bg-purple-100 rounded-full flex items-center justify-center text-purple-500 mb-4">
-                <BookOpen size={24} />
+
+            <div className="flex flex-wrap items-center text-xs sm:text-sm text-white/80 mb-3 sm:mb-4 gap-y-2">
+              <div className="flex items-center mr-3 sm:mr-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-1.5 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  />
+                </svg>
+                <span>7 days</span>
               </div>
-              <h3 className="text-lg font-medium text-gray-800">
-                No saved plans yet
-              </h3>
-              <p className="mt-1 text-gray-500">
-                Create and save your first meal plan
-              </p>
-              <button
-                onClick={() => setActiveTab("planner")}
-                className="mt-4 px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-medium"
-              >
-                Create a Plan
-              </button>
+              <div className="flex items-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-1.5 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                  />
+                </svg>
+                <span>{countMeals(plan.plan)} meals</span>
+              </div>
             </div>
-          )}
+
+            <div className="flex -space-x-1 sm:-space-x-1.5 mb-3 sm:mb-5">
+              {["breakfast", "lunch", "dinner"].map((mealType) => (
+                <div
+                  key={mealType}
+                  className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full border ${
+                    mealType === "breakfast"
+                      ? "bg-[color:var(--amber-600)]/50 border-[color:var(--amber-500)]/30"
+                      : mealType === "lunch"
+                        ? "bg-[color:var(--emerald-600)]/50 border-[color:var(--emerald-500)]/30"
+                        : "bg-[color:var(--blue-600)]/50 border-[color:var(--blue-500)]/30"
+                  }`}
+                  title={`${mealType.charAt(0).toUpperCase() + mealType.slice(1)} meals`}
+                ></div>
+              ))}
+              <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-[color:var(--purple-800)]/50 border border-[color:var(--purple-700)]/30 text-white flex items-center justify-center text-[9px] sm:text-xs">
+                +
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+) : (
+  <div className="text-center py-8 sm:py-12">
+    <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto bg-purple-100 rounded-full flex items-center justify-center text-purple-500 mb-3 sm:mb-4">
+      <BookOpen size={20} className="sm:hidden" />
+      <BookOpen size={24} className="hidden sm:block" />
+    </div>
+    <h3 className="text-base sm:text-lg font-medium text-gray-800">
+      No saved plans yet
+    </h3>
+    <p className="mt-1 text-sm sm:text-base text-gray-500">
+      Create and save your first meal plan
+    </p>
+    <button
+      onClick={() => setActiveTab("planner")}
+      className="mt-3 sm:mt-4 px-5 sm:px-6 py-1.5 sm:py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg text-sm sm:text-base font-medium"
+    >
+      Create a Plan
+    </button>
+  </div>
+)}
         </div>
       )}
 

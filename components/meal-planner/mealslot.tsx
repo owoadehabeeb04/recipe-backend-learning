@@ -42,7 +42,7 @@ export const MealSlotItem: React.FC<MealSlotItemProps> = ({ mealData, onClick, m
         className={`transition cursor-pointer group relative overflow-hidden rounded-xl
           ${mealData.recipe 
             ? `bg-gradient-to-br ${getMealGradient()} backdrop-blur-sm border border-white/10 shadow-lg hover:shadow-xl` 
-            :'bg-purple-900/30 border border-dashed border-purple-700 hover:border-purple-400 hover:bg-purple-800/40 p-4'
+            :'bg-purple-900/30 border border-dashed border-purple-700 hover:border-purple-400 hover:bg-purple-800/40 p-2 sm:p-4'
           }`
         }
       >
@@ -52,8 +52,8 @@ export const MealSlotItem: React.FC<MealSlotItemProps> = ({ mealData, onClick, m
         <div className="relative">
           {mealData.recipe ? (
             <>
-              {/* Image on top */}
-              <div className="w-full h-32 overflow-hidden bg-gray-800 shadow-md">
+              {/* Image on top - responsive height */}
+              <div className="w-full h-24 sm:h-32 overflow-hidden bg-gray-800 shadow-md">
                 {mealData.recipe.featuredImage ? (
                   <Image 
                     src={mealData.recipe.featuredImage} 
@@ -64,37 +64,37 @@ export const MealSlotItem: React.FC<MealSlotItemProps> = ({ mealData, onClick, m
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-700 to-gray-900 text-gray-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 sm:h-10 sm:w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                   </div>
                 )}
                 
-                {/* Meal label as an overlay on the image */}
-                <div className="absolute top-2 left-2 flex items-center">
-                  <span className="px-2 py-1 rounded-full bg-black/50 backdrop-blur-md text-white text-xs flex items-center border border-white/20">
-                    <span className="w-4 h-4 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 mr-1.5 flex items-center justify-center">
-                      <span className="scale-75">{icon}</span>
+                {/* Meal label as an overlay on the image - improved for touch */}
+                <div className="absolute top-1 sm:top-2 left-1 sm:left-2 flex items-center">
+                  <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full bg-black/50 backdrop-blur-md text-white text-xs flex items-center border border-white/20">
+                    <span className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 mr-1 sm:mr-1.5 flex items-center justify-center">
+                      <span className="scale-[65%] sm:scale-75">{icon}</span>
                     </span>
-                    {mealLabel}
+                    <span className="text-[10px] sm:text-xs">{mealLabel}</span>
                   </span>
                 </div>
               </div>
               
-              {/* Content below image */}
-              <div className="p-3">
-                <h4 className="font-medium text-white group-hover:text-purple-200 transition mb-2 line-clamp-1">
+              {/* Content below image - improved spacing for mobile */}
+              <div className="p-2 sm:p-3">
+                <h4 className="font-medium text-white group-hover:text-purple-200 transition mb-1.5 sm:mb-2 line-clamp-1 text-sm sm:text-base">
                   {mealData.recipe.title}
                 </h4>
                 
                 <div className="flex flex-wrap gap-1">
                   {mealData.recipe.category && (
-                    <span className="px-2 py-0.5 bg-white/10 backdrop-blur-md text-white text-xs rounded-full border border-white/20">
+                    <span className="px-1.5 sm:px-2 py-0.5 bg-white/10 backdrop-blur-md text-white text-[10px] sm:text-xs rounded-full border border-white/20">
                       {mealData.recipe.category}
                     </span>
                   )}
                   {mealData.recipe.difficulty && (
-                    <span className={`px-2 py-0.5 text-xs rounded-full border ${
+                    <span className={`px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs rounded-full border ${
                       mealData.recipe.difficulty === 'easy' 
                         ? 'bg-green-900/40 text-green-300 border-green-700/30' 
                         : mealData.recipe.difficulty === 'medium'
@@ -105,7 +105,7 @@ export const MealSlotItem: React.FC<MealSlotItemProps> = ({ mealData, onClick, m
                     </span>
                   )}
                   {mealData.recipe.cookingTime && (
-                    <span className="px-2 py-0.5 bg-blue-900/40 text-blue-300 text-xs rounded-full border border-blue-700/30">
+                    <span className="px-1.5 sm:px-2 py-0.5 bg-blue-900/40 text-blue-300 text-[10px] sm:text-xs rounded-full border border-blue-700/30">
                       {mealData.recipe.cookingTime} min
                     </span>
                   )}
@@ -113,13 +113,13 @@ export const MealSlotItem: React.FC<MealSlotItemProps> = ({ mealData, onClick, m
               </div>
             </>
           ) : (
-            <div className="flex flex-col items-center justify-center py-6 text-gray-400 h-full">
-              <div className="w-12 h-12 rounded-full bg-gray-800/60 flex items-center justify-center mb-3 group-hover:bg-purple-900/30 transition-colors">
-                {icon}
+            <div className="flex flex-col items-center justify-center py-3 sm:py-6 text-gray-400 h-full">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-800/60 flex items-center justify-center mb-2 sm:mb-3 group-hover:bg-purple-900/30 transition-colors">
+                <span className="scale-75 sm:scale-100">{icon}</span>
               </div>
               <div className="flex items-center">
-                <Plus size={16} className="mr-1" />
-                <span>Add {mealLabel}</span>
+                <Plus size={14} className="mr-1 sm:mr-1.5" />
+                <span className="text-xs sm:text-sm">Add {mealLabel}</span>
               </div>
             </div>
           )}

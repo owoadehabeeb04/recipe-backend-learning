@@ -162,7 +162,7 @@ const ErrorState = ({
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth="2"
-            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+            d="M12 8v4m0 4h.01M21 12a9 9 9 0 11-18 0 9 9 9 0 0118 0z"
           />
         </svg>
       </div>
@@ -228,7 +228,6 @@ const AllRecipesPage = () => {
         sort: sortBy
       });
 
-      
       if (response && response.status === 200) {
         const allRecipes = response.data || [];
         const filteredRecipes =
@@ -313,41 +312,43 @@ const AllRecipesPage = () => {
   };
 
   return (
-    <div className="px-4 py-8 md:px-8 max-w-7xl mx-auto">
+    <div className="px-4 py-6 sm:py-8 md:px-8 max-w-7xl mx-auto">
+      {/* Improve heading responsiveness */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="mb-8"
+        className="mb-6 sm:mb-8"
       >
-        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+        <h1 className="text-2xl sm:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
           All Recipes
         </h1>
-        <p className="text-gray-400 mt-2">
+        <p className="text-sm sm:text-base text-gray-400 mt-2">
           Discover and explore delicious recipes from our community
         </p>
       </motion.div>
 
+      {/* Improve search and filter responsiveness */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.1 }}
-        className="mb-8"
+        className="mb-6 sm:mb-8 space-y-4"
       >
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-          <div className="relative w-full md:max-w-md">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+          <div className="relative w-full sm:max-w-md">
             <SearchBar value={searchQuery} onChange={handleSearchChange} />
             <button
               onClick={handleSearch}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1 rounded-full bg-gray-700/50 text-white hover:bg-gray-600/50 transition-all"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 px-2 sm:px-3 py-1 rounded-full bg-gray-700/50 text-white text-sm hover:bg-gray-600/50 transition-all"
             >
               Search
             </button>
           </div>
-          {/* <SortOptions value={sortBy} onChange={handleSortChange} /> */}
         </div>
 
-        <div className="mt-4 space-y-4">
+        {/* Improve filter layout */}
+        <div className="space-y-3 sm:space-y-4">
           {categories.length > 0 && (
             <CategoryFilter
               categories={categories}
@@ -363,116 +364,129 @@ const AllRecipesPage = () => {
         </div>
       </motion.div>
 
-      {isLoading ? (
-        <div className="flex flex-col justify-center items-center h-64">
-          <div className="w-16 h-16 mb-4 border-t-4 border-b-4 border-purple-500 rounded-full animate-spin"></div>
-          <p className="text-gray-400">Loading tasty recipes...</p>
+      {/* Recipe grid - improve for mobile */}
+      {!isLoading && !hasError && recipes.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+          {recipes.map((recipe, index) => (
+            <motion.div
+              key={recipe._id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3, delay: 0.05 * index }}
+            >
+              {user?.role === "user" ? (
+                <RecipeCardEditDelete
+                  recipe={recipe}
+                  onEdit={() => handleEditRecipe(recipe._id)}
+                  refreshData={fetchRecipes}
+                />
+              ) : (
+                <RecipeCard recipe={recipe} />
+              )}
+            </motion.div>
+          ))}
         </div>
-      ) : hasError ? (
-        <ErrorState message={errorMessage} retry={fetchRecipes} />
-      ) : recipes.length > 0 ? (
-        <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {recipes.map((recipe, index) => (
-              <motion.div
-                key={recipe._id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.05 * index }}
+      )}
+
+      {/* Improve pagination for mobile */}
+      {!isLoading && !hasError && recipes.length > 0 && totalPages > 1 && (
+        <div className="flex justify-center mt-8 sm:mt-12">
+          <div className="inline-flex items-center space-x-1">
+            <button
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="px-2 sm:px-3 py-1 sm:py-2 rounded-lg bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-700/50 disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Previous page"
+            >
+              <svg
+                className="w-4 h-4 sm:w-5 sm:h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                {user?.role === "user" ? (
-                  <RecipeCardEditDelete
-                    recipe={recipe}
-                    onEdit={() => handleEditRecipe(recipe._id)}
-                    // onDelete={() => (recipe._id)}
-                    refreshData={fetchRecipes}
-                  />
-                ) : (
-                  <RecipeCard recipe={recipe} />
-                )}
-              </motion.div>
-            ))}
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </button>
+
+            {Array.from({ length: totalPages }, (_, i) => i + 1)
+              .filter(
+                (num) =>
+                  num === 1 ||
+                  num === totalPages ||
+                  (num >= currentPage - 1 && num <= currentPage + 1)
+              )
+              .map((number, i, array) => (
+                <React.Fragment key={number}>
+                  {i > 0 && array[i - 1] !== number - 1 && (
+                    <span className="px-2 py-1 text-gray-500">...</span>
+                  )}
+                  <button
+                    onClick={() => paginate(number)}
+                    className={`w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg ${
+                      currentPage === number
+                        ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white"
+                        : "bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-700/50"
+                    }`}
+                    aria-label={`Page ${number}`}
+                    aria-current={currentPage === number ? "page" : undefined}
+                  >
+                    {number}
+                  </button>
+                </React.Fragment>
+              ))}
+
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="px-2 sm:px-3 py-1 sm:py-2 rounded-lg bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-700/50 disabled:opacity-50 disabled:cursor-not-allowed"
+              aria-label="Next page"
+            >
+              <svg
+                className="w-4 h-4 sm:w-5 sm:h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
           </div>
+        </div>
+      )}
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex justify-center mt-12">
-              <div className="inline-flex items-center space-x-1">
-                <button
-                  onClick={() => paginate(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="px-3 py-2 rounded-lg bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-700/50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M15 19l-7-7 7-7"
-                    />
-                  </svg>
-                </button>
+      {/* Make loading state responsive */}
+      {isLoading && (
+        <div className="flex flex-col justify-center items-center h-48 sm:h-64">
+          <div className="w-12 h-12 sm:w-16 sm:h-16 mb-3 sm:mb-4 border-t-3 sm:border-t-4 border-b-3 sm:border-b-4 border-purple-500 rounded-full animate-spin"></div>
+          <p className="text-sm sm:text-base text-gray-400">Loading tasty recipes...</p>
+        </div>
+      )}
 
-                {Array.from({ length: totalPages }, (_, i) => i + 1)
-                  .filter(
-                    (num) =>
-                      num === 1 ||
-                      num === totalPages ||
-                      (num >= currentPage - 1 && num <= currentPage + 1)
-                  )
-                  .map((number, i, array) => (
-                    <React.Fragment key={number}>
-                      {i > 0 && array[i - 1] !== number - 1 && (
-                        <span className="px-3 py-1 text-gray-500">...</span>
-                      )}
-                      <button
-                        onClick={() => paginate(number)}
-                        className={`px-3 py-1 rounded-lg ${
-                          currentPage === number
-                            ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white"
-                            : "bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-700/50"
-                        }`}
-                      >
-                        {number}
-                      </button>
-                    </React.Fragment>
-                  ))}
+      {/* Make error state responsive */}
+      {!isLoading && hasError && (
+        <ErrorState message={errorMessage} retry={fetchRecipes} />
+      )}
 
-                <button
-                  onClick={() => paginate(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="px-3 py-2 rounded-lg bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-700/50 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </button>
-              </div>
-            </div>
-          )}
-        </>
-      ) : searchQuery || category !== "all" || cookingTime !== "all" ? (
+      {/* Make empty states responsive */}
+      {!isLoading && !hasError && recipes.length === 0 && (searchQuery || category !== "all" || cookingTime !== "all") && (
         <NoSearchResults
           searchQuery={searchQuery}
           category={category}
           clearFilters={clearFilters}
         />
-      ) : (
+      )}
+
+      {!isLoading && !hasError && recipes.length === 0 && !searchQuery && category === "all" && cookingTime === "all" && (
         <EmptyState />
       )}
     </div>

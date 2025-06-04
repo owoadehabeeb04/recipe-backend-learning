@@ -25,8 +25,6 @@ interface Statistics {
   unpublishedRecipes: number;
 }
 
-
-
 const Dashboard = () => {
   const { user, token } = useAuthStore();
   const [isClient, setIsClient] = useState(false);
@@ -117,8 +115,6 @@ const Dashboard = () => {
     }
   };
   useEffect(() => {
-  
-
     // No curly braces needed around the conditional
     if (user && user.role === "super_admin" && token) {
       getUsers();
@@ -643,10 +639,10 @@ const Dashboard = () => {
 
                 {/* Recent Users */}
                 <div className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden">
-                  <div className="px-6 py-4 border-b border-white/10 flex justify-between items-center">
-                    <h3 className="font-medium text-white">Latest Users</h3>
+                  <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-white/10 flex justify-between items-center">
+                    <h3 className="font-medium text-white text-sm sm:text-base">Latest Users</h3>
                     <Link href="/dashboard/users">
-                      <span className="text-xs text-purple-400 hover:text-purple-300">
+                      <span className="text-[10px] sm:text-xs text-purple-400 hover:text-purple-300">
                         View all
                       </span>
                     </Link>
@@ -655,16 +651,16 @@ const Dashboard = () => {
                     <table className="w-full text-left">
                       <thead className="border-b border-white/10">
                         <tr>
-                          <th className="px-6 py-3 text-xs text-gray-400">
+                          <th className="px-3 sm:px-6 py-2 sm:py-3 text-[10px] sm:text-xs text-gray-400">
                             User
                           </th>
-                          <th className="px-6 py-3 text-xs text-gray-400">
+                          <th className="px-3 sm:px-6 py-2 sm:py-3 text-[10px] sm:text-xs text-gray-400">
                             Role
                           </th>
-                          <th className="px-6 py-3 text-xs text-gray-400">
+                          <th className="px-3 sm:px-6 py-2 sm:py-3 text-[10px] sm:text-xs text-gray-400">
                             Joined
                           </th>
-                          <th className="px-6 py-3 text-xs text-gray-400 text-right">
+                          <th className="px-3 sm:px-6 py-2 sm:py-3 text-[10px] sm:text-xs text-gray-400 text-right">
                             Actions
                           </th>
                         </tr>
@@ -675,31 +671,38 @@ const Dashboard = () => {
                             key={user._id}
                             className="hover:bg-white/5 transition-colors"
                           >
-                            <td className="px-6 py-3 text-sm">
-                              {user?.profileImage && user?.profileImage ? (
-                                <div className="w-8 h-8 rounded-full overflow-hidden relative">
-                                  <Image
-                                    src={
-                                      user?.profileImage ||
-                                      "/default-profile.png"
-                                    }
-                                    alt={user?.username}
-                                    width={40}
-                                    height={40}
-                                    className="w-full h-full object-cover"
-                                    style={{ borderRadius: "50%" }}
-                                  />
-                                </div>
-                              ) : (
-                                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center overflow-hidden">
-                                  {user?.username?.charAt(0).toUpperCase() ||
-                                    "U"}
-                                </div>
-                              )}
+                            <td className="px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm">
+                              <div className="flex items-center">
+                                {user?.profileImage && user?.profileImage ? (
+                                  <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full overflow-hidden relative mr-2 sm:mr-3 flex-shrink-0">
+                                    <Image
+                                      src={
+                                        user?.profileImage ||
+                                        "/default-profile.png"
+                                      }
+                                      alt={user?.username}
+                                      width={40}
+                                      height={40}
+                                      className="w-full h-full object-cover"
+                                      style={{ borderRadius: "50%" }}
+                                    />
+                                  </div>
+                                ) : (
+                                  <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center overflow-hidden mr-2 sm:mr-3 flex-shrink-0">
+                                    <span className="text-[10px] sm:text-xs text-white">
+                                      {user?.username?.charAt(0).toUpperCase() ||
+                                        "U"}
+                                    </span>
+                                  </div>
+                                )}
+                                <span className="text-white font-medium line-clamp-1">
+                                  {user?.username || "Unknown"}
+                                </span>
+                              </div>
                             </td>
-                            <td className="px-6 py-3">
+                            <td className="px-3 sm:px-6 py-2 sm:py-3">
                               <span
-                                className={`px-2 py-0.5 rounded-full text-xs ${
+                                className={`px-1.5 sm:px-2 py-0.5 rounded-full text-[10px] sm:text-xs ${
                                   user.role === "admin"
                                     ? "bg-purple-900/30 text-purple-300"
                                     : user.role === "super_admin"
@@ -710,14 +713,14 @@ const Dashboard = () => {
                                 {user.role}
                               </span>
                             </td>
-                            <td className="px-6 py-3 text-gray-400 text-xs">
+                            <td className="px-3 sm:px-6 py-2 sm:py-3 text-gray-400 text-[10px] sm:text-xs">
                               {formatTimeAgo(user.createdAt)}
                             </td>
-                            <td className="px-6 py-3 text-right">
+                            <td className="px-3 sm:px-6 py-2 sm:py-3 text-right">
                               <Link
                                 href={`/dashboard/users/${user._id}`}
                               >
-                                <span className="text-xs text-purple-400 hover:text-purple-300 transition-colors">
+                                <span className="text-[10px] sm:text-xs text-purple-400 hover:text-purple-300 transition-colors">
                                   View
                                 </span>
                               </Link>
@@ -729,7 +732,7 @@ const Dashboard = () => {
                           <tr>
                             <td
                               colSpan={4}
-                              className="px-6 py-8 text-center text-gray-400"
+                              className="px-3 sm:px-6 py-6 sm:py-8 text-center text-gray-400 text-xs sm:text-sm"
                             >
                               No users found
                             </td>
