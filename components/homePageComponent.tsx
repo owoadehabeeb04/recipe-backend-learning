@@ -76,59 +76,53 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { RecipeCard } from "./recipesComponent/recipeCardAll";
+import { getAllRecipes } from "@/app/api/(recipe)/userRecipes";
+import toast from "react-hot-toast";
+import { Loader } from "lucide-react";
 
 const LandingPage = () => {
   // Sample recipe data for featured recipes
-  const [featuredRecipes, setFeaturedRecipes] = useState([
-    {
-      _id: "1",
-      title: "Creamy Garlic Pasta",
-      category: "Italian",
-      cookingTime: 25,
-      difficulty: "easy",
-      featuredImage: "/api/placeholder/600/400",
-      averageRating: 4.8,
-      adminName: "Chef Mario",
-      createdAt: new Date().toISOString(),
-      isPublished: true,
-      adminDetails: {
-        name: "Chef Mario",
-        email: "mario@example.com"
+  
+  // Replace your featuredRecipes state initialization
+const [featuredRecipes, setFeaturedRecipes] = useState<any>([]);
+const [isLoadingRecipes, setIsLoadingRecipes] = useState(true);
+
+// Add this useEffect to fetch recipes when the component mounts
+// Replace your recipe fetching code in the useEffect
+
+useEffect(() => {
+  const fetchRecipes = async () => {
+    try {
+      setIsLoadingRecipes(true);
+      
+      // Get recipes with a sufficient limit and sort by rating
+      const response = await getAllRecipes({
+        limit: 10, // Fetch more to find highest rated ones
+        sort: "rating", // Sort by rating if your API supports it
+      });
+      
+      if (response.success && Array.isArray(response.data)) {
+        // Sort by average rating (highest first)
+        const sortedRecipes = [...response.data].sort((a, b) => 
+          (b.averageRating || 0) - (a.averageRating || 0)
+        );
+        
+        // Take the top 3
+        setFeaturedRecipes(sortedRecipes.slice(0, 3));
+      } else {
+        console.error("Failed to fetch recipes:", response.message);
+        toast.error("Couldn't load featured recipes");
       }
-    },
-    {
-      _id: "2",
-      title: "Avocado & Quinoa Bowl",
-      category: "Healthy",
-      cookingTime: 15,
-      difficulty: "medium",
-      featuredImage: "/api/placeholder/600/400",
-      averageRating: 4.5,
-      adminName: "Nutrition Expert",
-      createdAt: new Date().toISOString(),
-      isPublished: true,
-      adminDetails: {
-        name: "Nutrition Expert",
-        email: "nutrition@example.com"
-      }
-    },
-    {
-      _id: "3",
-      title: "Chocolate Lava Cake",
-      category: "Dessert",
-      cookingTime: 35,
-      difficulty: "hard",
-      featuredImage: "/api/placeholder/600/400",
-      averageRating: 4.9,
-      adminName: "Pastry Chef",
-      createdAt: new Date().toISOString(),
-      isPublished: true,
-      adminDetails: {
-        name: "Pastry Chef",
-        email: "pastry@example.com"
-      }
+    } catch (error) {
+      console.error("Error fetching recipes:", error);
+      toast.error("An error occurred while loading recipes");
+    } finally {
+      setIsLoadingRecipes(false);
     }
-  ]);
+  };
+
+  fetchRecipes();
+}, []);
 
   // Categories with icons
   const categories = [
@@ -156,14 +150,7 @@ const LandingPage = () => {
         </svg>
       )
     },
-    {
-      name: "Dessert",
-      icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z" />
-        </svg>
-      )
-    }
+  
   ];
 
   return (
@@ -315,51 +302,87 @@ const LandingPage = () => {
           </div>
         </div>
       </section>
+{/* Featured Recipes Section */}
+<section className="py-20">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <motion.div
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      transition={{ duration: 0.7 }}
+      viewport={{ once: true }}
+      className="text-center mb-12"
+    >
+      <h3 className="text-3xl font-bold text-white mb-4">
+        Top-Rated Recipes
+      </h3>
+      <div className="w-20 h-1 mx-auto bg-gradient-to-r from-purple-400 to-pink-400"></div>
+      <p className="mt-4 text-gray-300 max-w-2xl mx-auto">
+        Discover our most popular and highly-rated culinary creations
+      </p>
+    </motion.div>
 
-      {/* Featured Recipes Section */}
-      <section className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    {isLoadingRecipes ? (
+      <div className="flex justify-center items-center py-12">
+        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500"></div>
+        <span className="ml-3 text-gray-400">Loading top recipes...</span>
+      </div>
+    ) : featuredRecipes.length > 0 ? (
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {featuredRecipes.map((recipe: any) => (
           <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.7 }}
+            key={recipe._id}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
             viewport={{ once: true }}
-            className="text-center mb-12"
+            className="relative"
           >
-            <h3 className="text-3xl font-bold text-white mb-4">
-              Featured Recipes
-            </h3>
-            <div className="w-20 h-1 mx-auto bg-gradient-to-r from-purple-400 to-pink-400"></div>
-            <p className="mt-4 text-gray-300 max-w-2xl mx-auto">
-              Discover our most popular and highly-rated recipes
-            </p>
+            {recipe.averageRating > 0 && (
+              <div className="absolute top-4 right-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-3 py-1 rounded-full text-sm font-medium z-10 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+                {recipe.averageRating.toFixed(1)}
+              </div>
+            )}
+            <RecipeCard recipe={recipe} />
           </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {featuredRecipes.map((recipe, index) => (
-              <RecipeCard key={index} recipe={recipe}  />
-            ))}
-          </div>
-          
-          <div className="mt-12 text-center">
-            <Link 
-              href="/recipes"
-              className="inline-flex items-center text-purple-400 hover:text-purple-300 transition-colors font-medium"
-            >
-              View all recipes
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                className="h-5 w-5 ml-1" 
-                fill="none" 
-                viewBox="0 0 24 24" 
-                stroke="currentColor"
-              >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </Link>
-          </div>
-        </div>
-      </section>
+        ))}
+      </div>
+    ) : (
+      <div className="text-center py-8">
+        <p className="text-gray-400">No recipes available at this time.</p>
+        <Link 
+          href="/dashboard/create-recipe"
+          className="mt-4 inline-flex items-center text-purple-400 hover:text-purple-300"
+        >
+          Create the first recipe
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          </svg>
+        </Link>
+      </div>
+    )}
+    
+    <div className="mt-12 text-center">
+      <Link 
+        href="/dashboard/all-recipes"
+        className="inline-flex items-center text-purple-400 hover:text-purple-300 transition-colors font-medium"
+      >
+        View all recipes
+        <svg 
+          xmlns="http://www.w3.org/2000/svg" 
+          className="h-5 w-5 ml-1" 
+          fill="none" 
+          viewBox="0 0 24 24" 
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+        </svg>
+      </Link>
+    </div>
+  </div>
+</section>
 
       {/* User Reviews Section */}
       <section className="py-20 bg-gray-800/50">
@@ -626,7 +649,7 @@ const LandingPage = () => {
                 href="/privacy"
                 className="text-gray-500 hover:text-gray-300 transition-colors"
               >
-                Privacy Policy
+              Privacy Policy
               </Link>
               <Link
                 href="/terms"

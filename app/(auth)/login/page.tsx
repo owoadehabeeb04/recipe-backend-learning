@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios, { AxiosError } from "axios";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -11,6 +11,7 @@ import { login } from "@/app/api/(auth)/login";
 import { useAuthStore } from "@/app/store/authStore";
 import toast from "react-hot-toast";
 import { motion } from "framer-motion";
+import { setAuthCookie } from "@/utils/auth";
 
 const loginSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -19,8 +20,10 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
-export default function Login() {
+export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoginSuccess, setIsLoginSuccess] = useState(false);
+  const [successData, setSuccessData] = useState<any>(null);
   const router = useRouter();
   const { setAuth } = useAuthStore();
   const {
@@ -31,6 +34,25 @@ export default function Login() {
     resolver: zodResolver(loginSchema)
   });
 
+  useEffect(() => {
+    console.log(isLoginSuccess, successData);
+    if (isLoginSuccess && successData) {
+      setAuthCookie(successData.access_token);
+      
+      // Check for returnUrl in search params
+      const params = new URLSearchParams(window.location.search);
+      const returnUrl = params.get('returnUrl');
+      console.log({returnUrl})
+      
+      // If returnUrl exists, redirect there, otherwise go to dashboard
+      router.push(returnUrl || "/dashboard");
+      window.location.href = returnUrl || "/dashboard";
+      setAuth(successData.access_token, successData.user);
+      toast.success("Login successful");
+setIsLoginSuccess(false)
+    }
+  }, [isLoginSuccess, successData, router]);
+
   const onSubmit = async (data: LoginFormData) => {
     try {
       setIsLoading(true);
@@ -38,8 +60,8 @@ export default function Login() {
 
       if (response.access_token) {
         setAuth(response.access_token, response.user);
-        toast.success("Login successful");
-        router.push("/dashboard");
+        setSuccessData(response);
+        setIsLoginSuccess(true);
       } else {
         toast.error("Login failed");
       }
@@ -104,12 +126,6 @@ export default function Login() {
                 Email Address
               </label>
               <div className="mt-1 relative">
-                {/* <input
-                  {...register("email")}
-                  type="email"
-                  className="appearance-none bg-gray-900/50 text-white rounded-lg block w-full px-4 py-3 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-transparent"
-                  placeholder="Enter your email"
-                /> */}
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <svg
                     className="h-5 w-5 text-gray-500"

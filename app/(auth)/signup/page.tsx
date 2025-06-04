@@ -11,6 +11,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { setAuthCookie } from "@/utils/auth";
 
 const signupSchema = z
   .object({
@@ -64,6 +65,8 @@ export default function SignupPage() {
       const response = await signUp(payload);
       if (response?.access_token || response?.data?.access_token) {
         toast.success("Registration successful!");
+        setAuthCookie(response.access_token);
+        
         router.push("/login");
       } else {
         const errorMessage = response?.response?.data?.error?.includes(

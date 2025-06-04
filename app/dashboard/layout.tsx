@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Users from "./users/page";
 import toast from "react-hot-toast";
+import { clearAuthCookie } from "@/utils/auth";
 // Icons
 const HomeIcon = () => (
   <svg
@@ -351,9 +352,11 @@ export default function DashboardLayout({ children }: any) {
                   onClick={async () => {
                     try {
                       setAuth("", {} as User);
+                      clearAuthCookie();
 
                       window.location.href = "/login";
                       toast.success("Logout successful");
+
                     } catch (error) {
                       console.error("Logout failed:", error);
                     }
