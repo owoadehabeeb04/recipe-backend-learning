@@ -15,6 +15,7 @@ interface Message {
   timestamp: Date;
   isNew?: boolean;
   fullMessage?: string;
+  images?: any;
   imageUrls?: string[]; // Add this field
 }
 
@@ -196,36 +197,39 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
               : "bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 rounded-bl-xl rounded-br-none"
           } px-4 py-3`}
         >
-          {/* Render images if present - MOVED OUTSIDE the isAssistant conditional */}
-          {message?.images && message?.images.length > 0 && (
+          {/* Render images if present */}
+          {(message.images && message.images.length > 0) && (
             <div
               className={`grid gap-2 mb-3 ${
-                message?.images.length === 1
+                message.images.length === 1
                   ? "grid-cols-1"
                   : message.images.length === 2
                   ? "grid-cols-2"
                   : "grid-cols-3"
               }`}
             >
-              {message.images.map((img, index) => {
-                console.log({img})
-              return  (
-                <div
-                  key={index}
-                  className={`rounded-lg overflow-hidden ${
-                    message.images && message.images.length > 2
-                      ? "max-h-24 md:max-h-32"
-                      : "max-h-48 md:max-h-64"
-                  }`}
-                >
-                  <img
-                    src={img?.url}
-                    alt={`Shared image ${index + 1}`}
-                    className="w-full h-full object-cover"
-                    onClick={() => window.open(img?.url, "_blank")}
-                  />
-                </div>
-              )})}
+              {message.images.map((img: any, index: number) => {
+                // Handle both string URLs and objects with url property
+                const imgUrl = typeof img === 'string' ? img : img?.url;
+                
+                return (
+                  <div
+                    key={index}
+                    className={`rounded-lg overflow-hidden ${
+                      message.images && message.images.length > 2
+                        ? "max-h-24 md:max-h-32"
+                        : "max-h-48 md:max-h-64"
+                    }`}
+                  >
+                    <img
+                      src={imgUrl}
+                      alt={`Shared image ${index + 1}`}
+                      className="w-full h-full object-cover cursor-pointer hover:opacity-90 transition-opacity"
+                      onClick={() => window.open(imgUrl, "_blank")}
+                    />
+                  </div>
+                );
+              })}
             </div>
           )}
 
