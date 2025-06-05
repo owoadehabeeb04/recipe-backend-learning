@@ -208,6 +208,8 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
                   >
                     <Image
                       src={imgUrl}
+                      width={64}
+                      height={64}
                       alt={`Shared image ${index + 1}`}
                       className="w-full h-full object-cover cursor-pointer hover:opacity-90 transition-opacity"
                       onClick={() => window.open(imgUrl, "_blank")}
