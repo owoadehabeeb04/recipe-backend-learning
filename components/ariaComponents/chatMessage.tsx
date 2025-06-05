@@ -148,7 +148,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
     setTypingComplete(true);
     setIsTyping(false);
   };
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -196,7 +195,6 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
               {message.images.map((img: any, index: number) => {
                 // Handle both string URLs and objects with url property
                 const imgUrl = typeof img === 'string' ? img : img?.url;
-                
                 return (
                   <div
                     key={index}
