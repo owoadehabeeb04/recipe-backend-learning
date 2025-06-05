@@ -193,7 +193,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
               }`}
             >
               {message.images.map((img: any, index: number) => {
-                // Handle both string URLs and objects with url property
+                // Handle both string URLs and objects with a url property
                 const imgUrl = typeof img === 'string' ? img : img?.url;
                 return (
                   <div
