@@ -282,7 +282,7 @@ useEffect(() => {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {categories.map((category, index) => (
               <motion.div
                 key={index}
@@ -404,17 +404,17 @@ useEffect(() => {
             {[
               {
                 quote: "Recipia transformed how I cook. The AI suggestions are brilliant and always match my preferences!",
-                author: "Sarah Johnson",
+                author: "Tobiloba Owoade",
                 role: "Home Chef"
               },
               {
                 quote: "As a professional chef, I'm impressed by the innovation and precision of the recipes. Great for inspiration!",
-                author: "Marco Rodriguez",
+                author: "Abdul Razaq Tiamiyu",
                 role: "Executive Chef"
               },
               {
                 quote: "Finally found recipes that match my dietary needs perfectly. The personalization is amazing!",
-                author: "Aisha Patel",
+                author: "Barakat Temidayo",
                 role: "Fitness Enthusiast"
               }
             ].map((testimonial, index) => (
