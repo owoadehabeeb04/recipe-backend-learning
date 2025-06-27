@@ -1,75 +1,3 @@
-// "use client"
-
-// import { useEffect } from "react"
-// import Navbar from "@/components/navbar"
-// import Hero from "@/components/hero"
-// import Features from "@/components/features"
-// import HowItWorks from "@/components/how-it-works"
-// import Testimonials from "@/components/testimonials"
-// import Cta from "@/components/cta"
-// import Footer from "@/components/footer"
-// import AnimationWrapper from "@/components/animation-wrapper"
-// import AnimatedBackground from "./animation-background"
-// import AiCapabilities from "./aiCapabilities"
-
-// export default function Home() {
-//   useEffect(() => {
-//     // Smooth scroll for anchor links
-//     document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
-//       anchor.addEventListener("click", (e) => {
-//         e.preventDefault()
-//         const mouseEvent = e as MouseEvent
-//         const targetId = (mouseEvent.currentTarget as HTMLAnchorElement).getAttribute("href")
-//         if (!targetId) return
-
-//         const targetElement = document.querySelector(targetId)
-//         if (targetElement) {
-//           window.scrollTo({
-//             top: targetElement.getBoundingClientRect().top + window.scrollY - 100,
-//             behavior: "smooth",
-//           })
-//         }
-//       })
-//     })
-//   }, [])
-
-//   return (
-//     <div className="min-h-screen bg-background text-foreground">
-//       <Navbar />
-//       <AnimatedBackground />
-
-//       <AnimationWrapper direction="none" duration={1.2}>
-//         <Hero />
-//       </AnimationWrapper>
-
-//       <AnimationWrapper delay={0.1}>
-//         <Features />
-//       </AnimationWrapper>
-
-//       <AnimationWrapper delay={0.1}>
-//         <HowItWorks />
-//       </AnimationWrapper>
-
-//       <AnimationWrapper delay={0.1}>
-//         <AiCapabilities />
-//       </AnimationWrapper>
-
-//       <AnimationWrapper delay={0.1}>
-//         <Testimonials />
-//       </AnimationWrapper>
-
-//       {/* <AnimationWrapper delay={0.1}>
-//         <Pricing />
-//       </AnimationWrapper> */}
-
-//       <AnimationWrapper delay={0.1}>
-//         <Cta />
-//       </AnimationWrapper>
-
-//       <Footer />
-//     </div>
-//   )
-// }
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
@@ -79,7 +7,8 @@ import { RecipeCard } from "./recipesComponent/recipeCardAll";
 import { getAllRecipes } from "@/app/api/(recipe)/userRecipes";
 import toast from "react-hot-toast";
 import { Loader } from "lucide-react";
-
+import mealplanningpicture from "../public/Screenshot 2025-06-27 at 12.25.45 PM.png"
+import ARIACHATOTPICTURE from "../public/Screenshot 2025-06-27 at 12.26.36 PM.png";
 const LandingPage = () => {
   // Sample recipe data for featured recipes
   
@@ -172,12 +101,21 @@ useEffect(() => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
-            className="flex items-center space-x-6"
+            className="hidden md:flex items-center space-x-8"
           >
-            <Link
-              href="/login"
-              className="text-gray-300 hover:text-white transition-colors"
-            >
+            <Link href="#features" className="text-gray-300 hover:text-white transition-colors">
+              Features
+            </Link>
+            <Link href="/dashboard/aria" className="text-gray-300 hover:text-white transition-colors">
+              AI Assistant
+            </Link>
+            <Link href="/dashboard/meal-planner" className="text-gray-300 hover:text-white transition-colors">
+              Meal Planning
+            </Link>
+            <Link href="/dashboard/all-recipes" className="text-gray-300 hover:text-white transition-colors">
+              Recipes
+            </Link>
+            <Link href="/login" className="text-gray-300 hover:text-white transition-colors">
               Login
             </Link>
             <Link
@@ -382,6 +320,644 @@ useEffect(() => {
       </Link>
     </div>
   </div>
+</section>
+
+{/* Comprehensive Features Section - Add this before AI Features Section */}
+<section id="features" className="py-20 bg-gray-900/50 relative overflow-hidden">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <motion.div
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      transition={{ duration: 0.7 }}
+      viewport={{ once: true }}
+      className="text-center mb-16"
+    >
+      <h3 className="text-4xl font-bold text-white mb-4">
+        Everything You Need for Culinary Excellence
+      </h3>
+      <div className="w-20 h-1 mx-auto bg-gradient-to-r from-purple-400 to-pink-400 mb-6"></div>
+      <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+        From AI-powered recipe discovery to smart meal planning, we've got all your cooking needs covered
+      </p>
+    </motion.div>
+
+    {/* Feature Grid */}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+      {/* AI Chat Assistant */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        viewport={{ once: true }}
+        className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-8 border border-gray-700 hover:border-purple-500/50 transition-all duration-300 group"
+      >
+        <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+        </div>
+        <h4 className="text-xl font-semibold text-white mb-4">AI Chat Assistant</h4>
+        <p className="text-gray-300 mb-6">
+          Chat with Aria, your intelligent cooking companion. Get instant recipe suggestions, cooking tips, and personalized meal recommendations through natural conversation.
+        </p>
+        {/* <Link 
+          href="/dashboard/aria"
+          className="inline-flex items-center text-purple-400 hover:text-purple-300 transition-colors font-medium"
+        >
+          Try Aria Now
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </Link> */}
+      </motion.div>
+
+      {/* Weekly Meal Planning */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.6 }}
+        viewport={{ once: true }}
+        className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-8 border border-gray-700 hover:border-green-500/50 transition-all duration-300 group"
+      >
+        <div className="w-16 h-16 bg-gradient-to-br from-green-600 to-teal-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <h4 className="text-xl font-semibold text-white mb-4">Smart Meal Planning</h4>
+        <p className="text-gray-300 mb-6">
+          Create personalized weekly meal plans with AI assistance. Balance nutrition, manage dietary restrictions, and streamline your cooking schedule effortlessly.
+        </p>
+        {/* <Link 
+          href="/dashboard/meal-planner"
+          className="inline-flex items-center text-green-400 hover:text-green-300 transition-colors font-medium"
+        >
+          Start Planning
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </Link> */}
+      </motion.div>
+
+      {/* Google Calendar Integration */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.6 }}
+        viewport={{ once: true }}
+        className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-8 border border-gray-700 hover:border-blue-500/50 transition-all duration-300 group"
+      >
+        <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h4 className="text-xl font-semibold text-white mb-4">Calendar Integration</h4>
+        <p className="text-gray-300 mb-6">
+          Sync your meal plans directly with Google Calendar. Set cooking reminders, prep time alerts, and never miss a meal preparation deadline.
+        </p>
+        {/* <Link 
+          href="/dashboard/calendar-sync"
+          className="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors font-medium"
+        >
+          Connect Calendar
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </Link> */}
+      </motion.div>
+
+      {/* Smart Shopping Lists */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.6 }}
+        viewport={{ once: true }}
+        className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-8 border border-gray-700 hover:border-orange-500/50 transition-all duration-300 group"
+      >
+        <div className="w-16 h-16 bg-gradient-to-br from-orange-600 to-red-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        </div>
+        <h4 className="text-xl font-semibold text-white mb-4">Printable Shopping Lists</h4>
+        <p className="text-gray-300 mb-6">
+          Automatically generate organized shopping lists from your meal plans. Print or share lists categorized by store sections for efficient grocery shopping.
+        </p>
+        {/* <Link 
+          href="/dashboard/shopping-lists"
+          className="inline-flex items-center text-orange-400 hover:text-orange-300 transition-colors font-medium"
+        >
+          Generate List
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </Link> */}
+      </motion.div>
+
+      {/* Cooking Progress Tracking */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4, duration: 0.6 }}
+        viewport={{ once: true }}
+        className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-8 border border-gray-700 hover:border-yellow-500/50 transition-all duration-300 group"
+      >
+        <div className="w-16 h-16 bg-gradient-to-br from-yellow-600 to-amber-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h4 className="text-xl font-semibold text-white mb-4">Cooking Progress Tracker</h4>
+        <p className="text-gray-300 mb-6">
+          Step-by-step cooking guidance with progress tracking. Mark completed steps, set timers, and never lose your place in complex recipes.
+        </p>
+        {/* <Link 
+          href="/dashboard/cooking-tracker"
+          className="inline-flex items-center text-yellow-400 hover:text-yellow-300 transition-colors font-medium"
+        >
+          Start Cooking
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </Link> */}
+      </motion.div>
+
+      {/* Recipe Rating & Reviews */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5, duration: 0.6 }}
+        viewport={{ once: true }}
+        className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-8 border border-gray-700 hover:border-pink-500/50 transition-all duration-300 group"
+      >
+        <div className="w-16 h-16 bg-gradient-to-br from-pink-600 to-rose-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+          </svg>
+        </div>
+        <h4 className="text-xl font-semibold text-white mb-4">Advanced Rating System</h4>
+        <p className="text-gray-300 mb-6">
+          Rate and review recipes with detailed feedback. Discover top-rated dishes, share your cooking experiences, and help the community find the best recipes.
+        </p>
+        {/* <Link 
+          href="/dashboard/all-recipes"
+          className="inline-flex items-center text-pink-400 hover:text-pink-300 transition-colors font-medium"
+        >
+          Explore Recipes
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </Link> */}
+      </motion.div>
+    </div>
+
+    {/* Admin & User Features */}
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.6, duration: 0.7 }}
+      viewport={{ once: true }}
+      className="grid grid-cols-1 md:grid-cols-2 gap-8"
+    >
+      {/* Admin Recipe Creation */}
+      <div className="bg-gradient-to-br from-purple-900/50 to-indigo-900/50 rounded-2xl p-8 border border-purple-500/30">
+        <div className="flex items-start space-x-4 mb-6">
+          <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-xl flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+          </div>
+          <div>
+            <h4 className="text-xl font-semibold text-white mb-2">Admin Recipe Management</h4>
+            <p className="text-gray-300">
+              Authorized administrators can create, edit, and curate premium recipes. Ensure quality content with professional recipe validation and featured recipe selection.
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          <span className="px-3 py-1 bg-purple-600/30 text-purple-300 rounded-full text-sm">Content Curation</span>
+          <span className="px-3 py-1 bg-indigo-600/30 text-indigo-300 rounded-full text-sm">Quality Control</span>
+          <span className="px-3 py-1 bg-pink-600/30 text-pink-300 rounded-full text-sm">Featured Recipes</span>
+        </div>
+      </div>
+
+      {/* User Favorites & Collections */}
+      <div className="bg-gradient-to-br from-rose-900/50 to-pink-900/50 rounded-2xl p-8 border border-rose-500/30">
+        <div className="flex items-start space-x-4 mb-6">
+          <div className="w-12 h-12 bg-gradient-to-br from-rose-600 to-pink-600 rounded-xl flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+            </svg>
+          </div>
+          <div>
+            <h4 className="text-xl font-semibold text-white mb-2">Personal Recipe Collections</h4>
+            <p className="text-gray-300">
+              Save your favorite recipes, create custom collections, and build your personal cookbook. Share collections with friends and discover new favorites from the community.
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          <span className="px-3 py-1 bg-rose-600/30 text-rose-300 rounded-full text-sm">Favorites</span>
+          <span className="px-3 py-1 bg-pink-600/30 text-pink-300 rounded-full text-sm">Collections</span>
+          <span className="px-3 py-1 bg-red-600/30 text-red-300 rounded-full text-sm">Share & Discover</span>
+        </div>
+      </div>
+    </motion.div>
+
+    {/* Call to Action */}
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.7, duration: 0.7 }}
+      viewport={{ once: true }}
+      className="text-center mt-16"
+    >
+      <h4 className="text-2xl font-bold text-white mb-4">
+        Ready to revolutionize your cooking experience?
+      </h4>
+      <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
+        Join thousands of home cooks and professional chefs who've transformed their kitchens with Recipia's intelligent features.
+      </p>
+      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <Link
+          href="/signup"
+          className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-4 rounded-full text-lg font-medium transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-purple-900/30 inline-flex items-center justify-center group"
+        >
+          Get Started Free
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+          </svg>
+        </Link>
+        <Link
+          href="/dashboard/aria"
+          className="bg-gray-800 hover:bg-gray-700 text-white px-8 py-4 rounded-full text-lg font-medium transition-all duration-300 border border-gray-600 hover:border-gray-500 inline-flex items-center justify-center group"
+        >
+          Try AI Assistant
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </Link>
+      </div>
+    </motion.div>
+  </div>
+
+  {/* Background Elements */}
+  <div className="absolute top-20 left-10 w-64 h-64 rounded-full bg-purple-900/10 blur-3xl opacity-60 -z-10"></div>
+  <div className="absolute bottom-20 right-10 w-80 h-80 rounded-full bg-pink-900/10 blur-3xl opacity-60 -z-10"></div>
+  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 rounded-full bg-blue-900/5 blur-3xl opacity-40 -z-10"></div>
+</section>
+
+{/* AI Features Section */}
+<section className="py-20 relative overflow-hidden">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <motion.div
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      transition={{ duration: 0.7 }}
+      viewport={{ once: true }}
+      className="text-center mb-16"
+    >
+      <h3 className="text-4xl font-bold text-white mb-4">
+        Powered by Advanced AI Technology
+      </h3>
+      <div className="w-20 h-1 mx-auto bg-gradient-to-r from-purple-400 to-pink-400 mb-6"></div>
+      <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+        Experience the future of cooking with our intelligent AI assistant that understands your needs
+      </p>
+    </motion.div>
+
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      {/* AI Features List */}
+      <motion.div
+        initial={{ opacity: 0, x: -50 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+        className="space-y-8"
+      >
+        {/* Voice Interaction */}
+        <div className="flex items-start space-x-4">
+          <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+            </svg>
+          </div>
+          <div>
+            <h4 className="text-xl font-semibold text-white mb-2">Voice Commands</h4>
+            <p className="text-gray-300">
+              Talk naturally to Aria! Ask for recipes, cooking tips, or ingredient substitutions using your voice. 
+              Perfect for hands-free cooking assistance.
+            </p>
+          </div>
+        </div>
+
+        {/* Image Recognition */}
+        <div className="flex items-start space-x-4">
+          <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <div>
+            <h4 className="text-xl font-semibold text-white mb-2">Smart Image Analysis</h4>
+            <p className="text-gray-300">
+              Upload photos of ingredients, dishes, or your fridge contents. Aria will identify them and suggest 
+              perfect recipes you can make right now.
+            </p>
+          </div>
+        </div>
+
+        {/* Intelligent Text Chat */}
+        <div className="flex items-start space-x-4">
+          <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-pink-600 to-red-600 rounded-xl flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+            </svg>
+          </div>
+          <div>
+            <h4 className="text-xl font-semibold text-white mb-2">Intelligent Conversations</h4>
+            <p className="text-gray-300">
+              Chat naturally with Aria about cooking techniques, dietary restrictions, meal planning, and get 
+              personalized recipe recommendations.
+            </p>
+          </div>
+        </div>
+
+        {/* Meal Planning */}
+        <div className="flex items-start space-x-4">
+          <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-green-600 to-teal-600 rounded-xl flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <div>
+            <h4 className="text-xl font-semibold text-white mb-2">Smart Meal Planning</h4>
+            <p className="text-gray-300">
+              Let Aria create personalized weekly meal plans based on your preferences, dietary needs, and schedule. 
+              Complete with shopping lists and prep instructions.
+            </p>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* AI Interface Screenshots */}
+      <motion.div
+        initial={{ opacity: 0, x: 50 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+        className="relative"
+      >
+        {/* Main Chat Interface */}
+        <div className="relative z-10 bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-6 shadow-2xl border border-gray-700">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h5 className="text-white font-semibold">Aria AI Assistant</h5>
+            </div>
+            <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+          </div>
+          
+          {/* Aria Chat Preview Image */}
+          <div className="relative overflow-hidden rounded-lg mb-4">
+            <Image
+              src={ARIACHATOTPICTURE}
+              alt="Aria AI Chat Interface Preview"
+              width={500}
+              height={300}
+              className="w-full h-auto object-cover"
+            />
+          </div>
+          
+          {/* Input Area */}
+          <div className="flex items-center space-x-2 p-3 bg-gray-700 rounded-lg">
+            <button className="p-2 rounded-full bg-purple-600 hover:bg-purple-700 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </button>
+            <input 
+              type="text" 
+              placeholder="Ask Aria anything about cooking..."
+              className="flex-1 bg-transparent text-gray-300 placeholder-gray-500 border-none outline-none"
+              disabled
+            />
+            <button className="p-2 rounded-full bg-pink-600 hover:bg-pink-700 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Background Glow */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-2xl blur-xl transform scale-110 -z-10"></div>
+      </motion.div>
+    </div>
+
+    {/* CTA for AI Features */}
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.4, duration: 0.7 }}
+      viewport={{ once: true }}
+      className="text-center mt-16"
+    >
+      <Link
+        href="/dashboard/aria"
+        className="inline-flex items-center bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-4 rounded-full text-lg font-medium transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-purple-900/30 group"
+      >
+        Try Aria AI Now
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+        </svg>
+      </Link>
+    </motion.div>
+  </div>
+
+  {/* Background Elements */}
+  <div className="absolute top-20 left-10 w-32 h-32 rounded-full bg-purple-900/10 blur-2xl opacity-60 -z-10"></div>
+  <div className="absolute bottom-20 right-10 w-40 h-40 rounded-full bg-pink-900/10 blur-2xl opacity-60 -z-10"></div>
+</section>
+
+{/* Meal Planning Feature Section */}
+<section className="py-20 bg-gray-800/30 relative overflow-hidden">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <motion.div
+      initial={{ opacity: 0 }}
+      whileInView={{ opacity: 1 }}
+      transition={{ duration: 0.7 }}
+      viewport={{ once: true }}
+      className="text-center mb-16"
+    >
+      <h3 className="text-4xl font-bold text-white mb-4">
+        Smart Meal Planning Made Simple
+      </h3>
+      <div className="w-20 h-1 mx-auto bg-gradient-to-r from-green-400 to-teal-400 mb-6"></div>
+      <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+        Plan your entire week with intelligent meal suggestions, automated shopping lists, and nutritional tracking
+      </p>
+    </motion.div>
+
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      {/* Meal Planning Interface Preview */}
+      <motion.div
+        initial={{ opacity: 0, x: -50 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+        className="relative"
+      >
+        {/* Meal Planning Preview Image */}
+        <div className="relative overflow-hidden rounded-2xl shadow-2xl border border-gray-700">
+          <Image
+            src={mealplanningpicture}
+            alt="Meal Planning Interface Preview"
+            width={600}
+            height={400}
+            className="w-full h-auto object-cover"
+          />
+        </div>
+      </motion.div>
+
+      {/* Features List */}
+      <motion.div
+        initial={{ opacity: 0, x: 50 }}
+        whileInView={{ opacity: 1, x: 0 }}
+        transition={{ duration: 0.8 }}
+        viewport={{ once: true }}
+        className="space-y-8"
+      >
+        {/* Personalized Planning */}
+        <div className="flex items-start space-x-4">
+          <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-green-600 to-teal-600 rounded-xl flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+          </div>
+          <div>
+            <h4 className="text-xl font-semibold text-white mb-2">Personalized Planning</h4>
+            <p className="text-gray-300">
+              AI analyzes your preferences, dietary restrictions, cooking skills, and schedule to create perfect weekly meal plans tailored just for you.
+            </p>
+          </div>
+        </div>
+
+        {/* Smart Shopping Lists */}
+        <div className="flex items-start space-x-4">
+          <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+            </svg>
+          </div>
+          <div>
+            <h4 className="text-xl font-semibold text-white mb-2">Automated Shopping Lists</h4>
+            <p className="text-gray-300">
+              Automatically generates organized shopping lists with exact quantities, categorized by store sections. Never forget an ingredient again!
+            </p>
+          </div>
+        </div>
+
+        {/* Nutritional Tracking */}
+        <div className="flex items-start space-x-4">
+          <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012-2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </div>
+          <div>
+            <h4 className="text-xl font-semibold text-white mb-2">Nutritional Intelligence</h4>
+            <p className="text-gray-300">
+              Track calories, macros, and nutrients automatically. Get balanced meal suggestions that align with your health and fitness goals.
+            </p>
+          </div>
+        </div>
+
+        {/* Flexible Scheduling */}
+        <div className="flex items-start space-x-4">
+          <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-amber-600 to-orange-600 rounded-xl flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <div>
+            <h4 className="text-xl font-semibold text-white mb-2">Flexible Scheduling</h4>
+            <p className="text-gray-300">
+              Adapt to your busy lifestyle with quick 15-minute meals for hectic days and elaborate weekend cooking projects when you have time.
+            </p>
+          </div>
+        </div>
+
+        {/* CTA Button */}
+        <div className="pt-6">
+          <Link
+            href="/dashboard/meal-planner"
+            className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700 text-white px-8 py-4 rounded-full text-lg font-medium transition-all duration-300 shadow-lg hover:shadow-xl hover:shadow-green-900/30 group"
+          >
+            Start Planning Meals
+            {/* <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+            </svg> */}
+          </Link>
+        </div>
+      </motion.div>
+    </div>
+
+    {/* Statistics */}
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.4, duration: 0.7 }}
+      viewport={{ once: true }}
+      className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8"
+    >
+      <div className="text-center">
+        <div className="text-3xl font-bold text-white mb-2">2.5 hrs</div>
+        <p className="text-gray-400">Average time saved per week</p>
+      </div>
+      <div className="text-center">
+        <div className="text-3xl font-bold text-white mb-2">30%</div>
+        <p className="text-gray-400">Reduction in food waste</p>
+      </div>
+      <div className="text-center">
+        <div className="text-3xl font-bold text-white mb-2">100+</div>
+        <p className="text-gray-400">Meal plan templates available</p>
+      </div>
+    </motion.div>
+  </div>
+
+  {/* Background Elements */}
+  <div className="absolute top-20 right-10 w-32 h-32 rounded-full bg-green-900/10 blur-2xl opacity-60 -z-10"></div>
+  <div className="absolute bottom-20 left-10 w-40 h-40 rounded-full bg-teal-900/10 blur-2xl opacity-60 -z-10"></div>
 </section>
 
       {/* User Reviews Section */}
@@ -622,22 +1198,7 @@ useEffect(() => {
                   </svg>
                 </a>
               </div>
-              <div className="mt-6">
-                <h5 className="font-medium text-white mb-2">Subscribe to our newsletter</h5>
-                <form className="flex">
-                  <input
-                    type="email"
-                    placeholder="Enter your email"
-                    className="px-4 py-2 w-full rounded-l-md border border-gray-700 bg-gray-800 text-gray-200 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                  />
-                  <button
-                    type="submit"
-                    className="bg-purple-600 text-white px-4 py-2 rounded-r-md hover:bg-purple-700 transition-colors"
-                  >
-                    Subscribe
-                  </button>
-                </form>
-              </div>
+              
             </div>
           </div>
           <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center">
