@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useForm, useFieldArray } from "react-hook-form";
-import { motion } from "framer-motion";
+ 
 import { useAuthStore } from "@/app/store/authStore";
 import { uploadToCloudinary } from "@/app/api/(recipe)/uploadImage";
 import toast from "react-hot-toast";
@@ -426,10 +426,10 @@ if (user?.role === "super_admin") {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <div
+        //{ opacity: 0, y: 20 }}
+        // opacity: 1, y: 0 }}
+        // duration: 0.5 }}
         className="mb-8"
       >
         <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
@@ -438,7 +438,7 @@ if (user?.role === "super_admin") {
         <p className="text-gray-400 mt-2">
           Update your recipe information and details
         </p>
-      </motion.div>
+      </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
         <div className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6">

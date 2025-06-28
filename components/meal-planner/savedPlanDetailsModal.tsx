@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { motion } from "framer-motion";
+ 
 import React, { useState, useEffect } from "react";
 import { useAuthStore } from "@/app/store/authStore";
 import { toast } from "react-hot-toast";
@@ -304,16 +304,16 @@ export const SavedPlanDetailsModal: React.FC<SavedPlanDetailsModalProps> = ({
   console.log('connected to calendar', plan)
 
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+    <div 
+      //{ opacity: 0 }}
+      // opacity: 1 }}
+       //  opacity: 0 }}
       className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
     >
-      <motion.div 
-        initial={{ scale: 0.9, y: 20 }}
-        animate={{ scale: 1, y: 0 }}
-        exit={{ scale: 0.9, y: 20 }}
+      <div 
+        //{ scale: 0.9, y: 20 }}
+        // scale: 1, y: 0 }}
+         //  scale: 0.9, y: 20 }}
         className="bg-white rounded-2xl shadow-2xl overflow-hidden w-full max-w-[800px]"
       >
         {/* Header */}
@@ -648,7 +648,7 @@ export const SavedPlanDetailsModal: React.FC<SavedPlanDetailsModalProps> = ({
 </button>
           </div>
         </div>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 };

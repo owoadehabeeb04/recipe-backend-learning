@@ -10,7 +10,6 @@ import Link from "next/link";
 import { login } from "@/app/api/(auth)/login";
 import { useAuthStore } from "@/app/store/authStore";
 import toast from "react-hot-toast";
-import { motion } from "framer-motion";
 import { setAuthCookie } from "@/utils/auth";
 
 const loginSchema = z.object({
@@ -86,36 +85,28 @@ setIsLoginSuccess(false)
         <div className="absolute bottom-0 right-0 w-80 h-80 bg-purple-500 rounded-full filter blur-3xl opacity-10 -mr-20 -mb-20"></div>
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <div
+        
         className="max-w-md w-full space-y-8 p-8 bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl shadow-xl"
       >
         <div>
-          <motion.h2
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
+          <h2
+         
             className="mt-2 text-center text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600"
           >
             Welcome Back
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
+          </h2>
+          <p
+      
             className="mt-2 text-center text-sm text-gray-400"
           >
             Sign in to access your recipes
-          </motion.p>
+          </p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4, duration: 0.5 }}
+          <div
+            
             className="space-y-5"
           >
             <div>
@@ -202,18 +193,15 @@ setIsLoginSuccess(false)
                 Forgot password?
               </Link>
             </div>
-          </motion.div>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5, duration: 0.5 }}
+          <div
+          
           >
-            <motion.button
+            <button
               type="submit"
               disabled={isLoading}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+        
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-sm font-medium text-white bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 transition-all duration-200 shadow-lg shadow-blue-500/20"
             >
               {isLoading ? (
@@ -259,13 +247,10 @@ setIsLoginSuccess(false)
                   </svg>
                 </div>
               )}
-            </motion.button>
-          </motion.div>
+            </button>
+          </div>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.5 }}
+          <div
             className="text-center mt-4"
           >
             <p className="text-sm text-gray-400">
@@ -277,9 +262,9 @@ setIsLoginSuccess(false)
                 Sign up
               </Link>
             </p>
-          </motion.div>
+          </div>
         </form>
-      </motion.div>
+      </div>
     </div>
   );
 }

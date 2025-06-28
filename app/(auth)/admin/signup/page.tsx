@@ -9,7 +9,6 @@ import { useAuthStore } from "@/app/store/authStore";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
 import Link from "next/link";
 import { setAuthCookie } from "@/utils/auth";
 
@@ -103,10 +102,8 @@ export default function SignupPage() {
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-pink-500 rounded-full filter blur-3xl opacity-10 -ml-20 -mb-20"></div>
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <div
+      
         className="max-w-md w-full space-y-8 p-8 bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl shadow-xl"
       >
         <div>
@@ -222,11 +219,9 @@ export default function SignupPage() {
           </div>
 
           <div>
-            <motion.button
+            <button
               type="submit"
               disabled={isLoading}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-sm font-medium text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 transition-all duration-200 shadow-lg shadow-purple-500/20"
             >
               {isLoading ? (
@@ -272,20 +267,18 @@ export default function SignupPage() {
                   </svg>
                 </div>
               )}
-            </motion.button>
+            </button>
           </div>
 
           {error && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
+            <div
               className="p-3 bg-red-500/20 border border-red-500/30 rounded-lg text-sm text-red-400"
             >
               {error}
-            </motion.div>
+            </div>
           )}
         </form>
-      </motion.div>
+      </div>
     </div>
   );
 }

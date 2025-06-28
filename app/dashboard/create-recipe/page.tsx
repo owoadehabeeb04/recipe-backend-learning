@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+ 
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -330,10 +330,10 @@ const CreateRecipePage = () => {
 
   return (
     <div className="pb-20">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <div
+        //{ opacity: 0, y: 20 }}
+        // opacity: 1, y: 0 }}
+        // duration: 0.5 }}
         className="mb-8"
       >
         <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
@@ -342,14 +342,14 @@ const CreateRecipePage = () => {
         <p className="text-gray-400 mt-2">
           Share your culinary masterpiece with the world
         </p>
-      </motion.div>
+      </div>
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
         {/* Basic Info Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+        <div
+          //{ opacity: 0, y: 20 }}
+          // opacity: 1, y: 0 }}
+          // duration: 0.5, delay: 0.1 }}
           className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-8 overflow-hidden relative"
         >
           {/* ... Basic Info content stays the same ... */}
@@ -639,13 +639,13 @@ const CreateRecipePage = () => {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Ingredients Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+        <div
+          //{ opacity: 0, y: 20 }}
+          // opacity: 1, y: 0 }}
+          // duration: 0.5, delay: 0.2 }}
           className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-8 overflow-hidden relative"
         >
           {/* ... Ingredients content stays the same ... */}
@@ -769,13 +769,13 @@ const CreateRecipePage = () => {
               setIsCalculatingNutrition={setIsCalculatingNutrition}
             />
           </div>
-        </motion.div>
+        </div>
 
         {/* Steps Section */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+        <div
+          //{ opacity: 0, y: 20 }}
+          // opacity: 1, y: 0 }}
+          // duration: 0.5, delay: 0.3 }}
           className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-8 overflow-hidden relative"
         >
           {/* ... Steps content stays the same ... */}
@@ -865,13 +865,13 @@ const CreateRecipePage = () => {
               </button>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Tips Section - NEW */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
+        <div
+          //{ opacity: 0, y: 20 }}
+          // opacity: 1, y: 0 }}
+          // duration: 0.5, delay: 0.4 }}
           className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-8 overflow-hidden relative"
         >
           <div className="absolute inset-0 opacity-10">
@@ -971,7 +971,7 @@ const CreateRecipePage = () => {
               </button>
             </div>
           </div>
-        </motion.div>
+        </div>
         {nutrition && (
           <NutritionSection
             nutrition={nutrition}
@@ -1018,10 +1018,10 @@ const CreateRecipePage = () => {
           </>
         )}
         {/* Submit Button */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.5 }}
+        <div
+          //{ opacity: 0, y: 20 }}
+          // opacity: 1, y: 0 }}
+          // duration: 0.5, delay: 0.5 }}
           className="flex justify-end"
         >
           <button
@@ -1073,7 +1073,7 @@ const CreateRecipePage = () => {
               </>
             )}
           </button>
-        </motion.div>
+        </div>
       </form>
     </div>
   );

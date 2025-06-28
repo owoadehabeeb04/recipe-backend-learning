@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { motion } from 'framer-motion';
 
 // Dynamically import ApexCharts components to avoid SSR issues
 const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
@@ -241,10 +240,10 @@ export const DashboardCharts = ({
     : generateAreaData();
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: 0.3 }}
+    <div
+      //{ opacity: 0, y: 10 }}
+      // opacity: 1, y: 0 }}
+      // duration: 0.3, delay: 0.3 }}
       className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6"
     >
       {/* Area Chart - Recipe Trends */}
@@ -286,7 +285,7 @@ export const DashboardCharts = ({
           )}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

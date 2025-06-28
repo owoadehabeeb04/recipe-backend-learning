@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { AnimatePresence, motion } from 'framer-motion';
 import { useAuthStore } from '@/app/store/authStore';
 import { deleteUser, getSingleUser } from '@/app/api/(users)';
 import toast from 'react-hot-toast';
@@ -150,20 +149,18 @@ const SingleUser = () => {
 
   // Delete confirmation modal
   const DeleteModal = () => (
-    <AnimatePresence>
+    <>
       {isDeleteModalOpen && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
+        <div
+          //{ opacity: 0 }}
+          // opacity: 1 }}
           className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/80 backdrop-blur-sm"
           onClick={() => setIsDeleteModalOpen(false)}
         >
-          <motion.div
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
-            transition={{ type: "spring", damping: 20, stiffness: 300 }}
+          <div
+            //{ scale: 0.9, opacity: 0 }}
+            // scale: 1, opacity: 1 }}
+            // type: "spring", damping: 20, stiffness: 300 }}
             className="bg-gray-800 border border-red-500/30 rounded-2xl p-6 w-full max-w-md shadow-xl"
             onClick={e => e.stopPropagation()}
           >
@@ -207,10 +204,10 @@ const SingleUser = () => {
                 ) : "Delete Account"}
               </button>
             </div>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       )}
-    </AnimatePresence>
+      </>
   );
 
 
@@ -252,10 +249,10 @@ const SingleUser = () => {
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Left sidebar with user profile */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
+        <div
+          //{ opacity: 0, y: 10 }}
+          // opacity: 1, y: 0 }}
+          // duration: 0.4 }}
           className="lg:col-span-1"
         >
           <div className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6 sticky top-8">
@@ -349,13 +346,13 @@ const SingleUser = () => {
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
         
         {/* Main content area */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
+        <div
+          //{ opacity: 0, y: 10 }}
+          // opacity: 1, y: 0 }}
+          // duration: 0.4, delay: 0.1 }}
           className="lg:col-span-2 space-y-8"
         >
           {/* Stats cards */}
@@ -466,11 +463,10 @@ const SingleUser = () => {
           <div>
             {/* Profile tab */}
             {activeTab === 'profile' && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
+              <div
+                //{ opacity: 0 }}
+                // opacity: 1 }}
+                // duration: 0.2 }}
               >
                 <div className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
                   <h3 className="text-lg font-medium text-white mb-4">Profile Information</h3>
@@ -518,16 +514,15 @@ const SingleUser = () => {
                     </div>
                   )}
                 </div>
-              </motion.div>
+              </div>
             )}
             
             {/* Recipes tab */}
             {activeTab === 'recipes' && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
+              <div
+                //{ opacity: 0 }}
+                // opacity: 1 }}
+                // duration: 0.2 }}
               >
                 <div className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
                   <div className="flex justify-between items-center mb-6">
@@ -600,16 +595,15 @@ const SingleUser = () => {
                     </div>
                   )}
                 </div>
-              </motion.div>
+              </div>
             )}
             
             {/* Activity tab */}
             {activeTab === 'activity' && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.2 }}
+              <div
+                //{ opacity: 0 }}
+                // opacity: 1 }}
+                // duration: 0.2 }}
               >
                 <div className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
                   <h3 className="text-lg font-medium text-white mb-6">Recent Activity</h3>
@@ -646,10 +640,10 @@ const SingleUser = () => {
                     </div>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             )}
           </div>
-        </motion.div>
+        </div>
       </div>
       <DeleteModal />
  

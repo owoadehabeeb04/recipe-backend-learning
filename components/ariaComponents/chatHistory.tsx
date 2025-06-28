@@ -16,7 +16,6 @@ import { format, isToday, isYesterday } from "date-fns";
 import { createChat, getChats, searchChats, deleteChat as deleteApiChat } from "@/app/api/(chatbot)/chat";
 import { useAuthStore } from "@/app/store/authStore";
 import { useInView } from 'react-intersection-observer';
-import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 
 // Chat interfaces
@@ -341,11 +340,9 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
       )}
 
       {/* Chat list - ensure it takes available space and scrolls, with bottom padding for the fixed button */}
-      <motion.div 
+      <div 
         className="flex-1 min-h-0 overflow-y-auto px-2 py-1 pb-16 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent"
-        initial="hidden"
-        animate={inView ? "visible" : "hidden"}
-        variants={listVariants}
+         //inView ? "visible" : "hidden"}
       >
         {/* Categorized chats */}
         {Object.entries(categorizedChats).map(([category, categoryChats]) => {
@@ -372,9 +369,8 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
               {expandedCategories[category] && (
                 <div className="mt-1 space-y-0.5 pl-1">
                   {categoryChats.map((chat: any) => (
-                    <motion.div
+                    <div
                       key={chat._id}
-                      variants={itemVariants}
                       className={`p-2.5 rounded-lg cursor-pointer group flex items-center justify-between relative overflow-hidden ${
                         selectedChatId === chat._id
                           ? "bg-gradient-to-r from-purple-700/30 to-pink-700/20 text-white shadow-sm"
@@ -420,7 +416,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
               )}
@@ -430,8 +426,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
         
         {/* Empty state - enhanced */}
         {chats.length === 0 && !isLoading && (
-          <motion.div 
-            variants={itemVariants} 
+          <div 
             className="text-center py-12"
           >
             <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
@@ -439,7 +434,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
             </div>
             <p className="text-gray-300 font-medium">No conversations yet</p>
             <p className="text-sm mt-1 text-gray-500">Start a new conversation to chat with Aria</p>
-          </motion.div>
+          </div>
         )}
         
         {/* Loading state - enhanced */}
@@ -451,7 +446,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
             </div>
           </div>
         )}
-      </motion.div>
+      </div>
       
       {/* Back to dashboard link - fixed at bottom */}
       <div className="absolute bottom-0 left-0 right-0 border-t border-gray-800/50 bg-gradient-to-b from-gray-900/80 via-gray-900/95 to-gray-950 backdrop-blur-sm flex-shrink-0 z-20">

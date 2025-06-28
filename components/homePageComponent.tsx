@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
+ 
 import { RecipeCard } from "./recipesComponent/recipeCardAll";
 import { getAllRecipes } from "@/app/api/(recipe)/userRecipes";
 import toast from "react-hot-toast";
@@ -88,22 +88,22 @@ const LandingPage = () => {
       {/* Header */}
       <header className="sticky top-0 z-50 backdrop-blur-lg bg-gray-900/80 border-b border-gray-700">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
+          <div
+            //{ opacity: 0, x: -20 }}
+            // animate={{ opacity: 1, x: 0 }}
+            // duration: 0.5 }}
             className="flex items-center"
           >
             <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
               Recipia
             </h1>
-          </motion.div>
+          </ div>
 
           {/* Desktop Navigation */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
+          <div
+            //{ opacity: 0, x: 20 }}
+            // animate={{ opacity: 1, x: 0 }}
+            // duration: 0.5 }}
             className="hidden md:flex items-center space-x-8"
           >
             <Link href="#features" className="text-gray-300 hover:text-white transition-colors">
@@ -127,13 +127,13 @@ const LandingPage = () => {
             >
               Get Started
             </Link>
-          </motion.div>
+          </ div>
 
           {/* Mobile Menu Button */}
-          <motion.button
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
+          < button
+            //{ opacity: 0, x: 20 }}
+            // animate={{ opacity: 1, x: 0 }}
+            // duration: 0.5 }}
             className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg bg-gray-800 text-gray-300 hover:text-white hover:bg-gray-700 transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle mobile menu"
@@ -150,17 +150,17 @@ const LandingPage = () => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
               )}
             </svg>
-          </motion.button>
+          </ button>
         </nav>
 
         {/* Mobile Menu */}
-        <motion.div
-          initial={false}
-          animate={{ 
-            height: isMobileMenuOpen ? 'auto' : 0,
-            opacity: isMobileMenuOpen ? 1 : 0
-          }}
-          transition={{ duration: 0.3, ease: 'easeInOut' }}
+        <div
+          //false}
+          // animate={{ 
+          //   height: isMobileMenuOpen ? 'auto' : 0,
+          //   opacity: isMobileMenuOpen ? 1 : 0
+          // }}
+          // duration: 0.3, ease: 'easeInOut' }}
           className="md:hidden overflow-hidden bg-gray-900/95 backdrop-blur-lg border-t border-gray-700"
         >
           <div className="px-4 py-6 space-y-4">
@@ -207,17 +207,17 @@ const LandingPage = () => {
               Get Started
             </Link>
           </div>
-        </motion.div>
+        </ div>
       </header>
 
       {/* Hero Section */}
       <section className="relative py-20 md:py-32 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="flex flex-col lg:flex-row items-center gap-12">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7 }}
+            <div
+              //{ opacity: 0, y: 20 }}
+              // animate={{ opacity: 1, y: 0 }}
+              // duration: 0.7 }}
               className="lg:w-1/2"
             >
               <h2 className="text-4xl md:text-6xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-400 to-pink-300">
@@ -227,10 +227,10 @@ const LandingPage = () => {
                 AI-powered recipe discovery and personalization. Create, share,
                 and experience food like never before.
               </p>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.7 }}
+              <div
+                //{ opacity: 0, y: 20 }}
+                // {{ opacity: 1, y: 0 }}
+                // delay: 0.3, duration: 0.7 }}
                 className="mt-10"
               >
                 <Link
@@ -253,12 +253,11 @@ const LandingPage = () => {
                     />
                   </svg>
                 </Link>
-              </motion.div>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.8 }}
+              </ div>
+            </ div>
+            <div
+              //{ opacity: 0, scale: 0.8 }}
+              // delay: 0.2, duration: 0.8 }}
               className="lg:w-1/2"
             >
               <div className="relative">
@@ -274,7 +273,7 @@ const LandingPage = () => {
                   />
                 </div>
               </div>
-            </motion.div>
+            </ div>
           </div>
         </div>
         
@@ -286,11 +285,11 @@ const LandingPage = () => {
       {/* Categories Section */}
       <section className="py-20 bg-gray-800/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.7 }}
-            viewport={{ once: true }}
+          <div
+            //{ opacity: 0 }}
+            // opacity: 1 }}
+            // duration: 0.7 }}
+            // once: true }}
             className="text-center mb-12"
           >
             <h3 className="text-3xl font-bold text-white mb-4">
@@ -300,24 +299,24 @@ const LandingPage = () => {
             <p className="mt-4 text-gray-300 max-w-2xl mx-auto">
               Browse through our diverse collection of recipes categorized for every occasion
             </p>
-          </motion.div>
+          </ div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
             {categories.map((category, index) => (
-              <motion.div
+              <div
                 key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1, duration: 0.5 }}
-                viewport={{ once: true }}
-                whileHover={{ y: -5, boxShadow: "0 10px 30px rgba(0,0,0,0.3)" }}
+                //{ opacity: 0, y: 20 }}
+                // opacity: 1, y: 0 }}
+                // delay: index * 0.1, duration: 0.5 }}
+                // once: true }}
+                 // y: -5, boxShadow: "0 10px 30px rgba(0,0,0,0.3)" }}
                 className="bg-gray-800 rounded-xl p-6 text-center shadow-lg shadow-black/20 hover:shadow-xl hover:shadow-black/30 transition-all cursor-pointer border border-gray-700"
               >
                 <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center text-purple-400">
                   {category.icon}
                 </div>
                 <h4 className="font-semibold text-lg text-gray-100">{category.name}</h4>
-              </motion.div>
+              </ div>
             ))}
           </div>
         </div>
@@ -325,11 +324,11 @@ const LandingPage = () => {
 {/* Featured Recipes Section */}
 <section className="py-20">
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <motion.div
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      transition={{ duration: 0.7 }}
-      viewport={{ once: true }}
+    <div
+      //{ opacity: 0 }}
+      // opacity: 1 }}
+      // duration: 0.7 }}
+      // once: true }}
       className="text-center mb-12"
     >
       <h3 className="text-3xl font-bold text-white mb-4">
@@ -339,7 +338,7 @@ const LandingPage = () => {
       <p className="mt-4 text-gray-300 max-w-2xl mx-auto">
         Discover our most popular and highly-rated culinary creations
       </p>
-    </motion.div>
+    </ div>
 
     {isLoadingRecipes ? (
       <div className="flex justify-center items-center py-12">
@@ -349,12 +348,12 @@ const LandingPage = () => {
     ) : featuredRecipes.length > 0 ? (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {featuredRecipes.map((recipe: any) => (
-          <motion.div
+          <div
             key={recipe._id}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            viewport={{ once: true }}
+            //{ opacity: 0, y: 20 }}
+            // opacity: 1, y: 0 }}
+            // duration: 0.5 }}
+            // once: true }}
             className="relative"
           >
             {recipe.averageRating > 0 && (
@@ -366,7 +365,7 @@ const LandingPage = () => {
               </div>
             )}
             <RecipeCard recipe={recipe} />
-          </motion.div>
+          </ div>
         ))}
       </div>
     ) : (
@@ -407,11 +406,11 @@ const LandingPage = () => {
 {/* Comprehensive Features Section - Add this before AI Features Section */}
 <section id="features" className="py-20 bg-gray-900/50 relative overflow-hidden">
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <motion.div
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      transition={{ duration: 0.7 }}
-      viewport={{ once: true }}
+    <div
+      //{ opacity: 0 }}
+      // opacity: 1 }}
+      // duration: 0.7 }}
+      // once: true }}
       className="text-center mb-16"
     >
       <h3 className="text-4xl font-bold text-white mb-4">
@@ -421,16 +420,16 @@ const LandingPage = () => {
       <p className="text-xl text-gray-300 max-w-3xl mx-auto">
         From AI-powered recipe discovery to smart meal planning, we've got all your cooking needs covered
       </p>
-    </motion.div>
+    </ div>
 
     {/* Feature Grid */}
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
       {/* AI Chat Assistant */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        viewport={{ once: true }}
+      <div
+        //{ opacity: 0, y: 30 }}
+        // opacity: 1, y: 0 }}
+        // duration: 0.6 }}
+        // once: true }}
         className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-8 border border-gray-700 hover:border-purple-500/50 transition-all duration-300 group"
       >
         <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
@@ -451,14 +450,14 @@ const LandingPage = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </Link> */}
-      </motion.div>
+      </ div>
 
       {/* Weekly Meal Planning */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.6 }}
-        viewport={{ once: true }}
+      <div
+        //{ opacity: 0, y: 30 }}
+        // opacity: 1, y: 0 }}
+        // delay: 0.1, duration: 0.6 }}
+        // once: true }}
         className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-8 border border-gray-700 hover:border-green-500/50 transition-all duration-300 group"
       >
         <div className="w-16 h-16 bg-gradient-to-br from-green-600 to-teal-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
@@ -479,14 +478,14 @@ const LandingPage = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </Link> */}
-      </motion.div>
+      </ div>
 
       {/* Google Calendar Integration */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2, duration: 0.6 }}
-        viewport={{ once: true }}
+      <div
+        //{ opacity: 0, y: 30 }}
+        // opacity: 1, y: 0 }}
+        // delay: 0.2, duration: 0.6 }}
+        // once: true }}
         className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-8 border border-gray-700 hover:border-blue-500/50 transition-all duration-300 group"
       >
         <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
@@ -507,14 +506,14 @@ const LandingPage = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </Link> */}
-      </motion.div>
+      </ div>
 
       {/* Smart Shopping Lists */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.6 }}
-        viewport={{ once: true }}
+      <div
+        //{ opacity: 0, y: 30 }}
+        // opacity: 1, y: 0 }}
+        // delay: 0.3, duration: 0.6 }}
+        // once: true }}
         className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-8 border border-gray-700 hover:border-orange-500/50 transition-all duration-300 group"
       >
         <div className="w-16 h-16 bg-gradient-to-br from-orange-600 to-red-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
@@ -535,14 +534,14 @@ const LandingPage = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </Link> */}
-      </motion.div>
+      </ div>
 
       {/* Cooking Progress Tracking */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4, duration: 0.6 }}
-        viewport={{ once: true }}
+      <div
+        //{ opacity: 0, y: 30 }}
+        // opacity: 1, y: 0 }}
+        // delay: 0.4, duration: 0.6 }}
+        // once: true }}
         className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-8 border border-gray-700 hover:border-yellow-500/50 transition-all duration-300 group"
       >
         <div className="w-16 h-16 bg-gradient-to-br from-yellow-600 to-amber-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
@@ -563,14 +562,14 @@ const LandingPage = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </Link> */}
-      </motion.div>
+      </ div>
 
       {/* Recipe Rating & Reviews */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.6 }}
-        viewport={{ once: true }}
+      <div
+        //{ opacity: 0, y: 30 }}
+        // opacity: 1, y: 0 }}
+        // delay: 0.5, duration: 0.6 }}
+        // once: true }}
         className="bg-gradient-to-br from-gray-800 to-gray-900 rounded-2xl p-8 border border-gray-700 hover:border-pink-500/50 transition-all duration-300 group"
       >
         <div className="w-16 h-16 bg-gradient-to-br from-pink-600 to-rose-600 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
@@ -591,15 +590,15 @@ const LandingPage = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </Link> */}
-      </motion.div>
+      </ div>
     </div>
 
     {/* Admin & User Features */}
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.6, duration: 0.7 }}
-      viewport={{ once: true }}
+    <div
+      //{ opacity: 0, y: 30 }}
+      // opacity: 1, y: 0 }}
+      // delay: 0.6, duration: 0.7 }}
+      // once: true }}
       className="grid grid-cols-1 md:grid-cols-2 gap-8"
     >
       {/* Admin Recipe Creation */}
@@ -645,14 +644,14 @@ const LandingPage = () => {
           <span className="px-3 py-1 bg-red-600/30 text-red-300 rounded-full text-sm">Share & Discover</span>
         </div>
       </div>
-    </motion.div>
+    </ div>
 
     {/* Call to Action */}
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.7, duration: 0.7 }}
-      viewport={{ once: true }}
+    <div
+      //{ opacity: 0, y: 30 }}
+      // opacity: 1, y: 0 }}
+      // delay: 0.7, duration: 0.7 }}
+      // once: true }}
       className="text-center mt-16"
     >
       <h4 className="text-2xl font-bold text-white mb-4">
@@ -693,7 +692,7 @@ const LandingPage = () => {
           </svg>
         </Link>
       </div>
-    </motion.div>
+    </ div>
   </div>
 
   {/* Background Elements */}
@@ -705,11 +704,11 @@ const LandingPage = () => {
 {/* AI Features Section */}
 <section className="py-20 relative overflow-hidden">
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <motion.div
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      transition={{ duration: 0.7 }}
-      viewport={{ once: true }}
+    <div
+      //{ opacity: 0 }}
+      // opacity: 1 }}
+      // duration: 0.7 }}
+      // once: true }}
       className="text-center mb-16"
     >
       <h3 className="text-4xl font-bold text-white mb-4">
@@ -719,15 +718,15 @@ const LandingPage = () => {
       <p className="text-xl text-gray-300 max-w-3xl mx-auto">
         Experience the future of cooking with our intelligent AI assistant that understands your needs
       </p>
-    </motion.div>
+    </ div>
 
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
       {/* AI Features List */}
-      <motion.div
-        initial={{ opacity: 0, x: -50 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
+      <div
+        //{ opacity: 0, x: -50 }}
+        // opacity: 1, x: 0 }}
+        // duration: 0.8 }}
+        // once: true }}
         className="space-y-8"
       >
         {/* Voice Interaction */}
@@ -793,14 +792,14 @@ const LandingPage = () => {
             </p>
           </div>
         </div>
-      </motion.div>
+      </ div>
 
       {/* AI Interface Screenshots */}
-      <motion.div
-        initial={{ opacity: 0, x: 50 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
+      <div
+        //{ opacity: 0, x: 50 }}
+        // opacity: 1, x: 0 }}
+        // duration: 0.8 }}
+        // once: true }}
         className="relative"
       >
         {/* Main Chat Interface */}
@@ -851,15 +850,15 @@ const LandingPage = () => {
 
         {/* Background Glow */}
         <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-2xl blur-xl transform scale-110 -z-10"></div>
-      </motion.div>
+      </ div>
     </div>
 
     {/* CTA for AI Features */}
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.4, duration: 0.7 }}
-      viewport={{ once: true }}
+    <div
+      //{ opacity: 0, y: 30 }}
+      // opacity: 1, y: 0 }}
+      // delay: 0.4, duration: 0.7 }}
+      // once: true }}
       className="text-center mt-16"
     >
       <Link
@@ -877,7 +876,7 @@ const LandingPage = () => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
         </svg>
       </Link>
-    </motion.div>
+    </ div>
   </div>
 
   {/* Background Elements */}
@@ -888,11 +887,11 @@ const LandingPage = () => {
 {/* Meal Planning Feature Section */}
 <section className="py-20 bg-gray-800/30 relative overflow-hidden">
   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-    <motion.div
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      transition={{ duration: 0.7 }}
-      viewport={{ once: true }}
+    <div
+      //{ opacity: 0 }}
+      // opacity: 1 }}
+      // duration: 0.7 }}
+      // once: true }}
       className="text-center mb-16"
     >
       <h3 className="text-4xl font-bold text-white mb-4">
@@ -902,15 +901,15 @@ const LandingPage = () => {
       <p className="text-xl text-gray-300 max-w-3xl mx-auto">
         Plan your entire week with intelligent meal suggestions, automated shopping lists, and nutritional tracking
       </p>
-    </motion.div>
+    </ div>
 
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
       {/* Meal Planning Interface Preview */}
-      <motion.div
-        initial={{ opacity: 0, x: -50 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
+      <div
+        //{ opacity: 0, x: -50 }}
+        // opacity: 1, x: 0 }}
+        // duration: 0.8 }}
+        // once: true }}
         className="relative"
       >
         {/* Meal Planning Preview Image */}
@@ -923,14 +922,14 @@ const LandingPage = () => {
             className="w-full h-auto object-cover"
           />
         </div>
-      </motion.div>
+      </ div>
 
       {/* Features List */}
-      <motion.div
-        initial={{ opacity: 0, x: 50 }}
-        whileInView={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.8 }}
-        viewport={{ once: true }}
+      <div
+        //{ opacity: 0, x: 50 }}
+        // opacity: 1, x: 0 }}
+        // duration: 0.8 }}
+        // once: true }}
         className="space-y-8"
       >
         {/* Personalized Planning */}
@@ -1011,15 +1010,15 @@ const LandingPage = () => {
             </svg> */}
           </Link>
         </div>
-      </motion.div>
+      </ div>
     </div>
 
     {/* Statistics */}
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.4, duration: 0.7 }}
-      viewport={{ once: true }}
+    <div
+      //{ opacity: 0, y: 30 }}
+      // opacity: 1, y: 0 }}
+      // delay: 0.4, duration: 0.7 }}
+      // once: true }}
       className="mt-20 grid grid-cols-1 md:grid-cols-3 gap-8"
     >
       <div className="text-center">
@@ -1034,7 +1033,7 @@ const LandingPage = () => {
         <div className="text-3xl font-bold text-white mb-2">100+</div>
         <p className="text-gray-400">Meal plan templates available</p>
       </div>
-    </motion.div>
+    </ div>
   </div>
 
   {/* Background Elements */}
@@ -1045,18 +1044,18 @@ const LandingPage = () => {
       {/* User Reviews Section */}
       <section className="py-20 bg-gray-800/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            transition={{ duration: 0.7 }}
-            viewport={{ once: true }}
+          <div
+            //{ opacity: 0 }}
+            // opacity: 1 }}
+            // duration: 0.7 }}
+            // once: true }}
             className="text-center mb-12"
           >
             <h3 className="text-3xl font-bold text-white mb-4">
               What Users Are Saying
             </h3>
             <div className="w-20 h-1 mx-auto bg-gradient-to-r from-purple-400 to-pink-400"></div>
-          </motion.div>
+          </ div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
@@ -1076,12 +1075,12 @@ const LandingPage = () => {
                 role: "Fitness Enthusiast"
               }
             ].map((testimonial, index) => (
-              <motion.div
+              <div
                 key={index}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                transition={{ delay: index * 0.2, duration: 0.5 }}
-                viewport={{ once: true }}
+                //{ opacity: 0, scale: 0.9 }}
+                // opacity: 1, scale: 1 }}
+                // delay: index * 0.2, duration: 0.5 }}
+                // once: true }}
                 className="bg-gray-800 p-8 rounded-2xl shadow-lg border border-gray-700"
               >
                 <svg
@@ -1094,7 +1093,7 @@ const LandingPage = () => {
                 <p className="text-gray-300 mb-4">{testimonial.quote}</p>
                 <p className="font-semibold text-white">{testimonial.author}</p>
                 <p className="text-purple-400 text-sm">{testimonial.role}</p>
-              </motion.div>
+              </ div>
             ))}
           </div>
         </div>
@@ -1113,11 +1112,11 @@ const LandingPage = () => {
           </svg>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-          viewport={{ once: true }}
+        <div
+          //{ opacity: 0 }}
+          // opacity: 1 }}
+          // duration: 1 }}
+          // once: true }}
           className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10"
         >
           <h2 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-400">
@@ -1126,11 +1125,11 @@ const LandingPage = () => {
           <p className="mt-6 text-xl text-gray-300">
             Join thousands of food enthusiasts revolutionizing their culinary experience
           </p>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.7 }}
-            viewport={{ once: true }}
+          <div
+            //{ opacity: 0, y: 20 }}
+            // opacity: 1, y: 0 }}
+            // delay: 0.3, duration: 0.7 }}
+            // once: true }}
             className="mt-10"
           >
             <Link
@@ -1153,8 +1152,8 @@ const LandingPage = () => {
                 />
               </svg>
             </Link>
-          </motion.div>
-        </motion.div>
+          </ div>
+        </ div>
       </section>
 
       {/* Footer */}

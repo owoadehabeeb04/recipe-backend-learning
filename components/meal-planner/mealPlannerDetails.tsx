@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { format, parseISO, addDays } from "date-fns";
-import { motion } from "framer-motion";
+ 
 import Link from "next/link";
 import { Recipe } from "@/types/recipe";
 import {
@@ -436,9 +436,9 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
                               }`}
                               className="block h-full"
                             >
-                              <motion.div
-                                whileHover={{ y: -3, boxShadow: "0 12px 20px -5px rgba(88, 28, 135, 0.3)" }}
-                                transition={{ duration: 0.2 }}
+                              <div
+                                 // y: -3, boxShadow: "0 12px 20px -5px rgba(88, 28, 135, 0.3)" }}
+                                // duration: 0.2 }}
                                 className="bg-gradient-to-br from-purple-800/30 to-purple-900/50 border border-purple-700/30 rounded-lg overflow-hidden hover:border-purple-500/50 transition-all shadow-md h-full"
                               >
                                 {/* Recipe card with improved layout */}
@@ -537,7 +537,7 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
                                     </div>
                                   </div>
                                 )}
-                              </motion.div>
+                              </div>
                             </Link>
                           ) : (
                             /* Empty slot with add button */

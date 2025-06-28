@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   ShoppingBag,
   ChevronDown,
@@ -518,12 +517,12 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ mealPlanId }) => {
         
         {/* Progress bar */}
         <div className="mt-3 mb-1 bg-black/20 h-2 rounded-full overflow-hidden">
-          <motion.div 
+          <div 
             className="h-full bg-gradient-to-r from-green-400 to-teal-500"
-            initial={{ width: "0%" }}
-            animate={{ width: `${progress}%` }}
-            transition={{ duration: 0.5 }}
-          ></motion.div>
+            //{ width: "0%" }}
+            // width: `${progress}%` }}
+            // duration: 0.5 }}
+          ></div>
         </div>
         <div className="flex justify-between items-center text-xs text-white/80">
           <span className="font-medium">{progress}% complete</span>
@@ -533,7 +532,6 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ mealPlanId }) => {
       
       {/* Shopping list content */}
       <div className="p-4 space-y-4">
-        <AnimatePresence>
           {Object.entries(shoppingData.categorizedIngredients).map(([category, items]) => {
             // Get category stats
             const stats = shoppingData.categoryStats?.[category] || { total: items.length, checked: 0 };
@@ -541,12 +539,11 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ mealPlanId }) => {
             const anyChecked = stats.checked > 0;
             
             return (
-              <motion.div
+              <div
                 key={category}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.2 }}
+                //{ opacity: 0, y: 20 }}
+                // opacity: 1, y: 0 }}
+                // duration: 0.2 }}
                 className="bg-purple-900/10 rounded-xl border border-purple-800/30 overflow-hidden"
               >
                 {/* Category header */}
@@ -599,25 +596,23 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ mealPlanId }) => {
                 </div>
                 
                 {/* Category items */}
-                <AnimatePresence>
                   {expandedCategories[category] && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.2 }}
+                    <div
+                      //{ opacity: 0, height: 0 }}
+                      // opacity: 1, height: "auto" }}
+                      // duration: 0.2 }}
                     >
                       <div className="p-3 space-y-2">
                         {items.map((item) => (
-                          <motion.div
+                          <div
                             key={`${category}-${item.name}`}
                             className={`p-3 border ${
                               item.checked 
                                 ? "bg-green-900/10 border-green-700/30" 
                                 : "bg-purple-900/10 border-purple-800/30"
                             } rounded-lg flex items-start`}
-                            whileHover={{ scale: 1.005 }}
-                            transition={{ duration: 0.1 }}
+                             // scale: 1.005 }}
+                            // duration: 0.1 }}
                           >
                             <button
                               onClick={() => handleToggleItem(category, item.name, item.checked)}
@@ -660,25 +655,23 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ mealPlanId }) => {
                                 Used in: {item.recipes.join(", ")}
                               </div>
                             </div>
-                          </motion.div>
+                          </div>
                         ))}
                       </div>
-                    </motion.div>
+                    </div>
                   )}
-                </AnimatePresence>
-              </motion.div>
+              </div>
             );
           })}
-        </AnimatePresence>
       </div>
 
       {/* Auto-organize suggestion */}
       {progress === 0 && (
         <div className="px-4 pb-4">
-          <motion.div 
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
+          <div 
+            //{ opacity: 0, y: 10 }}
+            // opacity: 1, y: 0 }}
+            // delay: 0.5 }}
             className="bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 rounded-lg p-3 text-center"
           >
             <div className="flex items-center justify-center mb-2">
@@ -688,7 +681,7 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ mealPlanId }) => {
             <p className="text-xs text-purple-200">
               Shop by category to save time! Start at the top and work your way down.
             </p>
-          </motion.div>
+          </div>
         </div>
       )}
     </div>

@@ -8,7 +8,6 @@ import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { resetPassword } from "@/app/api/(auth)/verify-email";
 import { verifyEmail, verifyOTP } from "@/app/api/(auth)/verify-email";
-import { motion } from "framer-motion";
 import Link from "next/link";
 
 const emailSchema = z.object({
@@ -137,10 +136,8 @@ export default function ResetPasswordPage() {
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-500 rounded-full filter blur-3xl opacity-10 -ml-20 -mb-20"></div>
       </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <div
+        
         className="max-w-md w-full space-y-8 p-8 bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl shadow-xl"
       >
         <div>
@@ -187,33 +184,27 @@ export default function ResetPasswordPage() {
             ))}
           </div>
 
-          <motion.h2
+          <h2
             key={`step-title-${steps}`}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
+            
             className="text-center text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-indigo-400"
           >
             {stepInfo[steps - 1].title}
-          </motion.h2>
+          </h2>
 
-          <motion.p
+          <p
             key={`step-desc-${steps}`}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3, delay: 0.1 }}
+         
             className="mt-2 text-center text-sm text-gray-400"
           >
             {stepInfo[steps - 1].description}
-          </motion.p>
+          </p>
         </div>
 
         {/* Step 1: Email Form */}
         {steps === 1 && (
-          <motion.form
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
+          <form
+           
             onSubmit={handleSubmit(onSubmit)}
             className="mt-8 space-y-6"
           >
@@ -243,21 +234,19 @@ export default function ResetPasswordPage() {
                 />
               </div>
               {errors.email && (
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
+                <p
+                  
                   className="text-sm text-pink-500"
                 >
                   {errors.email.message}
-                </motion.p>
+                </p>
               )}
             </div>
 
-            <motion.button
+            <button
               type="submit"
               disabled={isLoading}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-sm font-medium text-white bg-gradient-to-r from-cyan-500 to-indigo-500 hover:from-cyan-600 hover:to-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 disabled:opacity-50 transition-all duration-200 shadow-lg shadow-cyan-500/20"
             >
               {isLoading ? (
@@ -303,16 +292,16 @@ export default function ResetPasswordPage() {
                   </svg>
                 </div>
               )}
-            </motion.button>
-          </motion.form>
+            </button>
+          </form>
         )}
 
         {/* Step 2: OTP Form */}
         {steps === 2 && (
-          <motion.form
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
+          <form
+            //{ opacity: 0, y: 10 }}
+            // opacity: 1, y: 0 }}
+            // duration: 0.4 }}
             onSubmit={handleSubmitOtp(verifyOtp)}
             className="mt-8 space-y-6"
           >
@@ -345,13 +334,13 @@ export default function ResetPasswordPage() {
                 </div>
               </div>
               {otpErrors.otp && (
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
+                <p
+                  //{ opacity: 0 }}
+                  // opacity: 1 }}
                   className="text-center text-sm text-pink-500"
                 >
                   {otpErrors.otp.message}
-                </motion.p>
+                </p>
               )}
             </div>
 
@@ -387,11 +376,11 @@ export default function ResetPasswordPage() {
               </button>
             </div>
 
-            <motion.button
+            <button
               type="submit"
               disabled={isLoading}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+               // scale: 1.02 }}
+              // whileTap={{ scale: 0.98 }}
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-sm font-medium text-white bg-gradient-to-r from-cyan-500 to-indigo-500 hover:from-cyan-600 hover:to-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 disabled:opacity-50 transition-all duration-200 shadow-lg shadow-cyan-500/20"
             >
               {isLoading ? (
@@ -437,16 +426,16 @@ export default function ResetPasswordPage() {
                   </svg>
                 </div>
               )}
-            </motion.button>
-          </motion.form>
+            </button>
+          </form>
         )}
 
         {/* Step 3: New Password Form */}
         {steps === 3 && (
-          <motion.form
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
+          <form
+            //{ opacity: 0, y: 10 }}
+            // opacity: 1, y: 0 }}
+            // duration: 0.4 }}
             onSubmit={handleSubmitPassword(changePassword)}
             className="mt-8 space-y-6"
           >
@@ -477,13 +466,13 @@ export default function ResetPasswordPage() {
                   />
                 </div>
                 {passwordErrors.password && (
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
+                  <p
+                    //{ opacity: 0 }}
+                    // opacity: 1 }}
                     className="text-sm text-pink-500"
                   >
                     {passwordErrors.password.message}
-                  </motion.p>
+                  </p>
                 )}
               </div>
 
@@ -513,13 +502,13 @@ export default function ResetPasswordPage() {
                   />
                 </div>
                 {passwordErrors.confirmPassword && (
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
+                  <p
+                    //{ opacity: 0 }}
+                    // opacity: 1 }}
                     className="text-sm text-pink-500"
                   >
                     {passwordErrors.confirmPassword.message}
-                  </motion.p>
+                  </p>
                 )}
               </div>
             </div>
@@ -548,11 +537,11 @@ export default function ResetPasswordPage() {
               </button>
             </div>
 
-            <motion.button
+            <button
               type="submit"
               disabled={isLoading}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+               // scale: 1.02 }}
+              // whileTap={{ scale: 0.98 }}
               className="group relative w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-sm font-medium text-white bg-gradient-to-r from-cyan-500 to-indigo-500 hover:from-cyan-600 hover:to-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 disabled:opacity-50 transition-all duration-200 shadow-lg shadow-cyan-500/20"
             >
               {isLoading ? (
@@ -598,8 +587,8 @@ export default function ResetPasswordPage() {
                   </svg>
                 </div>
               )}
-            </motion.button>
-          </motion.form>
+            </button>
+          </form>
         )}
 
         {/* Back to login link */}
@@ -611,7 +600,7 @@ export default function ResetPasswordPage() {
             Back to login
           </Link>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+ 
 import { useQuery } from "@tanstack/react-query";
 import { getAllUsers } from "@/app/api/(users)";
 import { useAuthStore } from "@/app/store/authStore";
@@ -337,10 +337,10 @@ const Users = () => {
 
   return (
     <div>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <div
+        //{ opacity: 0, y: 20 }}
+        // opacity: 1, y: 0 }}
+        // duration: 0.5 }}
         className="mb-8"
       >
         <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
@@ -349,13 +349,13 @@ const Users = () => {
         <p className="text-gray-400 mt-2">
           View and manage all users registered on the platform
         </p>
-      </motion.div>
+      </div>
 
       {/* Filters and Search */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
+      <div
+        //{ opacity: 0, y: 20 }}
+        // opacity: 1, y: 0 }}
+        // duration: 0.5, delay: 0.1 }}
         className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6 mb-6"
       >
         <div className="flex flex-col md:flex-row gap-4 justify-between">
@@ -444,13 +444,13 @@ const Users = () => {
             </select>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* Users Table */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
+      <div
+        //{ opacity: 0, y: 20 }}
+        // opacity: 1, y: 0 }}
+        // duration: 0.5, delay: 0.2 }}
         className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden"
       >
         {isLoading && (
@@ -583,7 +583,7 @@ const Users = () => {
 
         {/* Pagination */}
         <div className="px-6 py-4">{renderPagination()}</div>
-      </motion.div>
+      </div>
     </div>
   );
 };

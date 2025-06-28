@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuthStore, User } from "../store/authStore";
-import { motion } from "framer-motion";
+ 
 import Image from "next/image";
 import Users from "./users/page";
 import toast from "react-hot-toast";
@@ -96,6 +96,7 @@ const BellIcon = () => (
 
 export default function DashboardLayout({ children }: any) {
   const { user } = useAuthStore();
+  console.log({user})
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const { setAuth } = useAuthStore();
@@ -302,11 +303,11 @@ export default function DashboardLayout({ children }: any) {
                 {finalMenuItems.map((item) => {
                   const isActive = pathname === item.href;
                   return (
-                    <motion.li
+                    <li
                       key={item.name}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: 0.1 }}
+                      //{ opacity: 0, x: -20 }}
+                      // opacity: 1, x: 0 }}
+                      // duration: 0.3, delay: 0.1 }}
                     >
                       <Link
                         href={item.href}
@@ -328,13 +329,12 @@ export default function DashboardLayout({ children }: any) {
                         <span className="ml-3">{item.name}</span>
 
                         {isActive && (
-                          <motion.div
-                            layoutId="sidebar-highlight"
+                          <div
                             className="ml-auto w-1.5 h-5 bg-gradient-to-b from-purple-400 to-pink-500 rounded-full"
                           />
                         )}
                       </Link>
-                    </motion.li>
+                    </li>
                   );
                 })}
               </ul>
@@ -342,11 +342,11 @@ export default function DashboardLayout({ children }: any) {
 
             {/* Logout at the bottom */}
             <div className="mt-auto mb-[5rem] pt-4 border-t border-gray-700/30">
-              <motion.div
+              <div
                 key="logout"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3, delay: 0.1 }}
+                //{ opacity: 0, x: -20 }}
+                // opacity: 1, x: 0 }}
+                // duration: 0.3, delay: 0.1 }}
               >
                 <button
                   onClick={async () => {
@@ -379,7 +379,7 @@ export default function DashboardLayout({ children }: any) {
                   </div>
                   <span className="ml-3">Logout</span>
                 </button>
-              </motion.div>
+              </div>
             </div>
           </div>
         </div>

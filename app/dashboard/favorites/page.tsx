@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+ 
 import { SearchBar } from "@/components/recipesComponent/search";
 import { RecipeCard } from "@/components/recipesComponent/recipeCardAll";
 import { CategoryFilter } from "@/components/recipesComponent/category";
@@ -50,16 +50,16 @@ export interface Recipe {
 // Empty state component for when no favorites exist
 const EmptyFavorites = () => {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
+    <div
+      //{ opacity: 0 }}
+      // opacity: 1 }}
+      // duration: 0.5 }}
       className="flex flex-col items-center justify-center h-96 text-center px-4"
     >
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
+      <div
+        //{ scale: 0.8, opacity: 0 }}
+        // scale: 1, opacity: 1 }}
+        // delay: 0.2, duration: 0.5 }}
         className="w-32 h-32 mb-8 rounded-full bg-gradient-to-br from-pink-600/20 to-purple-600/20 border border-pink-500/20 flex items-center justify-center"
       >
         <svg
@@ -76,22 +76,21 @@ const EmptyFavorites = () => {
             d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
           />
         </svg>
-      </motion.div>
+      </div>
       <h2 className="text-2xl font-bold text-white mb-3">No Favorites Yet</h2>
       <p className="text-gray-400 max-w-md mb-8">
         You haven't added any recipes to your favorites. Browse our recipes and
         click the heart icon to save your favorites for easy access later!
       </p>
       <Link href="/dashboard/all-recipes">
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+        <button
+           // scale: 1.05 }}
           className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-white hover:from-purple-700 hover:to-pink-700 transition-all"
         >
           Browse Recipes
-        </motion.button>
+        </button>
       </Link>
-    </motion.div>
+    </div>
   );
 };
 
@@ -106,10 +105,10 @@ const NoSearchResults = ({
   clearFilters: () => void;
 }) => {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
+    <div
+      //{ opacity: 0 }}
+      // opacity: 1 }}
+      // duration: 0.5 }}
       className="flex flex-col items-center justify-center h-64 text-center"
     >
       <div className="w-16 h-16 mb-4 rounded-full bg-gray-800/70 flex items-center justify-center">
@@ -141,7 +140,7 @@ const NoSearchResults = ({
       >
         Clear filters
       </button>
-    </motion.div>
+    </div>
   );
 };
 
@@ -154,10 +153,10 @@ const ErrorState = ({
   retry: () => void;
 }) => {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
+    <div
+      //{ opacity: 0 }}
+      // opacity: 1 }}
+      // duration: 0.5 }}
       className="flex flex-col items-center justify-center h-64 text-center"
     >
       <div className="w-16 h-16 mb-4 rounded-full bg-red-900/20 flex items-center justify-center">
@@ -185,7 +184,7 @@ const ErrorState = ({
       >
         Try again
       </button>
-    </motion.div>
+    </div>
   );
 };
 
@@ -328,10 +327,10 @@ const FavoriteRecipes = () => {
 
   return (
     <div className="px-4 py-8 md:px-8 max-w-7xl mx-auto">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <div
+        //{ opacity: 0, y: 20 }}
+        // opacity: 1, y: 0 }}
+        // duration: 0.5 }}
         className="mb-8"
       >
         <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-600">
@@ -340,13 +339,13 @@ const FavoriteRecipes = () => {
         <p className="text-gray-400 mt-2">
           Your personalized collection of saved recipes
         </p>
-      </motion.div>
+      </div>
 
       {/* Search and Filter Options */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
+      <div
+        //{ opacity: 0, y: 10 }}
+        // opacity: 1, y: 0 }}
+        // duration: 0.5, delay: 0.1 }}
         className="mb-8"
       >
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -423,7 +422,7 @@ const FavoriteRecipes = () => {
             </div>
           </div>
         )}
-      </motion.div>
+      </div>
 
       {/* Content Area */}
       {isLoading ? (
@@ -443,14 +442,14 @@ const FavoriteRecipes = () => {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {recipes.map((recipe, index) => (
-              <motion.div
+              <div
                 key={recipe._id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.05 * index }}
+                //{ opacity: 0, y: 20 }}
+                // opacity: 1, y: 0 }}
+                // duration: 0.3, delay: 0.05 * index }}
               >
                 <RecipeCard recipe={recipe.recipe} />
-              </motion.div>
+              </div>
             ))}
           </div>
 

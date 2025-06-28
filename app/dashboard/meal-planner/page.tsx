@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { format, startOfWeek, addDays, addWeeks, subWeeks } from "date-fns";
-import { motion } from "framer-motion";
+ 
 import { toast } from "react-hot-toast";
 import {
   Calendar,

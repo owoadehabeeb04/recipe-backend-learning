@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { motion } from "framer-motion";
+ 
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { reviewsApi } from "@/app/api/(reviews)";
@@ -599,10 +599,9 @@ const ReviewsAndRatings: React.FC<ReviewsProps> = ({
 
       {/* Review Form */}
       {showReviewForm && currentUser && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          exit={{ opacity: 0, height: 0 }}
+        <div
+          //{ opacity: 0, height: 0 }}
+          // opacity: 1, height: "auto" }}
           className="mb-6 pb-6 border-b border-gray-700"
         >
           <div className="bg-gray-700/50 rounded-xl p-5 mb-6">
@@ -706,7 +705,7 @@ const ReviewsAndRatings: React.FC<ReviewsProps> = ({
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
 
       {/* Reviews list */}
@@ -718,12 +717,12 @@ const ReviewsAndRatings: React.FC<ReviewsProps> = ({
             const isLastElement = index === reviews.length - 1;
 
             return (
-              <motion.div
+              <div
                 key={review.id}
                 ref={isLastElement ? lastReviewCallback : null}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
+                //{ opacity: 0, y: 20 }}
+                // opacity: 1, y: 0 }}
+                // duration: 0.3 }}
                 className={`p-5 rounded-xl ${
                   currentUser && review.userId === currentUser._id
                     ? "bg-purple-900/30 border border-purple-500/30"
@@ -864,7 +863,7 @@ const ReviewsAndRatings: React.FC<ReviewsProps> = ({
                     Helpful {review.helpfulCount ? `(${review.helpfulCount})` : ''}
                   </button>
                 )} */}
-              </motion.div>
+              </div>
             );
           })}
 

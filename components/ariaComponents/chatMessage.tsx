@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { motion } from "framer-motion";
+ 
 import { ChefHat, Copy, ThumbsUp, ThumbsDown, Check } from "lucide-react";
 import { format } from "date-fns";
 import ReactMarkdown from "react-markdown";
@@ -149,10 +149,10 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
     setIsTyping(false);
   };
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+    <div
+      //{ opacity: 0, y: 10 }}
+      // opacity: 1, y: 0 }}
+      // duration: 0.3 }}
       className={`flex ${isAssistant ? "flex-row" : "flex-row-reverse"} relative`}
     >
       {/* Avatar */}
@@ -374,7 +374,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
           )}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { recipeInteractionApi } from '@/app/api/(cooking-cntroller)';
 import { useAuthStore } from '@/app/store/authStore';
 import toast from 'react-hot-toast';
@@ -254,14 +253,13 @@ const CookingController: React.FC<CookingControllerProps> = ({
     <div className="p-6 bg-gray-800/50 backdrop-blur-sm rounded-xl border border-white/10 mt-6">
       <h3 className="text-xl font-bold text-white mb-4">Cooking Tracker</h3>
 
-      <AnimatePresence mode="wait">
         {/* Not started state */}
         {cookingStatus === 'not_started' && (
-          <motion.div 
+          <div 
             key="not-started"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            //{ opacity: 0 }}
+            // opacity: 1 }}
+             //  opacity: 0 }}
             className="flex flex-col items-center"
           >
             <div className="text-center mb-6">
@@ -287,16 +285,16 @@ const CookingController: React.FC<CookingControllerProps> = ({
                 )}
               </button>
             </div>
-          </motion.div>
+          </div>
         )}
 
         {/* Cooking in progress state */}
         {(cookingStatus === 'started_cooking' || cookingStatus === 'cooking_in_progress') && (
-          <motion.div
+          <div
             key="cooking"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            //{ opacity: 0 }}
+            // opacity: 1 }}
+             //  opacity: 0 }}
           >
             <div className="bg-gradient-to-br from-purple-900/40 to-pink-900/40 rounded-xl p-4 mb-6 border border-purple-500/20">
               <div className="flex items-center justify-between mb-3">
@@ -368,16 +366,16 @@ const CookingController: React.FC<CookingControllerProps> = ({
                 </div>
               </div>
             )}
-          </motion.div>
+          </div>
         )}
 
         {/* Completed state */}
         {cookingStatus === 'completed' && (
-          <motion.div
+          <div
             key="completed"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            //{ opacity: 0 }}
+            // opacity: 1 }}
+             //  opacity: 0 }}
           >
             <div className="bg-gradient-to-br from-green-900/40 to-emerald-900/40 rounded-xl p-4 mb-6 border border-green-500/20">
               <div className="flex items-center mb-3">
@@ -403,16 +401,16 @@ const CookingController: React.FC<CookingControllerProps> = ({
                 Cook Again
               </button>
             </div>
-          </motion.div>
+          </div>
         )}
 
         {/* Didn't cook state */}
         {cookingStatus === 'didnt_cook' && (
-          <motion.div
+          <div
             key="didnt-cook"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            //{ opacity: 0 }}
+            // opacity: 1 }}
+             //  opacity: 0 }}
           >
             <div className="bg-gray-700/50 rounded-xl p-4 mb-6 border border-gray-600/20">
               <div className="flex items-center mb-3">
@@ -433,24 +431,22 @@ const CookingController: React.FC<CookingControllerProps> = ({
                 Start Cooking
               </button>
             </div>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
 
       {/* Modal: Completion Form */}
-      <AnimatePresence>
         {showCompletionForm && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+          <div
+            //{ opacity: 0 }}
+            // opacity: 1 }}
+             //  opacity: 0 }}
             className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
             onClick={() => setShowCompletionForm(false)}
           >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
+            <div
+              //{ scale: 0.9, opacity: 0 }}
+              // scale: 1, opacity: 1 }}
+               //  scale: 0.9, opacity: 0 }}
               className="bg-gray-800 rounded-xl p-6 w-full max-w-md"
               onClick={(e) => e.stopPropagation()}
             >
@@ -535,25 +531,23 @@ const CookingController: React.FC<CookingControllerProps> = ({
                   )}
                 </button>
               </div>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         )}
-      </AnimatePresence>
 
       {/* Modal: Abandon cooking */}
-      <AnimatePresence>
         {showAbandonDialog && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+          <div
+            //{ opacity: 0 }}
+            // opacity: 1 }}
+             //  opacity: 0 }}
             className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
             onClick={() => setShowAbandonDialog(false)}
           >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
+            <div
+              //{ scale: 0.9, opacity: 0 }}
+              // scale: 1, opacity: 1 }}
+               //  scale: 0.9, opacity: 0 }}
               className="bg-gray-800 rounded-xl p-6 w-full max-w-md"
               onClick={(e) => e.stopPropagation()}
             >
@@ -600,10 +594,9 @@ const CookingController: React.FC<CookingControllerProps> = ({
                   )}
                 </button>
               </div>
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
         )}
-      </AnimatePresence>
     </div>
   );
 };

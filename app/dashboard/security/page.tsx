@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { motion } from "framer-motion";
+ 
 import { useForm } from "react-hook-form";
 import { useAuthStore } from "../../store/authStore";
 import { changePassword } from "../../api/(security)/change-password";
@@ -67,10 +67,10 @@ const SecurityPage = () => {
 
   return (
     <div>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <div
+        //{ opacity: 0, y: 20 }}
+        // opacity: 1, y: 0 }}
+        // duration: 0.5 }}
         className="mb-8"
       >
         <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
@@ -79,12 +79,12 @@ const SecurityPage = () => {
         <p className="text-gray-400 mt-2">
           Manage your password and security preferences
         </p>
-      </motion.div>
+      </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
+      <div
+        //{ opacity: 0, y: 20 }}
+        // opacity: 1, y: 0 }}
+        // duration: 0.5, delay: 0.2 }}
         className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-8"
       >
         <h2 className="text-xl font-semibold text-white mb-6">
@@ -180,7 +180,7 @@ const SecurityPage = () => {
             </div>
           </div>
         </form>
-      </motion.div>
+      </div>
     </div>
   );
 };

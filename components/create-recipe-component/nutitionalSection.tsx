@@ -1,5 +1,5 @@
 import React from "react";
-import { motion } from "framer-motion";
+ 
 import { Ingredient, NutritionData } from "@/types/recipe";
 import { calculateNutrition } from "@/utils";
 
@@ -34,9 +34,9 @@ const NutritionSection: React.FC<NutritionSectionProps> = ({
   
   console.log({nutrition})
   return (
-    <motion.div 
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
+    <div 
+      //{ opacity: 0 }}
+      // opacity: 1 }}
       className="mt-8 p-6 bg-gray-800/50 border border-white/10 backdrop-blur-sm rounded-xl shadow-md"
     >
       <h3 className="text-xl font-semibold text-white mb-4">Nutritional Information</h3>
@@ -131,7 +131,7 @@ const NutritionSection: React.FC<NutritionSectionProps> = ({
           <>Calculate Nutrition</>
         )}
       </button>
-    </motion.div>
+    </div>
   );
 };
 

@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+ 
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
@@ -128,13 +128,13 @@ console.log()
               {isCheckingStatus ? (
                 <div className="w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
               ) : (
-                <motion.svg
-                  animate={
-                    isAnimating
-                      ? { scale: [1, 1.5, 1], rotate: [0, 5, -5, 0] }
-                      : { scale: 1 }
-                  }
-                  transition={{ duration: 0.3 }}
+                <svg
+                   //
+                    // isAnimating
+                    //   ? { scale: [1, 1.5, 1], rotate: [0, 5, -5, 0] }
+                    //   : { scale: 1 }
+                  
+                  // duration: 0.3 }}
                   className={`w-4 h-4 ${
                     isFavorite ? "fill-current" : "stroke-current fill-none"
                   }`}
@@ -147,16 +147,16 @@ console.log()
                     strokeLinejoin="round"
                     d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                   />
-                </motion.svg>
+                </svg>
               )}
             </button>
           )}
 
-          <motion.div
-            whileHover={{ y: -5 }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
+          <div
+             // y: -5 }}
+            //{ opacity: 0, y: 20 }}
+            // opacity: 1, y: 0 }}
+            // duration: 0.3 }}
             className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden cursor-pointer group"
           >
             {/* Featured Image */}
@@ -319,7 +319,7 @@ console.log()
                 </p>
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       ) : (
         // link for other pages
@@ -343,13 +343,13 @@ console.log()
               {isCheckingStatus ? (
                 <div className="w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
               ) : (
-                <motion.svg
-                  animate={
-                    isAnimating
-                      ? { scale: [1, 1.5, 1], rotate: [0, 5, -5, 0] }
-                      : { scale: 1 }
-                  }
-                  transition={{ duration: 0.3 }}
+                <svg
+                   //
+                    // isAnimating
+                    //   ? { scale: [1, 1.5, 1], rotate: [0, 5, -5, 0] }
+                    //   : { scale: 1 }
+                  // }
+                  // duration: 0.3 }}
                   className={`w-4 h-4 ${
                     isFavorite ? "fill-current" : "stroke-current fill-none"
                   }`}
@@ -362,17 +362,17 @@ console.log()
                     strokeLinejoin="round"
                     d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                   />
-                </motion.svg>
+                </svg>
               )}
             </button>
           )}
 
           <Link href={`/dashboard/recipe/${recipe?._id}`}>
-            <motion.div
-              whileHover={{ y: -5 }}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
+            <div
+               // y: -5 }}
+              //{ opacity: 0, y: 20 }}
+              // opacity: 1, y: 0 }}
+              // duration: 0.3 }}
               className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden cursor-pointer group"
             >
               {/* Featured Image */}
@@ -535,7 +535,7 @@ console.log()
                   </p>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </Link>
         </div>
       )}

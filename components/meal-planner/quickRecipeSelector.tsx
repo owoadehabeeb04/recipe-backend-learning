@@ -1,5 +1,5 @@
 // import { useState } from "react";
-// import { motion } from "framer-motion";
+//  
 // import { useForm } from "react-hook-form";
 // import { useAuthStore } from "@/app/store/authStore";
 // import { uploadToCloudinary } from "@/app/api/(recipe)/uploadImage";
@@ -206,9 +206,9 @@
 
 //   return (
 //     <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-[60] p-4 backdrop-blur-sm">
-//       <motion.div
-//         initial={{ opacity: 0, scale: 0.95 }}
-//         animate={{ opacity: 1, scale: 1 }}
+//       <div
+//         //{ opacity: 0, scale: 0.95 }}
+//         // opacity: 1, scale: 1 }}
 //         className="bg-gray-900 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-xl border border-gray-700"
 //       >
 //         <div className="bg-gradient-to-r from-purple-600 to-pink-600 px-6 py-4">
@@ -439,7 +439,7 @@
 //             </div>
 //           </form>
 //         </div>
-//       </motion.div>
+//       </div>
 //     </div>
 //   );
 // };

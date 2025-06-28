@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+ 
 import { Save } from "lucide-react";
 import { useState } from "react";
 
@@ -24,9 +24,9 @@ export const SavePlanModal: React.FC<SavePlanModalProps> = ({
   
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4 backdrop-blur-sm">
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+      <div 
+        //{ opacity: 0, y: 20 }}
+        // opacity: 1, y: 0 }}
         className="bg-white rounded-xl p-4 sm:p-6 max-w-md w-[95%] sm:w-full shadow-xl"
       >
         <div className="text-center mb-4 sm:mb-6">
@@ -92,7 +92,7 @@ export const SavePlanModal: React.FC<SavePlanModalProps> = ({
             </button>
           </div>
         </form>
-      </motion.div>
+      </div>
     </div>
   );
 };

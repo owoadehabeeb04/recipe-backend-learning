@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+ 
 import { BookOpen, Trash2 } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { getAllRecipes } from "@/app/api/(recipe)/userRecipes";
@@ -114,9 +114,9 @@ export const RecipeSelector: React.FC<any> = ({
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-2 sm:p-4 backdrop-blur-sm">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
+      <div
+        //{ opacity: 0, scale: 0.95 }}
+        // opacity: 1, scale: 1 }}
         className="bg-gray-900 rounded-xl max-w-4xl w-full max-h-[90vh] sm:max-h-[85vh] overflow-hidden flex flex-col shadow-xl border border-gray-800"
       >
         <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-3 sm:p-4">
@@ -363,7 +363,7 @@ export const RecipeSelector: React.FC<any> = ({
             </>
           )}
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };

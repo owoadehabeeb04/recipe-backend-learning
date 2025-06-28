@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion";
+ 
 import { useForm } from "react-hook-form";
 import { useAuthStore } from "../../store/authStore";
 import { updateProfile } from "../../api/(users)";
@@ -175,10 +175,10 @@ const ProfilePage = () => {
 
   return (
     <div className="px-4 sm:px-6 md:px-8 py-6">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <div
+        //{ opacity: 0, y: 20 }}
+        // opacity: 1, y: 0 }}
+        // duration: 0.5 }}
         className="mb-8"
       >
         <h1 className="text-2xl sm:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
@@ -187,7 +187,7 @@ const ProfilePage = () => {
         <p className="text-gray-400 mt-2 text-sm sm:text-base">
           Manage your personal information and preferences
         </p>
-      </motion.div>
+      </div>
 
       <div className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-4 sm:p-6 md:p-8">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sm:gap-0 mb-6 sm:mb-8">

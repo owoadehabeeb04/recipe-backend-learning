@@ -2,7 +2,6 @@
 import { format, addWeeks, startOfWeek, subWeeks, addMonths, isSameDay } from 'date-fns';
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight, Calendar, ChevronDown } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 interface DuplicatePlanModalProps {
   planName: string;
@@ -80,15 +79,15 @@ export const DuplicatePlanModal: React.FC<DuplicatePlanModalProps> = ({
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
+    <div
+      //{ opacity: 0 }}
+      // opacity: 1 }}
+       //  opacity: 0 }}
       className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4"
     >
-      <motion.div
-        initial={{ scale: 0.95, y: 10 }}
-        animate={{ scale: 1, y: 0 }}
+      <div
+        //{ scale: 0.95, y: 10 }}
+        // scale: 1, y: 0 }}
         className="bg-white rounded-2xl shadow-2xl overflow-hidden w-full max-w-md"
       >
         <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-4 sm:p-6 relative">
@@ -144,9 +143,9 @@ export const DuplicatePlanModal: React.FC<DuplicatePlanModalProps> = ({
             </button>
 
             {showDropdown && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
+              <div
+                //{ opacity: 0, y: -10 }}
+                // opacity: 1, y: 0 }}
                 className="absolute z-10 mt-1 sm:mt-2 w-full bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 sm:max-h-72 overflow-y-auto"
               >
                 {weekOptions.map((option, index) => (
@@ -165,7 +164,7 @@ export const DuplicatePlanModal: React.FC<DuplicatePlanModalProps> = ({
                     {option.label}
                   </button>
                 ))}
-              </motion.div>
+              </div>
             )}
           </div>
 
@@ -223,7 +222,7 @@ export const DuplicatePlanModal: React.FC<DuplicatePlanModalProps> = ({
             Cancel
           </button>
         </div>
-      </motion.div>
-    </motion.div>
+      </div>
+    </div>
   );
 };

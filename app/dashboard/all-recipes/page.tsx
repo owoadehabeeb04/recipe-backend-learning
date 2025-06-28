@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { SearchBar } from "@/components/recipesComponent/search";
@@ -41,16 +40,16 @@ import { Recipe } from "@/types/recipe";
 // Empty state component for better UX
 const EmptyState = () => {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
+    <div
+      //{ opacity: 0 }}
+      // opacity: 1 }}
+      // duration: 0.5 }}
       className="flex flex-col items-center justify-center h-96 text-center px-4"
     >
-      <motion.div
-        initial={{ scale: 0.8, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 0.2, duration: 0.5 }}
+      <div
+        //{ scale: 0.8, opacity: 0 }}
+        // scale: 1, opacity: 1 }}
+        // delay: 0.2, duration: 0.5 }}
         className="w-32 h-32 mb-8 rounded-full bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-purple-500/20 flex items-center justify-center"
       >
         <svg
@@ -67,22 +66,22 @@ const EmptyState = () => {
             d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"
           />
         </svg>
-      </motion.div>
+      </div>
       <h2 className="text-2xl font-bold text-white mb-3">No Recipes Yet</h2>
       <p className="text-gray-400 max-w-md mb-8">
         It looks like there aren't any recipes available at the moment. Check
         back soon as our chefs are always cooking up something new!
       </p>
       <Link href="/dashboard">
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+        <button
+           // scale: 1.05 }}
+          // whileTap={{ scale: 0.95 }}
           className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-white hover:from-purple-700 hover:to-pink-700 transition-all"
         >
           Return to Dashboard
-        </motion.button>
+        </button>
       </Link>
-    </motion.div>
+    </div>
   );
 };
 
@@ -97,10 +96,10 @@ const NoSearchResults = ({
   clearFilters: () => void;
 }) => {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
+    <div
+      //{ opacity: 0 }}
+      // opacity: 1 }}
+      // duration: 0.5 }}
       className="flex flex-col items-center justify-center h-64 text-center"
     >
       <div className="w-16 h-16 mb-4 rounded-full bg-gray-800/70 flex items-center justify-center">
@@ -132,7 +131,7 @@ const NoSearchResults = ({
       >
         Clear filters
       </button>
-    </motion.div>
+    </div>
   );
 };
 
@@ -145,10 +144,10 @@ const ErrorState = ({
   retry: () => void;
 }) => {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.5 }}
+    <div
+      //{ opacity: 0 }}
+      // opacity: 1 }}
+      // duration: 0.5 }}
       className="flex flex-col items-center justify-center h-64 text-center"
     >
       <div className="w-16 h-16 mb-4 rounded-full bg-red-900/20 flex items-center justify-center">
@@ -176,7 +175,7 @@ const ErrorState = ({
       >
         Try again
       </button>
-    </motion.div>
+    </div>
   );
 };
 
@@ -314,10 +313,10 @@ const AllRecipesPage = () => {
   return (
     <div className="px-4 py-6 sm:py-8 md:px-8 max-w-7xl mx-auto">
       {/* Improve heading responsiveness */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <div
+        //{ opacity: 0, y: 20 }}
+        // opacity: 1, y: 0 }}
+        // duration: 0.5 }}
         className="mb-6 sm:mb-8"
       >
         <h1 className="text-2xl sm:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
@@ -326,13 +325,13 @@ const AllRecipesPage = () => {
         <p className="text-sm sm:text-base text-gray-400 mt-2">
           Discover and explore delicious recipes from our community
         </p>
-      </motion.div>
+      </div>
 
       {/* Improve search and filter responsiveness */}
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
+      <div
+        //{ opacity: 0, y: 10 }}
+        // opacity: 1, y: 0 }}
+        // duration: 0.5, delay: 0.1 }}
         className="mb-6 sm:mb-8 space-y-4"
       >
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
@@ -362,17 +361,17 @@ const AllRecipesPage = () => {
             onChange={handleCookingTimeChange}
           />
         </div>
-      </motion.div>
+      </div>
 
       {/* Recipe grid - improve for mobile */}
       {!isLoading && !hasError && recipes.length > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {recipes.map((recipe, index) => (
-            <motion.div
+            <div
               key={recipe._id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.05 * index }}
+              //{ opacity: 0, y: 20 }}
+              // opacity: 1, y: 0 }}
+              // duration: 0.3, delay: 0.05 * index }}
             >
               {user?.role === "user" ? (
                 <RecipeCardEditDelete
@@ -383,7 +382,7 @@ const AllRecipesPage = () => {
               ) : (
                 <RecipeCard recipe={recipe} />
               )}
-            </motion.div>
+            </div>
           ))}
         </div>
       )}

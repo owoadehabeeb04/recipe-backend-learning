@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { useAuthStore } from "../store/authStore";
-import { motion } from "framer-motion";
+ 
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import {
@@ -253,16 +253,16 @@ const Dashboard = () => {
 
   return (
     <div>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <div
+        //{ opacity: 0, y: 20 }}
+        // opacity: 1, y: 0 }}
+        // duration: 0.5 }}
       >
         <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
           Welcome, {user?.username || "Chef"}
         </h1>
         <p className="text-gray-400 mt-2">Here's what's cooking today</p>
-      </motion.div>
+      </div>
 
       {/* Stats */}
       {statsLoading ? (
@@ -270,11 +270,11 @@ const Dashboard = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8">
           {stats.map((stat, index) => (
-            <motion.div
+            <div
               key={stat.title}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 * index }}
+              //{ opacity: 0, y: 20 }}
+              // opacity: 1, y: 0 }}
+              // duration: 0.5, delay: 0.1 * index }}
               className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
             >
               <div
@@ -284,7 +284,7 @@ const Dashboard = () => {
               </div>
               <h2 className="text-2xl font-bold text-white">{stat.value}</h2>
               <p className="text-gray-400">{stat.title}</p>
-            </motion.div>
+            </div>
           ))}
         </div>
       )}
@@ -295,10 +295,10 @@ const Dashboard = () => {
           {recipesLoading ? (
             <RecipesSkeleton />
           ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
+            <div
+              //{ opacity: 0, y: 20 }}
+              // opacity: 1, y: 0 }}
+              // duration: 0.5, delay: 0.5 }}
               className="mt-8"
             >
               <div className="flex justify-between items-center mb-4">
@@ -401,7 +401,7 @@ const Dashboard = () => {
                   </Link>
                 </div>
               )}
-            </motion.div>
+            </div>
           )}
         </div>
       )}
@@ -412,10 +412,10 @@ const Dashboard = () => {
           {recipesLoading ? (
             <RecipesSkeleton />
           ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.5 }}
+            <div
+              //{ opacity: 0, y: 20 }}
+              // opacity: 1, y: 0 }}
+              // duration: 0.5, delay: 0.5 }}
               className="mt-8"
             >
               <div className="flex justify-between items-center mb-4">
@@ -743,14 +743,14 @@ const Dashboard = () => {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
           )}
         </div>
       )}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
+      <div
+        //{ opacity: 0, y: 20 }}
+        // opacity: 1, y: 0 }}
+        // duration: 0.5, delay: 0.5 }}
         className="mt-8"
       >
         <DashboardCharts
@@ -762,7 +762,7 @@ const Dashboard = () => {
           }}
           isLoading={recipesLoading}
         />
-      </motion.div>
+      </div>
       {/* <DashboardUser /> */}
     </div>
   );

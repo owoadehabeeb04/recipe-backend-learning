@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+ 
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/app/store/authStore";
 import { Recipe } from "@/types/recipe";
@@ -151,10 +151,10 @@ const MyRecipesPage = () => {
   return (
     <div className="px-4 py-8 md:px-8">
       <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
+        <div
+          //{ opacity: 0, y: 20 }}
+          // opacity: 1, y: 0 }}
+          // duration: 0.5 }}
         >
           <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
             My Recipes
@@ -162,12 +162,13 @@ const MyRecipesPage = () => {
           <p className="text-gray-400 mt-2">
             Manage and organize your culinary creations
           </p>
-        </motion.div>
+        </div>
 
-        <motion.button
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+        <button
+          //{ opacity: 0, scale: 0.9 }}
+          // opacity: 1, scale: 1 }}
+          // duration: 0.5, delay: 0.2 }}
+          
           onClick={handleCreateRecipe}
           className="mt-4 md:mt-0 px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-white hover:from-purple-700 hover:to-pink-700 transition-all flex items-center justify-center shadow-lg shadow-purple-600/20"
         >
@@ -186,16 +187,16 @@ const MyRecipesPage = () => {
             ></path>
           </svg>
           Create New Recipe
-        </motion.button>
+        </button>
       </div>
 
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5, delay: 0.3 }}
+      <div
+        //{ opacity: 0 }}
+        // opacity: 1 }}
+        // duration: 0.5, delay: 0.3 }}
       >
         <RecipeFilter activeFilter={filter} onFilterChange={setFilter} />
-      </motion.div>
+      </div>
 
       {isLoading ? (
         <div className="flex justify-center items-center h-64">
@@ -232,11 +233,11 @@ const MyRecipesPage = () => {
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
             {filteredRecipes.map((recipe, index) => (
-              <motion.div
+              <div
                 key={recipe._id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.1 * index }}
+                //{ opacity: 0, y: 20 }}
+                // opacity: 1, y: 0 }}
+                // duration: 0.4, delay: 0.1 * index }}
               >
                 <RecipeCardEditDelete
                   recipe={recipe}
@@ -245,7 +246,7 @@ const MyRecipesPage = () => {
                   refreshData={fetchRecipes}
                   onTogglePublish={() => handleTogglePublish(recipe._id, recipe.isPublished)}
                 />
-              </motion.div>
+              </div>
             ))}
           </div>
           
@@ -271,10 +272,10 @@ const MyRecipesPage = () => {
           )}
         </>
       ) : (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
+        <div
+          //{ opacity: 0 }}
+          // opacity: 1 }}
+          // duration: 0.5 }}
           className="flex flex-col items-center justify-center h-64 text-center"
         >
           <div className="w-16 h-16 mb-4 rounded-full bg-gray-800/70 flex items-center justify-center">
@@ -321,7 +322,7 @@ const MyRecipesPage = () => {
             </svg>
             Create Your First Recipe
           </button>
-        </motion.div>
+        </div>
       )}
     </div>
   );

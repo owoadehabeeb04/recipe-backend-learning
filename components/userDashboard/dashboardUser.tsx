@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import WelcomeMessage from './welcomeMessage';
 import RecipeCard from './recipeCardUser';
 import ProgressStats from './progressStats';
@@ -103,10 +102,10 @@ const DashboardUser: React.FC = () => {
         {/* Left Column - 8/12 on desktop */}
         <div className="md:col-span-8 space-y-8">
           {/* Personalized Recipe Feed */}
-          <motion.section 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+          <section 
+            //{ opacity: 0, y: 20 }}
+            // opacity: 1, y: 0 }}
+            // duration: 0.5 }}
             className="bg-white rounded-xl shadow-sm p-6"
           >
             <h2 className="text-2xl font-bold text-gray-800 mb-4">Your Recommended Recipes</h2>
@@ -115,13 +114,13 @@ const DashboardUser: React.FC = () => {
                 <RecipeCard key={recipe.id} recipe={recipe} />
               ))}
             </div>
-          </motion.section>
+          </section>
 
           {/* Continue Where You Left Off */}
-          <motion.section 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+          <section 
+            //{ opacity: 0, y: 20 }}
+            // opacity: 1, y: 0 }}
+            // duration: 0.5, delay: 0.2 }}
             className="bg-white rounded-xl shadow-sm p-6"
           >
             <h2 className="text-2xl font-bold text-gray-800 mb-4">Recently Viewed Recipes</h2>
@@ -130,13 +129,13 @@ const DashboardUser: React.FC = () => {
                 <RecipeCard key={recipe.id} recipe={recipe} />
               ))}
             </div>
-          </motion.section>
+          </section>
 
           {/* Saved Recipes */}
-          <motion.section 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+          <section 
+            //{ opacity: 0, y: 20 }}
+            // opacity: 1, y: 0 }}
+            // duration: 0.5, delay: 0.3 }}
             className="bg-white rounded-xl shadow-sm p-6"
           >
             <div className="flex justify-between items-center mb-4">
@@ -150,16 +149,16 @@ const DashboardUser: React.FC = () => {
                 <RecipeCard key={recipe.id} recipe={recipe} />
               ))}
             </div>
-          </motion.section>
+          </section>
         </div>
 
         {/* Right Column - 4/12 on desktop */}
         <div className="md:col-span-4 space-y-6">
           {/* Meal Plan Preview */}
-          <motion.section 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5 }}
+          <section 
+            //{ opacity: 0, x: 20 }}
+            // opacity: 1, x: 0 }}
+            // duration: 0.5 }}
             className="bg-white rounded-xl shadow-sm p-6"
           >
             <div className="flex justify-between items-center mb-4">
@@ -169,13 +168,13 @@ const DashboardUser: React.FC = () => {
               </Link>
             </div>
             <MealPlanPreview />
-          </motion.section>
+          </section>
 
           {/* Quick Access Tools */}
-          <motion.section 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
+          <section 
+            //{ opacity: 0, x: 20 }}
+            // opacity: 1, x: 0 }}
+            // duration: 0.5, delay: 0.2 }}
             className="bg-white rounded-xl shadow-sm p-6"
           >
             <h2 className="text-xl font-bold text-gray-800 mb-4">Quick Access Tools</h2>
@@ -189,24 +188,24 @@ const DashboardUser: React.FC = () => {
                 </Link>
               ))}
             </div>
-          </motion.section>
+          </section>
 
           {/* Progress & Stats */}
-          <motion.section 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
+          <section 
+            //{ opacity: 0, x: 20 }}
+            // opacity: 1, x: 0 }}
+            // duration: 0.5, delay: 0.3 }}
             className="bg-white rounded-xl shadow-sm p-6"
           >
             <h2 className="text-xl font-bold text-gray-800 mb-4">Your Cooking Stats</h2>
             <ProgressStats stats={userStats} />
-          </motion.section>
+          </section>
 
           {/* Recipe of the Day */}
-          <motion.section 
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
+          <section 
+            //{ opacity: 0, x: 20 }}
+            // opacity: 1, x: 0 }}
+            // duration: 0.5, delay: 0.4 }}
             className="bg-white rounded-xl shadow-sm p-6"
           >
             <h2 className="text-xl font-bold text-gray-800 mb-4">Today's Pick</h2>
@@ -225,15 +224,15 @@ const DashboardUser: React.FC = () => {
                 View Recipe
               </button>
             </Link>
-          </motion.section>
+          </section>
         </div>
       </div>
 
       {/* Trending Recipes - Full Width */}
-      <motion.section 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
+      <section 
+        //{ opacity: 0, y: 20 }}
+        // opacity: 1, y: 0 }}
+        // duration: 0.5, delay: 0.5 }}
         className="mt-8 bg-white rounded-xl shadow-sm p-6"
       >
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Trending This Week</h2>
@@ -242,7 +241,7 @@ const DashboardUser: React.FC = () => {
             <RecipeCard key={recipe.id} recipe={recipe} />
           ))}
         </div>
-      </motion.section>
+      </section>
     </div>
   );
 };
