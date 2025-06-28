@@ -9,49 +9,50 @@ import toast from "react-hot-toast";
 import { Loader } from "lucide-react";
 import mealplanningpicture from "../public/Screenshot 2025-06-27 at 12.25.45 PM.png"
 import ARIACHATOTPICTURE from "../public/Screenshot 2025-06-27 at 12.26.36 PM.png";
+
 const LandingPage = () => {
   // Sample recipe data for featured recipes
   
   // Replace your featuredRecipes state initialization
-const [featuredRecipes, setFeaturedRecipes] = useState<any>([]);
-const [isLoadingRecipes, setIsLoadingRecipes] = useState(true);
+  const [featuredRecipes, setFeaturedRecipes] = useState<any>([]);
+  const [isLoadingRecipes, setIsLoadingRecipes] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-// Add this useEffect to fetch recipes when the component mounts
-// Replace your recipe fetching code in the useEffect
-
-useEffect(() => {
-  const fetchRecipes = async () => {
-    try {
-      setIsLoadingRecipes(true);
-      
-      // Get recipes with a sufficient limit and sort by rating
-      const response = await getAllRecipes({
-        limit: 10, // Fetch more to find highest rated ones
-        sort: "rating", // Sort by rating if your API supports it
-      });
-      
-      if (response.success && Array.isArray(response.data)) {
-        // Sort by average rating (highest first)
-        const sortedRecipes = [...response.data].sort((a, b) => 
-          (b.averageRating || 0) - (a.averageRating || 0)
-        );
+  // Add this useEffect to fetch recipes when the component mounts
+  // Replace your recipe fetching code in the useEffect
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        setIsLoadingRecipes(true);
         
-        // Take the top 3
-        setFeaturedRecipes(sortedRecipes.slice(0, 3));
-      } else {
-        console.error("Failed to fetch recipes:", response.message);
-        toast.error("Couldn't load featured recipes");
+        // Get recipes with a sufficient limit and sort by rating
+        const response = await getAllRecipes({
+          limit: 10, // Fetch more to find highest rated ones
+          sort: "rating", // Sort by rating if your API supports it
+        });
+        
+        if (response.success && Array.isArray(response.data)) {
+          // Sort by average rating (highest first)
+          const sortedRecipes = [...response.data].sort((a, b) => 
+            (b.averageRating || 0) - (a.averageRating || 0)
+          );
+          
+          // Take the top 3
+          setFeaturedRecipes(sortedRecipes.slice(0, 3));
+        } else {
+          console.error("Failed to fetch recipes:", response.message);
+          toast.error("Couldn't load featured recipes");
+        }
+      } catch (error) {
+        console.error("Error fetching recipes:", error);
+        toast.error("An error occurred while loading recipes");
+      } finally {
+        setIsLoadingRecipes(false);
       }
-    } catch (error) {
-      console.error("Error fetching recipes:", error);
-      toast.error("An error occurred while loading recipes");
-    } finally {
-      setIsLoadingRecipes(false);
-    }
-  };
+    };
 
-  fetchRecipes();
-}, []);
+    fetchRecipes();
+  }, []);
 
   // Categories with icons
   const categories = [
@@ -97,6 +98,8 @@ useEffect(() => {
               Recipia
             </h1>
           </motion.div>
+
+          {/* Desktop Navigation */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -125,7 +128,86 @@ useEffect(() => {
               Get Started
             </Link>
           </motion.div>
+
+          {/* Mobile Menu Button */}
+          <motion.button
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+            className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg bg-gray-800 text-gray-300 hover:text-white hover:bg-gray-700 transition-colors"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle mobile menu"
+          >
+            <svg
+              className={`w-6 h-6 transition-transform duration-300 ${isMobileMenuOpen ? 'rotate-90' : ''}`}
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              {isMobileMenuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </motion.button>
         </nav>
+
+        {/* Mobile Menu */}
+        <motion.div
+          initial={false}
+          animate={{ 
+            height: isMobileMenuOpen ? 'auto' : 0,
+            opacity: isMobileMenuOpen ? 1 : 0
+          }}
+          transition={{ duration: 0.3, ease: 'easeInOut' }}
+          className="md:hidden overflow-hidden bg-gray-900/95 backdrop-blur-lg border-t border-gray-700"
+        >
+          <div className="px-4 py-6 space-y-4">
+            <Link 
+              href="#features" 
+              className="block text-gray-300 hover:text-white transition-colors py-2 border-b border-gray-800"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Features
+            </Link>
+            <Link 
+              href="/dashboard/aria" 
+              className="block text-gray-300 hover:text-white transition-colors py-2 border-b border-gray-800"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              AI Assistant
+            </Link>
+            <Link 
+              href="/dashboard/meal-planner" 
+              className="block text-gray-300 hover:text-white transition-colors py-2 border-b border-gray-800"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Meal Planning
+            </Link>
+            <Link 
+              href="/dashboard/all-recipes" 
+              className="block text-gray-300 hover:text-white transition-colors py-2 border-b border-gray-800"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Recipes
+            </Link>
+            <Link 
+              href="/login" 
+              className="block text-gray-300 hover:text-white transition-colors py-2 border-b border-gray-800"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Login
+            </Link>
+            <Link
+              href="/signup"
+              className="block bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-6 py-3 rounded-full transition-all hover:shadow-lg hover:shadow-purple-900/50 text-center mt-4"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Get Started
+            </Link>
+          </div>
+        </motion.div>
       </header>
 
       {/* Hero Section */}
@@ -1092,7 +1174,7 @@ useEffect(() => {
               <ul className="space-y-2">
                 <li>
                   <Link
-                    href="/about"
+                    href=""
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     About Us
@@ -1100,7 +1182,7 @@ useEffect(() => {
                 </li>
                 <li>
                   <Link
-                    href="/careers"
+                    href=""
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     Careers
@@ -1108,7 +1190,7 @@ useEffect(() => {
                 </li>
                 <li>
                   <Link
-                    href="/contact"
+                    href=""
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     Contact
@@ -1123,7 +1205,7 @@ useEffect(() => {
               <ul className="space-y-2">
                 <li>
                   <Link
-                    href="/recipes"
+                    href=""
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     Recipe Library
@@ -1131,7 +1213,7 @@ useEffect(() => {
                 </li>
                 <li>
                   <Link
-                    href="/ai"
+                    href=""
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     AI Assistant
@@ -1139,7 +1221,7 @@ useEffect(() => {
                 </li>
                 <li>
                   <Link
-                    href="/community"
+                    href=""
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     Community
