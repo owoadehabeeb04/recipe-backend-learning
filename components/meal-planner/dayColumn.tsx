@@ -1,7 +1,8 @@
 import { format } from "date-fns";
-import { Clock } from "lucide-react";
+import { Sunrise, Sun, Moon } from "lucide-react";
 import { WeekdayHeader } from "./calendar";
 import { MealSlotItem } from "./mealslot";
+import { memo, useMemo, useCallback } from "react";
 
 interface DayColumnProps {
   date: Date;
@@ -10,23 +11,36 @@ interface DayColumnProps {
   isCurrentDay: boolean;
 }
 
-export const DayColumn = ({ date, dayPlan, onAddMeal, isCurrentDay }: DayColumnProps) => {
-  const dayStr = format(date, 'EEE');
+export const DayColumn = memo(({ date, dayPlan, onAddMeal, isCurrentDay }: DayColumnProps) => {
+  const dayStr = useMemo(() => format(date, 'EEE'), [date]);
   
-  const mealConfig = [
-    { type: 'breakfast', label: 'Breakfast', icon: <Clock size={16} /> },
-    { type: 'lunch', label: 'Lunch', icon: <Clock size={16} /> },
-    { type: 'dinner', label: 'Dinner', icon: <Clock size={16} /> }
-  ];
+  // Better meal icons for visual clarity
+  const mealConfig = useMemo(() => [
+    { type: 'breakfast', label: 'Breakfast', icon: <Sunrise size={14} /> },
+    { type: 'lunch', label: 'Lunch', icon: <Sun size={14} /> },
+    { type: 'dinner', label: 'Dinner', icon: <Moon size={14} /> }
+  ], []);
+
+  // Memoized click handlers for each meal type
+  const createMealClickHandler = useCallback((mealType: string) => {
+    return () => onAddMeal(dayStr, mealType);
+  }, [dayStr, onAddMeal]);
+
   return (
-    <div className={`${isCurrentDay ? 'bg-purple-50 rounded-lg' : ''}`}>
+    <div className={`transition-all duration-200 ${
+      isCurrentDay 
+        ? 'bg-gradient-to-b from-purple-50 to-pink-50 rounded-xl border border-purple-200 shadow-sm' 
+        : 'bg-white rounded-lg'
+    }`}>
       <WeekdayHeader date={date} isCurrentDay={isCurrentDay} />
-      <div className="space-y-3 p-2">
+      
+      {/* Meals Container - Better Spacing */}
+      <div className="space-y-3 p-2 sm:p-3">
         {mealConfig.map(meal => (
           <MealSlotItem 
             key={meal.type}
             mealData={dayPlan?.[meal.type] || { mealType: meal.type, recipe: null }}
-            onClick={() => onAddMeal(dayStr, meal.type)}
+            onClick={createMealClickHandler(meal.type)}
             mealLabel={meal.label}
             icon={meal.icon}
           />
@@ -34,4 +48,6 @@ export const DayColumn = ({ date, dayPlan, onAddMeal, isCurrentDay }: DayColumnP
       </div>
     </div>
   );
-};
+});
+
+DayColumn.displayName = 'DayColumn';

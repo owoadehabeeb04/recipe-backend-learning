@@ -1,5 +1,6 @@
 import { Plus } from "lucide-react";
 import Image from "next/image";
+import { memo, useCallback } from "react";
 
 interface MealData {
   recipe?: {
@@ -13,117 +14,137 @@ interface MealData {
 
 interface MealSlotItemProps {
   mealData: MealData;
-  onClick: (recipe: MealData['recipe'] | null) => void;
+  onClick: () => void;
   mealLabel: string;
   icon: React.ReactNode;
 }
 
-export const MealSlotItem: React.FC<MealSlotItemProps> = ({ mealData, onClick, mealLabel, icon }) => {
-    const handleClick = () => {
-      onClick(mealData.recipe || null);
-    };
+export const MealSlotItem: React.FC<MealSlotItemProps> = memo(({ 
+  mealData, 
+  onClick, 
+  mealLabel, 
+  icon 
+}) => {
+  const handleClick = useCallback(() => {
+    onClick();
+  }, [onClick]);
 
-    const getMealGradient = () => {
-      switch(mealLabel.toLowerCase()) {
-        case 'breakfast':
-          return 'from-amber-600/20 to-orange-700/20 hover:from-amber-600/30 hover:to-orange-700/30';
-        case 'lunch':
-          return 'from-emerald-600/20 to-teal-700/20 hover:from-emerald-600/30 hover:to-teal-700/30';
-        case 'dinner':
-          return 'from-indigo-600/20 to-violet-700/20 hover:from-indigo-600/30 hover:to-violet-700/30';
-        default:
-          return 'from-purple-600/20 to-pink-700/20 hover:from-purple-600/30 hover:to-pink-700/30';
-      }
-    };
+  const getMealColor = () => {
+    switch(mealLabel.toLowerCase()) {
+      case 'breakfast':
+        return 'border-l-amber-500 bg-amber-50/50';
+      case 'lunch':
+        return 'border-l-emerald-500 bg-emerald-50/50';
+      case 'dinner':
+        return 'border-l-indigo-500 bg-indigo-50/50';
+      default:
+        return 'border-l-purple-500 bg-purple-50/50';
+    }
+  };
 
-    return (
-      <div 
-        onClick={handleClick}
-        className={`transition cursor-pointer group relative overflow-hidden rounded-xl
-          ${mealData.recipe 
-            ? `bg-gradient-to-br ${getMealGradient()} backdrop-blur-sm border border-white/10 shadow-lg hover:shadow-xl` 
-            :'bg-purple-900/30 border border-dashed border-purple-700 hover:border-purple-400 hover:bg-purple-800/40 p-2 sm:p-4'
-          }`
+  const getMealIconColor = () => {
+    switch(mealLabel.toLowerCase()) {
+      case 'breakfast':
+        return 'bg-amber-500';
+      case 'lunch':
+        return 'bg-emerald-500';
+      case 'dinner':
+        return 'bg-indigo-500';
+      default:
+        return 'bg-purple-500';
+    }
+  };
+
+  return (
+    <div 
+      onClick={handleClick}
+      className={`
+        group cursor-pointer transform transition-all duration-200 ease-out
+        will-change-transform hover:scale-[1.02] hover:-translate-y-1
+        ${mealData.recipe 
+          ? `bg-white border-l-4 ${getMealColor()} shadow-sm hover:shadow-lg rounded-lg overflow-hidden` 
+          : 'bg-gray-50 border-2 border-dashed border-gray-200 hover:border-purple-300 hover:bg-purple-50/30 rounded-lg p-2 sm:p-3'
         }
-      >
-        {/* Glass effect overlay */}
-        <div className="absolute inset-0 backdrop-blur-[1px] opacity-30 bg-gradient-to-br from-white/5 to-transparent"></div>
-        
-        <div className="relative">
-          {mealData.recipe ? (
-            <>
-              {/* Image on top - responsive height */}
-              <div className="w-full h-24 sm:h-32 overflow-hidden bg-gray-800 shadow-md">
-                {mealData.recipe.featuredImage ? (
-                  <Image 
-                    src={mealData.recipe.featuredImage} 
-                    alt={mealData.recipe.title}
-                    width={64}
-                    height={32}
-                    className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-700 to-gray-900 text-gray-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 sm:h-10 sm:w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
-                  </div>
-                )}
-                
-                {/* Meal label as an overlay on the image - improved for touch */}
-                <div className="absolute top-1 sm:top-2 left-1 sm:left-2 flex items-center">
-                  <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full bg-black/50 backdrop-blur-md text-white text-xs flex items-center border border-white/20">
-                    <span className="w-3.5 h-3.5 sm:w-4 sm:h-4 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 mr-1 sm:mr-1.5 flex items-center justify-center">
-                      <span className="scale-[65%] sm:scale-75">{icon}</span>
-                    </span>
-                    <span className="text-[10px] sm:text-xs">{mealLabel}</span>
-                  </span>
+      `}
+    >
+      {mealData.recipe ? (
+        <>
+          {/* Image Section - REDUCED HEIGHT */}
+          <div className="relative w-full h-20 sm:h-24 bg-gray-100 overflow-hidden">
+            {mealData.recipe.featuredImage ? (
+              <Image 
+                src={mealData.recipe.featuredImage} 
+                alt={mealData.recipe.title}
+                fill
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                loading="lazy"
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 sm:h-8 sm:w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+            )}
+            
+            {/* Meal Label Overlay - SMALLER SIZE */}
+            <div className="absolute top-1.5 left-1.5">
+              <div className="flex items-center px-1.5 py-0.5 bg-white/95 backdrop-blur-sm rounded-full shadow-sm border border-white/20">
+                <div className={`w-2.5 h-2.5 rounded-full ${getMealIconColor()} mr-1 flex items-center justify-center`}>
+                  <span className="scale-[0.4] text-white">{icon}</span>
                 </div>
-              </div>
-              
-              {/* Content below image - improved spacing for mobile */}
-              <div className="p-2 sm:p-3">
-                <h4 className="font-medium text-white group-hover:text-purple-200 transition mb-1.5 sm:mb-2 line-clamp-1 text-sm sm:text-base">
-                  {mealData.recipe.title}
-                </h4>
-                
-                <div className="flex flex-wrap gap-1">
-                  {mealData.recipe.category && (
-                    <span className="px-1.5 sm:px-2 py-0.5 bg-white/10 backdrop-blur-md text-white text-[10px] sm:text-xs rounded-full border border-white/20">
-                      {mealData.recipe.category}
-                    </span>
-                  )}
-                  {mealData.recipe.difficulty && (
-                    <span className={`px-1.5 sm:px-2 py-0.5 text-[10px] sm:text-xs rounded-full border ${
-                      mealData.recipe.difficulty === 'easy' 
-                        ? 'bg-green-900/40 text-green-300 border-green-700/30' 
-                        : mealData.recipe.difficulty === 'medium'
-                          ? 'bg-yellow-900/40 text-yellow-300 border-yellow-700/30'
-                          : 'bg-red-900/40 text-red-300 border-red-700/30'
-                    }`}>
-                      {mealData.recipe.difficulty}
-                    </span>
-                  )}
-                  {mealData.recipe.cookingTime && (
-                    <span className="px-1.5 sm:px-2 py-0.5 bg-blue-900/40 text-blue-300 text-[10px] sm:text-xs rounded-full border border-blue-700/30">
-                      {mealData.recipe.cookingTime} min
-                    </span>
-                  )}
-                </div>
-              </div>
-            </>
-          ) : (
-            <div className="flex flex-col items-center justify-center py-3 sm:py-6 text-gray-400 h-full">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gray-800/60 flex items-center justify-center mb-2 sm:mb-3 group-hover:bg-purple-900/30 transition-colors">
-                <span className="scale-75 sm:scale-100">{icon}</span>
-              </div>
-              <div className="flex items-center">
-                <Plus size={14} className="mr-1 sm:mr-1.5" />
-                <span className="text-xs sm:text-sm">Add {mealLabel}</span>
+                <span className="text-[10px] font-medium text-gray-700">{mealLabel}</span>
               </div>
             </div>
-          )}
+          </div>
+          
+          {/* Content Section - REDUCED PADDING AND FONT SIZES */}
+          <div className="p-2 sm:p-3">
+            <h4 className="font-semibold text-gray-900 text-xs sm:text-sm mb-1.5 line-clamp-1 group-hover:text-gray-700 transition-colors">
+              {mealData.recipe.title}
+            </h4>
+            
+            {/* Tags - SMALLER DESIGN */}
+            <div className="flex flex-wrap gap-1">
+              {mealData.recipe.category && (
+                <span className="px-1.5 py-0.5 bg-gray-100 text-gray-600 text-[10px] rounded-md font-medium">
+                  {mealData.recipe.category}
+                </span>
+              )}
+              {mealData.recipe.difficulty && (
+                <span className={`px-1.5 py-0.5 text-[10px] rounded-md font-medium ${
+                  mealData.recipe.difficulty === 'easy' 
+                    ? 'bg-green-100 text-green-700' 
+                    : mealData.recipe.difficulty === 'medium'
+                      ? 'bg-yellow-100 text-yellow-700'
+                      : 'bg-red-100 text-red-700'
+                }`}>
+                  {mealData.recipe.difficulty}
+                </span>
+              )}
+              {mealData.recipe.cookingTime && (
+                <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 text-[10px] rounded-md font-medium">
+                  {mealData.recipe.cookingTime}m
+                </span>
+              )}
+            </div>
+          </div>
+        </>
+      ) : (
+        /* Empty State - REDUCED SIZE */
+        <div className="flex flex-col items-center justify-center py-4 sm:py-5 text-gray-500 min-h-[80px]">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-200 flex items-center justify-center mb-2 group-hover:bg-purple-100 transition-colors">
+            <span className="text-gray-400 group-hover:text-purple-500 transition-colors scale-75">{icon}</span>
+          </div>
+          <div className="flex items-center text-xs sm:text-sm font-medium group-hover:text-purple-600 transition-colors">
+            <Plus size={12} className="mr-1" />
+            <span>Add {mealLabel}</span>
+          </div>
         </div>
-      </div>
-    );
-  };
+      )}
+    </div>
+  );
+});
+
+MealSlotItem.displayName = 'MealSlotItem';
