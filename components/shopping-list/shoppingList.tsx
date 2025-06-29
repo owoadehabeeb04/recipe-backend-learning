@@ -517,12 +517,10 @@ const ShoppingList: React.FC<ShoppingListProps> = ({ mealPlanId }) => {
         
         {/* Progress bar */}
         <div className="mt-3 mb-1 bg-black/20 h-2 rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-gradient-to-r from-green-400 to-teal-500"
-            //{ width: "0%" }}
-            // width: `${progress}%` }}
-            // duration: 0.5 }}
-          ></div>
+        <div 
+  className="h-full bg-gradient-to-r from-green-400 to-teal-500"
+  style={{ width: `${progress}%` }}
+></div>
         </div>
         <div className="flex justify-between items-center text-xs text-white/80">
           <span className="font-medium">{progress}% complete</span>
