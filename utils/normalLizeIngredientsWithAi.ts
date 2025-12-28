@@ -147,9 +147,9 @@ Important: Return ONLY the JSON object itself, with NO code block formatting, NO
     }
   } catch (error) {
     console.error("Error normalizing ingredients:", error);
-    toast.error("Failed to normalize ingredients. Please try again later.", {
-      id: loadingToastId
-    });
+    // toast.error("Failed to normalize ingredients. Please try again later.", {
+    //   id: loadingToastId
+    // });
     return createBasicNormalization(ingredients);
   }
 };

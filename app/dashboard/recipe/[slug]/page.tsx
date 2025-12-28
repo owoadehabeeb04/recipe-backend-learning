@@ -182,18 +182,18 @@ const RecipeDetailPage = () => {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center min-h-[70vh]">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-500"></div>
+      <div className="flex justify-center items-center min-h-[70vh] px-2">
+        <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-t-2 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   if (isError || !recipe) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[70vh]">
-        <div className="w-20 h-20 mb-6 rounded-full bg-gray-800/70 flex items-center justify-center">
+      <div className="flex flex-col items-center justify-center min-h-[70vh] px-4">
+        <div className="w-16 h-16 sm:w-20 sm:h-20 mb-4 sm:mb-6 rounded-full bg-card border border-border flex items-center justify-center">
           <svg
-            className="w-10 h-10 text-gray-500"
+            className="w-8 h-8 sm:w-10 sm:h-10 text-muted-foreground"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -206,13 +206,13 @@ const RecipeDetailPage = () => {
             ></path>
           </svg>
         </div>
-        <h2 className="text-2xl font-bold text-white mb-2">Recipe Not Found</h2>
-        <p className="text-gray-400 mb-6 text-center max-w-md">
+        <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-2 text-center">Recipe Not Found</h2>
+        <p className="text-muted-foreground mb-6 text-center max-w-md text-sm sm:text-base">
           We couldn't find the recipe you're looking for. It might have been
           removed or doesn't exist.
         </p>
         <Link href="/dashboard/all-recipes">
-          <button className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-white hover:from-purple-700 hover:to-pink-700 transition-all">
+          <button className="px-4 sm:px-6 py-2.5 sm:py-3 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-all text-sm sm:text-base">
             Browse All Recipes
           </button>
         </Link>
@@ -221,22 +221,22 @@ const RecipeDetailPage = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 md:px-8">
+    <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-6 md:py-8 md:px-8">
       <div
         //{ opacity: 0, y: 20 }}
         // opacity: 1, y: 0 }}
         // duration: 0.5 }}
       >
         {/* Breadcrumb Navigation */}
-        <div className="flex items-center text-sm text-gray-400 mb-6">
+        <div className="flex items-center text-xs sm:text-sm text-muted-foreground mb-4 sm:mb-6 flex-wrap gap-1 sm:gap-0">
           <Link
             href="/dashboard"
-            className="hover:text-white transition-colors"
+            className="hover:text-foreground transition-colors"
           >
             Dashboard
           </Link>
           <svg
-            className="w-4 h-4 mx-2"
+            className="w-3 h-3 sm:w-4 sm:h-4 mx-1 sm:mx-2"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -250,12 +250,12 @@ const RecipeDetailPage = () => {
           </svg>
           <Link
             href="/dashboard/all-recipes"
-            className="hover:text-white transition-colors"
+            className="hover:text-foreground transition-colors"
           >
             Recipes
           </Link>
           <svg
-            className="w-4 h-4 mx-2"
+            className="w-3 h-3 sm:w-4 sm:h-4 mx-1 sm:mx-2"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -267,13 +267,13 @@ const RecipeDetailPage = () => {
               d="M9 5l7 7-7 7"
             ></path>
           </svg>
-          <span className="text-white line-clamp-1 max-w-[200px]">
+          <span className="text-foreground line-clamp-1 max-w-[150px] sm:max-w-[200px]">
             {recipe.title}
           </span>
         </div>
 
         {/* Recipe Hero Section */}
-        <div className="relative rounded-3xl overflow-hidden mb-10">
+        <div className="relative rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden mb-6 sm:mb-8 md:mb-10">
           <div className="absolute inset-0">
             <Image
               src={recipe.featuredImage || "/placeholder-recipe.jpg"}
@@ -283,17 +283,17 @@ const RecipeDetailPage = () => {
               sizes="100vw"
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/70 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/60 to-black/40" />
           </div>
 
-          <div className="relative pt-32 pb-16 px-6 md:px-10 flex flex-col items-center text-center">
+          <div className="relative pt-20 sm:pt-24 md:pt-32 pb-8 sm:pb-12 md:pb-16 px-4 sm:px-6 md:px-10 flex flex-col items-center text-center">
             {/* changing published status  */}
             {currentUser?.role === "super_admin" && (
-              <div className="absolute top-4 right-4 z-10">
-                <div className="flex items-center gap-3">
+              <div className="absolute top-2 right-2 sm:top-4 sm:right-4 z-10">
+                <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 sm:gap-3">
                   <span
-                    className={`text-xs font-medium ${
-                      recipe?.isPublished ? "text-green-300" : "text-amber-300"
+                    className={`text-[10px] sm:text-xs font-medium ${
+                      recipe?.isPublished ? "text-green-400" : "text-amber-400"
                     }`}
                   >
                     {recipe?.isPublished ? "Published" : "Draft"}
@@ -303,23 +303,23 @@ const RecipeDetailPage = () => {
                   <button
                     onClick={handleTogglePublish}
                     disabled={isUpdating}
-                    className="relative inline-flex h-6 w-11 items-center rounded-full focus:outline-none focus:ring-2 focus:ring-purple-500/50"
+                    className="relative inline-flex h-5 w-9 sm:h-6 sm:w-11 items-center rounded-full focus:outline-none focus:ring-2 focus:ring-primary/50"
                     role="switch"
                     aria-checked={recipe?.isPublished || false}
                   >
                     <span
                       className={`${
                         isUpdating
-                          ? "bg-gray-600"
+                          ? "bg-muted"
                           : recipe?.isPublished
                             ? "bg-green-600"
                             : "bg-amber-600"
-                      } w-11 h-6 rounded-full transition-colors ease-in-out duration-200`}
+                      } w-9 h-5 sm:w-11 sm:h-6 rounded-full transition-colors ease-in-out duration-200`}
                     />
                     <span
                       className={`${
-                        recipe?.isPublished ? "translate-x-6" : "translate-x-1"
-                      } inline-block h-4 w-4 transform rounded-full bg-white transition ease-in-out duration-200 ${
+                        recipe?.isPublished ? "translate-x-4 sm:translate-x-6" : "translate-x-0.5 sm:translate-x-1"
+                      } inline-block h-4 w-4 transform rounded-full bg-primary-foreground transition ease-in-out duration-200 ${
                         isUpdating ? "opacity-70" : ""
                       }`}
                       aria-hidden="true"
@@ -329,7 +329,7 @@ const RecipeDetailPage = () => {
                     {isUpdating && (
                       <span className="absolute inset-0 flex items-center justify-center">
                         <svg
-                          className="animate-spin h-3 w-3 text-white"
+                          className="animate-spin h-2.5 w-2.5 sm:h-3 sm:w-3 text-primary-foreground"
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
                           viewBox="0 0 24 24"
@@ -352,11 +352,11 @@ const RecipeDetailPage = () => {
                     )}
                   </button>
 
-                  <div className="text-xs px-2 py-1 rounded-full bg-gray-800/60 border border-gray-700/50">
+                  <div className="text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full bg-card/80 backdrop-blur-sm border border-border">
                     {recipe?.isPublished ? (
-                      <div className="flex items-center gap-1 text-green-300">
+                      <div className="flex items-center gap-1 text-green-400">
                         <svg
-                          className="w-3 h-3"
+                          className="w-2.5 h-2.5 sm:w-3 sm:h-3"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -378,9 +378,9 @@ const RecipeDetailPage = () => {
                         Visible
                       </div>
                     ) : (
-                      <div className="flex items-center gap-1 text-amber-300">
+                      <div className="flex items-center gap-1 text-amber-400">
                         <svg
-                          className="w-3 h-3"
+                          className="w-2.5 h-2.5 sm:w-3 sm:h-3"
                           fill="none"
                           stroke="currentColor"
                           viewBox="0 0 24 24"
@@ -404,23 +404,23 @@ const RecipeDetailPage = () => {
             <div></div>
 
             <span
-              className={`px-3 py-1 mb-4 text-xs font-medium uppercase tracking-wider rounded-full bg-gradient-to-r ${
+              className={`px-2 sm:px-3 py-0.5 sm:py-1 mb-3 sm:mb-4 text-[10px] sm:text-xs font-medium uppercase tracking-wider rounded-full bg-gradient-to-r ${
                 difficultyColors[
                   recipe.difficulty as keyof typeof difficultyColors
                 ] || "from-amber-500 to-amber-700"
-              }`}
+              } text-white`}
             >
               {recipe.difficulty}
             </span>
 
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 max-w-3xl">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 sm:mb-6 max-w-3xl">
               {recipe.title}
             </h1>
 
-            <div className="flex flex-wrap gap-4 justify-center mb-6">
-              <div className="flex items-center px-3 py-1.5 rounded-full bg-gray-800/70 backdrop-blur-sm">
+            <div className="flex flex-wrap gap-2 sm:gap-3 md:gap-4 justify-center mb-4 sm:mb-6">
+              <div className="flex items-center px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
                 <svg
-                  className="w-4 h-4 text-gray-400 mr-1.5"
+                  className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white mr-1 sm:mr-1.5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -433,14 +433,14 @@ const RecipeDetailPage = () => {
                     d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                   ></path>
                 </svg>
-                <span className="text-white text-sm">
-                  {recipe.cookingTime} minutes
+                <span className="text-white text-xs sm:text-sm">
+                  {recipe.cookingTime} min
                 </span>
               </div>
 
-              <div className="flex items-center px-3 py-1.5 rounded-full bg-gray-800/70 backdrop-blur-sm">
+              <div className="flex items-center px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
                 <svg
-                  className="w-4 h-4 text-gray-400 mr-1.5"
+                  className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white mr-1 sm:mr-1.5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -453,30 +453,30 @@ const RecipeDetailPage = () => {
                     d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
                   ></path>
                 </svg>
-                <span className="text-white text-sm">
+                <span className="text-white text-xs sm:text-sm">
                   Serves {recipe.servings}
                 </span>
               </div>
 
               {recipe.averageRating && (
-                <div className="flex items-center px-3 py-1.5 rounded-full bg-gray-800/70 backdrop-blur-sm">
+                <div className="flex items-center px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
                   <svg
-                    className="w-4 h-4 text-yellow-500 mr-1.5"
+                    className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white mr-1 sm:mr-1.5"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8-2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                   </svg>
-                  <span className="text-white text-sm">
+                  <span className="text-white text-xs sm:text-sm">
                     {recipe.averageRating.toFixed(1)} Rating
                   </span>
                 </div>
               )}
 
-              <div className="flex items-center px-3 py-1.5 rounded-full bg-gray-800/70 backdrop-blur-sm">
+              <div className="flex items-center px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-white/10 backdrop-blur-sm border border-white/20">
                 <svg
-                  className="w-4 h-4 text-gray-400 mr-1.5"
+                  className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-white mr-1 sm:mr-1.5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -488,48 +488,48 @@ const RecipeDetailPage = () => {
                     d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"
                   ></path>
                 </svg>
-                <span className="text-white text-sm capitalize">
+                <span className="text-white text-xs sm:text-sm capitalize">
                   {recipe.category}
                 </span>
               </div>
             </div>
 
-            <p className="text-gray-300 max-w-2xl mb-8">{recipe.description}</p>
+            <p className="text-white/90 max-w-2xl mb-6 sm:mb-8 text-sm sm:text-base px-2">{recipe.description}</p>
 
-            <div className="flex items-center text-sm text-gray-400">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-0 text-xs sm:text-sm text-white/90">
               <div className="flex items-center">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white text-xs font-bold">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center text-white text-[10px] sm:text-xs font-bold">
                   {recipe?.adminDetails?.name.charAt(0).toUpperCase() ||
                     recipe?.userDetails?.name.charAt(0).toUpperCase() ||
                     ""}
                 </div>
-                <span className="ml-2">
+                <span className="ml-2 text-white">
                   By{" "}
                   {recipe?.adminDetails?.name ||
                     recipe?.userDetails?.name ||
                     "Chef"}
                 </span>
               </div>
-              <span className="mx-3">•</span>
-              <span>{formatDate(recipe.createdAt)}</span>
+              <span className="hidden sm:inline mx-3 text-white/60">•</span>
+              <span className="text-white/90">{formatDate(recipe.createdAt)}</span>
             </div>
           </div>
         </div>
 
         {/* Recipe Content */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
           {/* Left Side - Ingredients */}
           <div className="lg:col-span-1">
-            <div className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-xl font-bold text-white">Ingredients</h2>
+            <div className="bg-card backdrop-blur-sm border border-border rounded-xl sm:rounded-2xl p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-4 sm:mb-6">
+                <h2 className="text-lg sm:text-xl font-bold text-foreground">Ingredients</h2>
                 <div className="flex items-center">
                   <button
                     onClick={() => setServings(Math.max(1, servings - 1))}
-                    className="w-8 h-8 rounded-full bg-gray-700 hover:bg-gray-600 flex items-center justify-center"
+                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-muted hover:bg-muted/80 border border-border flex items-center justify-center transition-colors"
                   >
                     <svg
-                      className="w-4 h-4 text-white"
+                      className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-foreground"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -542,15 +542,15 @@ const RecipeDetailPage = () => {
                       ></path>
                     </svg>
                   </button>
-                  <span className="mx-3 text-white font-medium">
+                  <span className="mx-2 sm:mx-3 text-foreground font-medium text-sm sm:text-base">
                     {servings} servings
                   </span>
                   <button
                     onClick={() => setServings(servings + 1)}
-                    className="w-8 h-8 rounded-full bg-gray-700 hover:bg-gray-600 flex items-center justify-center"
+                    className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-muted hover:bg-muted/80 border border-border flex items-center justify-center transition-colors"
                   >
                     <svg
-                      className="w-4 h-4 text-white"
+                      className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-foreground"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -566,15 +566,15 @@ const RecipeDetailPage = () => {
                 </div>
               </div>
 
-              <ul className="space-y-3">
+              <ul className="space-y-2 sm:space-y-3">
                 {recipe.ingredients.map((ingredient, index) => (
                   <li
                     key={index}
-                    className="flex items-center pb-3 border-b border-gray-700 last:border-0"
+                    className="flex items-center pb-2 sm:pb-3 border-b border-border last:border-0"
                   >
-                    <div className="w-6 h-6 rounded-full bg-gradient-to-r from-purple-600/30 to-pink-600/30 flex items-center justify-center mr-3">
+                    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary/20 flex items-center justify-center mr-2 sm:mr-3 flex-shrink-0">
                       <svg
-                        className="w-3.5 h-3.5 text-purple-400"
+                        className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-primary"
                         fill="currentColor"
                         viewBox="0 0 20 20"
                       >
@@ -585,7 +585,7 @@ const RecipeDetailPage = () => {
                         ></path>
                       </svg>
                     </div>
-                    <span className="text-white">
+                    <span className="text-foreground text-sm sm:text-base">
                       {adjustServingQuantity(ingredient, recipe.servings)}{" "}
                       {ingredient.unit} {ingredient.name}
                     </span>
@@ -596,7 +596,7 @@ const RecipeDetailPage = () => {
               {/* Print button */}
               <button
                 onClick={() => window.print()}
-                className="mt-6 w-full py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-xl flex items-center justify-center transition-colors"
+                className="mt-4 sm:mt-6 w-full py-2.5 sm:py-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg sm:rounded-xl flex items-center justify-center transition-colors text-sm sm:text-base"
               >
                 <svg
                   className="w-4 h-4 mr-2"
@@ -619,29 +619,29 @@ const RecipeDetailPage = () => {
           {/* Nutritional Information Section */}
           {recipe.nutrition && (
             <div className="lg:col-span-1 order-3 lg:order-none">
-              <div className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6 mt-8 lg:mt-0">
-                <h2 className="text-xl font-bold text-white mb-6">
+              <div className="bg-card backdrop-blur-sm border border-border rounded-xl sm:rounded-2xl p-4 sm:p-6 mt-6 sm:mt-8 lg:mt-0">
+                <h2 className="text-lg sm:text-xl font-bold text-foreground mb-4 sm:mb-6">
                   Nutritional Information
                 </h2>
 
                 {/* Calories */}
-                <div className="mb-6">
+                <div className="mb-4 sm:mb-6">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-lg font-medium text-white">
+                    <span className="text-base sm:text-lg font-medium text-foreground">
                       {recipe.nutrition.calories} calories
                     </span>
-                    <span className="text-sm text-gray-400">per serving</span>
+                    <span className="text-xs sm:text-sm text-muted-foreground">per serving</span>
                   </div>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   {/* Protein */}
                   <div>
                     <div className="flex justify-between mb-1">
-                      <span className="font-medium text-purple-400">
+                      <span className="font-medium text-primary text-sm sm:text-base">
                         Protein
                       </span>
-                      <span className="text-gray-300">
+                      <span className="text-foreground text-xs sm:text-sm">
                         {recipe.nutrition.protein}g (
                         {Math.round(
                           ((recipe.nutrition.protein * 4) /
@@ -653,9 +653,9 @@ const RecipeDetailPage = () => {
                         %)
                       </span>
                     </div>
-                    <div className="w-full bg-gray-700 rounded-full h-2.5">
+                    <div className="w-full bg-muted rounded-full h-2 sm:h-2.5">
                       <div
-                        className="bg-purple-600 h-2.5 rounded-full"
+                        className="bg-primary h-2 sm:h-2.5 rounded-full transition-all"
                         style={{
                           width: `${Math.round(
                             ((recipe.nutrition.protein * 4) /
@@ -672,8 +672,8 @@ const RecipeDetailPage = () => {
                   {/* Carbs */}
                   <div>
                     <div className="flex justify-between mb-1">
-                      <span className="font-medium text-blue-400">Carbs</span>
-                      <span className="text-gray-300">
+                      <span className="font-medium text-primary text-sm sm:text-base">Carbs</span>
+                      <span className="text-foreground text-xs sm:text-sm">
                         {recipe.nutrition.carbs}g (
                         {Math.round(
                           ((recipe.nutrition.carbs * 4) /
@@ -685,9 +685,9 @@ const RecipeDetailPage = () => {
                         %)
                       </span>
                     </div>
-                    <div className="w-full bg-gray-700 rounded-full h-2.5">
+                    <div className="w-full bg-muted rounded-full h-2 sm:h-2.5">
                       <div
-                        className="bg-blue-500 h-2.5 rounded-full"
+                        className="bg-primary h-2 sm:h-2.5 rounded-full transition-all"
                         style={{
                           width: `${Math.round(
                             ((recipe.nutrition.carbs * 4) /
@@ -704,8 +704,8 @@ const RecipeDetailPage = () => {
                   {/* Fat */}
                   <div>
                     <div className="flex justify-between mb-1">
-                      <span className="font-medium text-amber-400">Fat</span>
-                      <span className="text-gray-300">
+                      <span className="font-medium text-primary text-sm sm:text-base">Fat</span>
+                      <span className="text-foreground text-xs sm:text-sm">
                         {recipe.nutrition.fat}g (
                         {Math.round(
                           ((recipe.nutrition.fat * 9) /
@@ -717,9 +717,9 @@ const RecipeDetailPage = () => {
                         %)
                       </span>
                     </div>
-                    <div className="w-full bg-gray-700 rounded-full h-2.5">
+                    <div className="w-full bg-muted rounded-full h-2 sm:h-2.5">
                       <div
-                        className="bg-amber-500 h-2.5 rounded-full"
+                        className="bg-primary h-2 sm:h-2.5 rounded-full transition-all"
                         style={{
                           width: `${Math.round(
                             ((recipe.nutrition.fat * 9) /
@@ -734,11 +734,11 @@ const RecipeDetailPage = () => {
                   </div>
 
                   {/* Additional nutrition info in a grid */}
-                  <div className="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-gray-700">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-border">
                     {recipe.nutrition.sugar !== undefined && (
                       <div>
-                        <span className="text-sm text-gray-400">Sugar</span>
-                        <p className="font-medium text-white">
+                        <span className="text-xs sm:text-sm text-muted-foreground">Sugar</span>
+                        <p className="font-medium text-foreground text-sm sm:text-base">
                           {recipe.nutrition.sugar}g
                         </p>
                       </div>
@@ -746,8 +746,8 @@ const RecipeDetailPage = () => {
 
                     {recipe.nutrition.fiber !== undefined && (
                       <div>
-                        <span className="text-sm text-gray-400">Fiber</span>
-                        <p className="font-medium text-white">
+                        <span className="text-xs sm:text-sm text-muted-foreground">Fiber</span>
+                        <p className="font-medium text-foreground text-sm sm:text-base">
                           {recipe.nutrition.fiber}g
                         </p>
                       </div>
@@ -755,7 +755,7 @@ const RecipeDetailPage = () => {
                   </div>
                 </div>
 
-                <div className="mt-4 text-xs text-gray-500">
+                <div className="mt-3 sm:mt-4 text-[10px] sm:text-xs text-muted-foreground">
                   <p>* Nutritional values are estimated based on ingredients</p>
                 </div>
               </div>
@@ -764,12 +764,12 @@ const RecipeDetailPage = () => {
 
           {/* Right Side - Instructions */}
           <div className="lg:col-span-2">
-            <div className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
-              <h2 className="text-xl font-bold text-white mb-6">
+            <div className="bg-card backdrop-blur-sm border border-border rounded-xl sm:rounded-2xl p-4 sm:p-6">
+              <h2 className="text-lg sm:text-xl font-bold text-foreground mb-4 sm:mb-6">
                 Instructions
               </h2>
 
-              <ol className="space-y-6">
+              <ol className="space-y-4 sm:space-y-6">
                 {recipe.steps.map((step, index) => (
                   <li
                     key={index}
@@ -778,13 +778,13 @@ const RecipeDetailPage = () => {
                     // duration: 0.3, delay: index * 0.05 }}
                     className="flex"
                   >
-                    <div className="mr-4">
-                      <span className="flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-medium">
+                    <div className="mr-3 sm:mr-4 flex-shrink-0">
+                      <span className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary text-primary-foreground font-medium text-sm sm:text-base">
                         {index + 1}
                       </span>
                     </div>
-                    <div className="pt-1">
-                      <p className="text-gray-200">{step}</p>
+                    <div className="pt-0.5 sm:pt-1 flex-1">
+                      <p className="text-foreground text-sm sm:text-base leading-relaxed">{step}</p>
                     </div>
                   </li>
                 ))}
@@ -793,10 +793,10 @@ const RecipeDetailPage = () => {
               {/* Tips Section */}
 
               {recipe?.tips && (
-                <div className="mt-10 pt-8 border-t border-gray-700">
-                  <div className="flex items-center mb-4">
+                <div className="mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-border">
+                  <div className="flex items-center mb-3 sm:mb-4">
                     <svg
-                      className="w-5 h-5 text-amber-400 mr-2"
+                      className="w-4 h-4 sm:w-5 sm:h-5 text-primary mr-2"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -806,11 +806,11 @@ const RecipeDetailPage = () => {
                         clipRule="evenodd"
                       ></path>
                     </svg>
-                    <h3 className="text-lg font-medium text-white">
+                    <h3 className="text-base sm:text-lg font-medium text-foreground">
                       Chef's Tips
                     </h3>
                   </div>
-                  <ul className="space-y-2 text-gray-300">
+                  <ul className="space-y-2 sm:space-y-3 text-foreground">
                     {recipe.tips &&
                       recipe.tips.map((tip, index) => (
                         <li
@@ -821,13 +821,13 @@ const RecipeDetailPage = () => {
                           className="flex items-start"
                         >
                           <svg
-                            className="w-4 h-4 text-amber-400 mt-1 mr-2"
+                            className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary mt-0.5 sm:mt-1 mr-2 flex-shrink-0"
                             fill="currentColor"
                             viewBox="0 0 20 20"
                           >
                             <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8-2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
                           </svg>
-                          <span>{tip}</span>
+                          <span className="text-sm sm:text-base">{tip}</span>
                         </li>
                       ))}
                   </ul>

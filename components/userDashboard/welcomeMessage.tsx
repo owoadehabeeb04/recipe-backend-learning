@@ -29,13 +29,13 @@ const WelcomeMessage: React.FC<WelcomeMessageProps> = ({ name }) => {
       //{ opacity: 0, y: -20 }}
       // opacity: 1, y: 0 }}
       // duration: 0.5 }}
-      className="bg-gradient-to-r from-primary-light to-primary rounded-xl p-8 text-white shadow-lg"
+      className="bg-gradient-to-r from-primary to-primary/80 rounded-xl p-4 sm:p-6 md:p-8 text-primary-foreground shadow-lg"
     >
-      <h1 className="text-3xl font-bold mb-2">
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold mb-2">
         {getGreeting()}, {name}! 👋
       </h1>
-      <p className="text-lg opacity-90">Ready to cook something delicious today?</p>
-      <p className="mt-4 italic text-sm opacity-80">"{randomQuote}"</p>
+      <p className="text-sm sm:text-base md:text-lg opacity-90">Ready to cook something delicious today?</p>
+      <p className="mt-3 sm:mt-4 italic text-xs sm:text-sm opacity-80">"{randomQuote}"</p>
     </div>
   );
 };

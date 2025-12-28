@@ -304,30 +304,30 @@ const CreateRecipePage = () => {
   };
 
   return (
-    <div className="pb-20">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-foreground">Create Recipe</h1>
-        <p className="text-muted-foreground mt-2">
+    <div className="pb-20 px-2 sm:px-0">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-foreground">Create Recipe</h1>
+        <p className="text-muted-foreground mt-2 text-sm sm:text-base">
           Share your culinary masterpiece with the world
         </p>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
         {/* Basic Info Section */}
         <Card className="h-full">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3">
-              <span className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold">
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="flex items-center gap-2 sm:gap-3 text-lg sm:text-xl">
+              <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs sm:text-sm font-semibold">
                 1
               </span>
               Basic Information
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <CardContent className="space-y-4 sm:space-y-6 p-4 sm:p-6 pt-0">
+            <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
               <div className="md:col-span-2 space-y-2">
-                <div className="flex justify-between items-center">
-                  <Label htmlFor="title">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
+                  <Label htmlFor="title" className="text-sm sm:text-base">
                     Recipe Title <span className="text-destructive">*</span>
                   </Label>
                   {showGenerateButton && (
@@ -337,17 +337,19 @@ const CreateRecipePage = () => {
                       size="sm"
                       onClick={handleGenerateRecipe}
                       disabled={isGenerating}
-                      className="gap-2"
+                      className="gap-1.5 sm:gap-2 text-xs sm:text-sm w-full sm:w-auto"
                     >
                       {isGenerating ? (
                         <>
-                          <div className="w-4 h-4 border-2 border-t-transparent border-current rounded-full animate-spin"></div>
-                          Generating...
+                          <div className="w-3.5 h-3.5 sm:w-4 sm:h-4 border-2 border-t-transparent border-current rounded-full animate-spin"></div>
+                          <span className="hidden sm:inline">Generating...</span>
+                          <span className="sm:hidden">Generating</span>
                         </>
                       ) : (
                         <>
-                          <Sparkles className="w-4 h-4" />
-                          Generate Full Recipe
+                          <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                          <span className="hidden sm:inline">Generate Full Recipe</span>
+                          <span className="sm:hidden">Generate</span>
                         </>
                       )}
                     </Button>
@@ -359,23 +361,24 @@ const CreateRecipePage = () => {
                     required: "Recipe title is required"
                   })}
                   placeholder="Enter recipe title (e.g., Creamy Garlic Parmesan Pasta)"
+                  className="text-sm sm:text-base"
                 />
                 {errors.title && (
-                  <p className="text-destructive text-sm mt-1">
+                  <p className="text-destructive text-xs sm:text-sm mt-1">
                     {errors.title.message as string}
                   </p>
                 )}
                 {watchedTitle &&
                   watchedTitle.length > 0 &&
                   watchedTitle.length < 4 && (
-                    <p className="text-muted-foreground text-sm mt-1">
+                    <p className="text-muted-foreground text-xs sm:text-sm mt-1">
                       Continue typing to enable AI recipe generation
                     </p>
                   )}
               </div>
 
               <div className="md:col-span-2 space-y-2">
-                <Label htmlFor="description">
+                <Label htmlFor="description" className="text-sm sm:text-base">
                   Description <span className="text-destructive">*</span>
                 </Label>
                 <Textarea
@@ -385,16 +388,17 @@ const CreateRecipePage = () => {
                   })}
                   rows={4}
                   placeholder="Describe your recipe"
+                  className="text-sm sm:text-base"
                 />
                 {errors.description && (
-                  <p className="text-destructive text-sm mt-1">
+                  <p className="text-destructive text-xs sm:text-sm mt-1">
                     {errors.description.message as string}
                   </p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="cookingTime">
+                <Label htmlFor="cookingTime" className="text-sm sm:text-base">
                   Cooking Time (minutes){" "}
                   <span className="text-destructive">*</span>
                 </Label>
@@ -405,16 +409,17 @@ const CreateRecipePage = () => {
                   })}
                   type="number"
                   placeholder="30"
+                  className="text-sm sm:text-base"
                 />
                 {errors.cookingTime && (
-                  <p className="text-destructive text-sm mt-1">
+                  <p className="text-destructive text-xs sm:text-sm mt-1">
                     {errors.cookingTime.message as string}
                   </p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="servings">
+                <Label htmlFor="servings" className="text-sm sm:text-base">
                   Servings <span className="text-destructive">*</span>
                 </Label>
                 <Input
@@ -424,20 +429,21 @@ const CreateRecipePage = () => {
                   })}
                   type="number"
                   placeholder="4"
+                  className="text-sm sm:text-base"
                 />
                 {errors.servings && (
-                  <p className="text-destructive text-sm mt-1">
+                  <p className="text-destructive text-xs sm:text-sm mt-1">
                     {errors.servings.message as string}
                   </p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="difficulty">Difficulty</Label>
+                <Label htmlFor="difficulty" className="text-sm sm:text-base">Difficulty</Label>
                 <select
                   id="difficulty"
                   {...register("difficulty")}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="flex h-9 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                   <option value="easy">Easy</option>
                   <option value="medium">Medium</option>
@@ -446,7 +452,7 @@ const CreateRecipePage = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="category">
+                <Label htmlFor="category" className="text-sm sm:text-base">
                   Category <span className="text-destructive">*</span>
                 </Label>
                 <select
@@ -454,7 +460,7 @@ const CreateRecipePage = () => {
                   {...register("category", {
                     required: "Category is required"
                   })}
-                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  className="flex h-9 sm:h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                   <option value="">Select a category</option>
                   {categoryOptions.map((option) => (
@@ -464,19 +470,19 @@ const CreateRecipePage = () => {
                   ))}
                 </select>
                 {errors.category && (
-                  <p className="text-destructive text-sm mt-1">
+                  <p className="text-destructive text-xs sm:text-sm mt-1">
                     {errors.category.message as string}
                   </p>
                 )}
               </div>
 
               <div className="md:col-span-2 space-y-2">
-                <Label>Featured Image</Label>
-                <div className="flex flex-col space-y-4">
-                  <div className="flex items-start gap-4">
-                    <label className="flex flex-col items-center justify-center px-4 py-6 border-2 border-dashed border-border rounded-lg cursor-pointer hover:bg-accent transition-colors w-full">
-                      <Upload className="w-8 h-8 text-muted-foreground mb-2" />
-                      <span className="text-sm text-muted-foreground">
+                <Label className="text-sm sm:text-base">Featured Image</Label>
+                <div className="flex flex-col space-y-3 sm:space-y-4">
+                  <div className="flex flex-col sm:flex-row items-start gap-3 sm:gap-4">
+                    <label className="flex flex-col items-center justify-center px-3 sm:px-4 py-4 sm:py-6 border-2 border-dashed border-border rounded-lg cursor-pointer hover:bg-accent transition-colors w-full sm:flex-1">
+                      <Upload className="w-6 h-6 sm:w-8 sm:h-8 text-muted-foreground mb-2" />
+                      <span className="text-xs sm:text-sm text-muted-foreground text-center">
                         Click to upload an image
                       </span>
                       <input
@@ -489,10 +495,10 @@ const CreateRecipePage = () => {
                     </label>
 
                     {previewImage && previewImage.startsWith("http") && (
-                      <div className="relative w-32 h-32 rounded-lg overflow-hidden border border-border group flex-shrink-0">
+                      <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-lg overflow-hidden border border-border group flex-shrink-0">
                         {(isUploading || isGeneratingImage) && (
                           <div className="absolute inset-0 flex items-center justify-center bg-background/80 z-10">
-                            <div className="w-6 h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+                            <div className="w-5 h-5 sm:w-6 sm:h-6 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
                           </div>
                         )}
                         <Image
@@ -511,9 +517,9 @@ const CreateRecipePage = () => {
                               setPreviewImage("");
                               setValue("featuredImage", "");
                             }}
-                            className="h-8 w-8"
+                            className="h-7 w-7 sm:h-8 sm:w-8"
                           >
-                            <X className="h-4 w-4" />
+                            <X className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                           </Button>
                         </div>
                       </div>
@@ -527,31 +533,31 @@ const CreateRecipePage = () => {
 
         {/* Ingredients Section */}
         <Card className="h-full">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3">
-              <span className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold">
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="flex items-center gap-2 sm:gap-3 text-lg sm:text-xl">
+              <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs sm:text-sm font-semibold">
                 2
               </span>
               Ingredients
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6 pt-0">
             {ingredients.map((ingredient, index) => (
               <div
                 key={index}
-                className="space-y-3 p-4 border border-border rounded-lg"
+                className="space-y-3 p-3 sm:p-4 border border-border rounded-lg"
               >
                 <div className="flex items-center gap-2 mb-2">
                   <div className="h-px bg-border flex-grow"></div>
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-xs sm:text-sm text-muted-foreground">
                     Ingredient {index + 1}
                   </span>
                   <div className="h-px bg-border flex-grow"></div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-                  <div className="md:col-span-2 space-y-2">
-                    <Label>Name</Label>
+                <div className="grid grid-cols-1 sm:grid-cols-5 gap-3 sm:gap-4">
+                  <div className="sm:col-span-2 space-y-1.5 sm:space-y-2">
+                    <Label className="text-xs sm:text-sm">Name</Label>
                     <Input
                       type="text"
                       value={ingredient.name}
@@ -559,11 +565,12 @@ const CreateRecipePage = () => {
                         updateIngredient(index, "name", e.target.value)
                       }
                       placeholder="Ingredient name"
+                      className="text-sm sm:text-base"
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label>Quantity</Label>
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <Label className="text-xs sm:text-sm">Quantity</Label>
                     <Input
                       type="text"
                       value={ingredient.quantity}
@@ -571,11 +578,12 @@ const CreateRecipePage = () => {
                         updateIngredient(index, "quantity", e.target.value)
                       }
                       placeholder="Amount"
+                      className="text-sm sm:text-base"
                     />
                   </div>
 
-                  <div className="space-y-2">
-                    <Label>Unit</Label>
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <Label className="text-xs sm:text-sm">Unit</Label>
                     <Input
                       type="text"
                       value={ingredient.unit}
@@ -583,18 +591,20 @@ const CreateRecipePage = () => {
                         updateIngredient(index, "unit", e.target.value)
                       }
                       placeholder="g, ml, tbsp"
+                      className="text-sm sm:text-base"
                     />
                   </div>
 
-                  <div className="flex items-end">
+                  <div className="flex items-end sm:justify-end">
                     <Button
                       type="button"
                       variant="destructive"
                       size="icon"
                       onClick={() => removeIngredient(index)}
                       disabled={ingredients.length === 1}
+                      className="h-9 w-9 sm:h-10 sm:w-10"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                     </Button>
                   </div>
                 </div>
@@ -605,7 +615,7 @@ const CreateRecipePage = () => {
               type="button"
               variant="outline"
               onClick={addIngredient}
-              className="w-full"
+              className="w-full text-sm sm:text-base"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Ingredient
@@ -622,30 +632,30 @@ const CreateRecipePage = () => {
 
         {/* Steps Section */}
         <Card className="h-full">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3">
-              <span className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold">
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="flex items-center gap-2 sm:gap-3 text-lg sm:text-xl">
+              <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs sm:text-sm font-semibold">
                 3
               </span>
               Preparation Steps
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6 pt-0">
             {steps.map((step, index) => (
               <div
                 key={index}
-                className="space-y-3 p-4 border border-border rounded-lg"
+                className="space-y-3 p-3 sm:p-4 border border-border rounded-lg"
               >
                 <div className="flex items-center gap-2 mb-2">
                   <div className="h-px bg-border flex-grow"></div>
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-xs sm:text-sm text-muted-foreground">
                     Step {index + 1}
                   </span>
                   <div className="h-px bg-border flex-grow"></div>
                 </div>
 
-                <div className="flex gap-4">
-                  <div className="w-10 h-10 rounded-full bg-muted flex-shrink-0 flex items-center justify-center text-foreground font-semibold">
+                <div className="flex gap-2 sm:gap-4">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-muted flex-shrink-0 flex items-center justify-center text-foreground font-semibold text-sm sm:text-base">
                     {index + 1}
                   </div>
 
@@ -655,6 +665,7 @@ const CreateRecipePage = () => {
                       onChange={(e) => updateStep(index, e.target.value)}
                       placeholder="Describe this step"
                       rows={3}
+                      className="text-sm sm:text-base"
                     />
                   </div>
 
@@ -664,9 +675,9 @@ const CreateRecipePage = () => {
                     size="icon"
                     onClick={() => removeStep(index)}
                     disabled={steps.length === 1}
-                    className="self-start"
+                    className="self-start h-9 w-9 sm:h-10 sm:w-10"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </Button>
                 </div>
               </div>
@@ -676,7 +687,7 @@ const CreateRecipePage = () => {
               type="button"
               variant="outline"
               onClick={addStep}
-              className="w-full"
+              className="w-full text-sm sm:text-base"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Step
@@ -686,31 +697,31 @@ const CreateRecipePage = () => {
 
         {/* Tips Section */}
         <Card className="h-full">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-3">
-              <span className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-semibold">
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="flex items-center gap-2 sm:gap-3 text-lg sm:text-xl">
+              <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs sm:text-sm font-semibold">
                 4
               </span>
               Chef's Tips
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6 pt-0">
             {tips.map((tip, index) => (
               <div
                 key={index}
-                className="space-y-3 p-4 border border-border rounded-lg"
+                className="space-y-3 p-3 sm:p-4 border border-border rounded-lg"
               >
                 <div className="flex items-center gap-2 mb-2">
                   <div className="h-px bg-border flex-grow"></div>
-                  <span className="text-sm text-muted-foreground">
+                  <span className="text-xs sm:text-sm text-muted-foreground">
                     Tip {index + 1}
                   </span>
                   <div className="h-px bg-border flex-grow"></div>
                 </div>
 
-                <div className="flex gap-4">
-                  <div className="w-10 h-10 rounded-full bg-muted flex-shrink-0 flex items-center justify-center">
-                    <Sparkles className="w-5 h-5 text-foreground" />
+                <div className="flex gap-2 sm:gap-4">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-muted flex-shrink-0 flex items-center justify-center">
+                    <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-foreground" />
                   </div>
 
                   <div className="flex-grow">
@@ -719,6 +730,7 @@ const CreateRecipePage = () => {
                       onChange={(e) => updateTip(index, e.target.value)}
                       placeholder="Share a helpful tip about this recipe"
                       rows={2}
+                      className="text-sm sm:text-base"
                     />
                   </div>
 
@@ -728,9 +740,9 @@ const CreateRecipePage = () => {
                     size="icon"
                     onClick={() => removeTip(index)}
                     disabled={tips.length === 1}
-                    className="self-start"
+                    className="self-start h-9 w-9 sm:h-10 sm:w-10"
                   >
-                    <Trash2 className="h-4 w-4" />
+                    <Trash2 className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                   </Button>
                 </div>
               </div>
@@ -740,7 +752,7 @@ const CreateRecipePage = () => {
               type="button"
               variant="outline"
               onClick={addTip}
-              className="w-full"
+              className="w-full text-sm sm:text-base"
             >
               <Plus className="w-4 h-4 mr-2" />
               Add Tip
@@ -760,14 +772,15 @@ const CreateRecipePage = () => {
 
         {user?.role === "user" && (
           <Card>
-            <CardContent className="pt-6">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <Label className="text-base">Make this recipe private?</Label>
+            <CardContent className="pt-4 sm:pt-6 p-4 sm:p-6">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                <Label className="text-sm sm:text-base">Make this recipe private?</Label>
                 <div className="flex gap-2">
                   <Button
                     type="button"
                     variant={isPrivate ? "default" : "outline"}
                     onClick={() => setIsPrivate(true)}
+                    className="text-sm sm:text-base"
                   >
                     Yes
                   </Button>
@@ -775,12 +788,13 @@ const CreateRecipePage = () => {
                     type="button"
                     variant={!isPrivate ? "default" : "outline"}
                     onClick={() => setIsPrivate(false)}
+                    className="text-sm sm:text-base"
                   >
                     No
                   </Button>
                 </div>
               </div>
-              <p className="text-sm text-muted-foreground mt-2">
+              <p className="text-xs sm:text-sm text-muted-foreground mt-2">
                 {isPrivate ? "Only visible to you" : "Visible to everyone"}
               </p>
             </CardContent>
@@ -793,12 +807,13 @@ const CreateRecipePage = () => {
             type="submit"
             disabled={isSubmitting}
             size="lg"
-            className="min-w-[200px]"
+            className="w-full sm:w-auto sm:min-w-[200px] text-sm sm:text-base"
           >
             {isSubmitting ? (
               <>
                 <div className="w-4 h-4 border-2 border-t-transparent border-current rounded-full animate-spin mr-2"></div>
-                Creating Recipe...
+                <span className="hidden sm:inline">Creating Recipe...</span>
+                <span className="sm:hidden">Creating...</span>
               </>
             ) : (
               <>

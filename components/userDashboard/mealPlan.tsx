@@ -28,23 +28,24 @@ const MealPlanPreview: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-3 sm:space-y-4">
       {mealPlan.slice(0, 2).map((day) => (
-        <div key={day.day} className="border-b pb-3 last:border-b-0 last:pb-0">
-          <h3 className="font-medium text-gray-700 mb-2">{day.day}</h3>
+        <div key={day.day} className="border-b border-border pb-3 last:border-b-0 last:pb-0">
+          <h3 className="font-medium text-foreground mb-2 text-sm sm:text-base">{day.day}</h3>
           {day.meals.map((meal) => (
             <div key={meal.id} className="flex items-center mb-2 last:mb-0">
-              <div className="relative w-12 h-12 rounded-full overflow-hidden mr-3">
+              <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden mr-2 sm:mr-3 flex-shrink-0">
                 <Image 
                   src={meal.image} 
                   alt={meal.name}
-                  layout="fill" 
-                  objectFit="cover"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 40px, 48px"
                 />
               </div>
-              <div>
-                <p className="text-sm font-medium">{meal.name}</p>
-                <p className="text-xs text-gray-500">{meal.type}</p>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs sm:text-sm font-medium text-foreground truncate">{meal.name}</p>
+                <p className="text-[10px] sm:text-xs text-muted-foreground">{meal.type}</p>
               </div>
             </div>
           ))}

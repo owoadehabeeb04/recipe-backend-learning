@@ -243,15 +243,15 @@ const CookingController: React.FC<CookingControllerProps> = ({
 
   if (isLoading && cookingStatus === 'not_started') {
     return (
-      <div className="flex justify-center p-6 bg-gray-800/50 backdrop-blur-sm rounded-xl border border-white/10 mt-6">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500"></div>
+      <div className="flex justify-center p-4 sm:p-6 bg-card backdrop-blur-sm rounded-xl border border-border mt-4 sm:mt-6">
+        <div className="animate-spin rounded-full h-6 w-6 sm:h-8 sm:w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   return (
-    <div className="p-6 bg-gray-800/50 backdrop-blur-sm rounded-xl border border-white/10 mt-6">
-      <h3 className="text-xl font-bold text-white mb-4">Cooking Tracker</h3>
+    <div className="p-4 sm:p-6 bg-card backdrop-blur-sm rounded-xl border border-border mt-4 sm:mt-6">
+      <h3 className="text-lg sm:text-xl font-bold text-foreground mb-3 sm:mb-4">Cooking Tracker</h3>
 
         {/* Not started state */}
         {cookingStatus === 'not_started' && (
@@ -262,22 +262,22 @@ const CookingController: React.FC<CookingControllerProps> = ({
              //  opacity: 0 }}
             className="flex flex-col items-center"
           >
-            <div className="text-center mb-6">
-              <svg className="w-20 h-20 mx-auto mb-3 text-purple-500/70" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="text-center mb-4 sm:mb-6">
+              <svg className="w-16 h-16 sm:w-20 sm:h-20 mx-auto mb-2 sm:mb-3 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
               </svg>
-              <h4 className="text-lg font-medium text-white mb-2">Ready to cook {recipeName}?</h4>
-              <p className="text-gray-300 text-sm mb-4">
+              <h4 className="text-base sm:text-lg font-medium text-foreground mb-2">Ready to cook {recipeName}?</h4>
+              <p className="text-muted-foreground text-xs sm:text-sm mb-3 sm:mb-4 px-2">
                 Track your cooking progress and become a verified cook!
               </p>
               <button
                 onClick={handleStartCooking}
                 disabled={isLoading}
-                className="px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-full font-medium hover:from-purple-700 hover:to-pink-700 transition-all transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 sm:px-8 py-2.5 sm:py-3 bg-primary text-primary-foreground rounded-full font-medium hover:bg-primary/90 transition-all transform hover:scale-105 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base"
               >
                 {isLoading ? (
                   <div className="flex items-center">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    <div className="animate-spin rounded-full h-3.5 w-3.5 sm:h-4 sm:w-4 border-b-2 border-primary-foreground mr-2"></div>
                     Starting...
                   </div>
                 ) : (
@@ -296,49 +296,49 @@ const CookingController: React.FC<CookingControllerProps> = ({
             // opacity: 1 }}
              //  opacity: 0 }}
           >
-            <div className="bg-gradient-to-br from-purple-900/40 to-pink-900/40 rounded-xl p-4 mb-6 border border-purple-500/20">
-              <div className="flex items-center justify-between mb-3">
+            <div className="bg-primary/10 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 border border-primary/30">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0 mb-3">
                 <div className="flex items-center">
-                  <svg className="w-5 h-5 text-purple-400 animate-pulse mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 sm:w-5 sm:h-5 text-primary animate-pulse mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                   </svg>
-                  <h4 className="text-lg font-medium text-white">Cooking in Progress</h4>
+                  <h4 className="text-base sm:text-lg font-medium text-foreground">Cooking in Progress</h4>
                 </div>
-                <div className="text-sm text-purple-300">
+                <div className="text-xs sm:text-sm text-primary">
                   Time: {formattedTime}
                 </div>
               </div>
 
               {/* Progress bar if tracking steps */}
               {totalSteps > 0 && (
-                <div className="mb-4">
-                  <div className="flex justify-between text-xs text-gray-300 mb-1">
+                <div className="mb-3 sm:mb-4">
+                  <div className="flex justify-between text-[10px] sm:text-xs text-muted-foreground mb-1">
                     <span>Step {currentStep}/{totalSteps}</span>
                     <span>{cookingProgress}% complete</span>
                   </div>
-                  <div className="h-2 bg-gray-700 rounded-full overflow-hidden">
+                  <div className="h-1.5 sm:h-2 bg-muted rounded-full overflow-hidden">
                     <div 
-                      className="h-full bg-gradient-to-r from-purple-500 to-pink-500 transition-all duration-500 ease-out" 
+                      className="h-full bg-primary transition-all duration-500 ease-out" 
                       style={{ width: `${cookingProgress}%` }}
                     ></div>
                   </div>
                 </div>
               )}
               
-              <p className="text-gray-300 text-sm mb-4">
+              <p className="text-muted-foreground text-xs sm:text-sm mb-3 sm:mb-4">
                 You're currently cooking this recipe. Mark it as complete when you're done!
               </p>
 
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                 <button 
                   onClick={() => setShowCompletionForm(true)}
-                  className="flex-1 px-4 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 transition-all"
+                  className="flex-1 px-3 sm:px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all text-sm sm:text-base"
                 >
                   I'm Done Cooking
                 </button>
                 <button
                   onClick={() => setShowAbandonDialog(true)}
-                  className="px-4 py-2 bg-gray-700 text-gray-300 rounded-lg hover:bg-gray-600 transition-all"
+                  className="px-3 sm:px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-muted/80 transition-all text-sm sm:text-base"
                 >
                   Didn't Cook
                 </button>
@@ -347,17 +347,17 @@ const CookingController: React.FC<CookingControllerProps> = ({
 
             {/* Step tracking UI (if enabled) */}
             {totalSteps > 0 && (
-              <div className="mt-4">
-                <h5 className="text-white font-medium mb-2">Track Your Progress</h5>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              <div className="mt-3 sm:mt-4">
+                <h5 className="text-foreground font-medium mb-2 text-sm sm:text-base">Track Your Progress</h5>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                   {Array.from({ length: totalSteps }).map((_, index) => (
                     <button
                       key={index}
                       onClick={() => handleStepCompletion(index + 1)}
-                      className={`p-2 rounded-lg text-center text-sm transition-all ${
+                      className={`p-2 rounded-lg text-center text-xs sm:text-sm transition-all ${
                         index + 1 <= currentStep
-                          ? 'bg-purple-700 text-white'
-                          : 'bg-gray-700/50 text-gray-400 hover:bg-gray-700'
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-muted text-muted-foreground hover:bg-muted/80'
                       }`}
                     >
                       Step {index + 1}
@@ -377,26 +377,26 @@ const CookingController: React.FC<CookingControllerProps> = ({
             // opacity: 1 }}
              //  opacity: 0 }}
           >
-            <div className="bg-gradient-to-br from-green-900/40 to-emerald-900/40 rounded-xl p-4 mb-6 border border-green-500/20">
+            <div className="bg-primary/10 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 border border-primary/30">
               <div className="flex items-center mb-3">
-                <svg className="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-primary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                 </svg>
-                <h4 className="text-lg font-medium text-white">Recipe Completed!</h4>
+                <h4 className="text-base sm:text-lg font-medium text-foreground">Recipe Completed!</h4>
               </div>
               
-              <div className="flex items-center mb-4">
-                <div className="bg-green-800/30 rounded-full p-1 mr-3">
-                  <svg className="w-4 h-4 text-green-300" fill="currentColor" viewBox="0 0 20 20">
+              <div className="flex items-center mb-3 sm:mb-4">
+                <div className="bg-primary/20 rounded-full p-1 mr-2 sm:mr-3">
+                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
                   </svg>
                 </div>
-                <span className="text-green-200 text-sm">You're a verified cook for this recipe</span>
+                <span className="text-foreground text-xs sm:text-sm">You're a verified cook for this recipe</span>
               </div>
               
               <button 
                 onClick={handleStartCooking}
-                className="w-full px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all"
+                className="w-full px-3 sm:px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all text-sm sm:text-base"
               >
                 Cook Again
               </button>
@@ -412,21 +412,21 @@ const CookingController: React.FC<CookingControllerProps> = ({
             // opacity: 1 }}
              //  opacity: 0 }}
           >
-            <div className="bg-gray-700/50 rounded-xl p-4 mb-6 border border-gray-600/20">
+            <div className="bg-muted/50 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 border border-border">
               <div className="flex items-center mb-3">
-                <svg className="w-5 h-5 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
-                <h4 className="text-lg font-medium text-white">Cooking Canceled</h4>
+                <h4 className="text-base sm:text-lg font-medium text-foreground">Cooking Canceled</h4>
               </div>
               
-              <p className="text-gray-300 text-sm mb-4">
+              <p className="text-muted-foreground text-xs sm:text-sm mb-3 sm:mb-4">
                 You marked that you didn't cook this recipe. Would you like to try again?
               </p>
               
               <button 
                 onClick={handleStartCooking}
-                className="w-full px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition-all"
+                className="w-full px-3 sm:px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-all text-sm sm:text-base"
               >
                 Start Cooking
               </button>
@@ -440,52 +440,54 @@ const CookingController: React.FC<CookingControllerProps> = ({
             //{ opacity: 0 }}
             // opacity: 1 }}
              //  opacity: 0 }}
-            className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4"
             onClick={() => setShowCompletionForm(false)}
           >
             <div
               //{ scale: 0.9, opacity: 0 }}
               // scale: 1, opacity: 1 }}
                //  scale: 0.9, opacity: 0 }}
-              className="bg-gray-800 rounded-xl p-6 w-full max-w-md"
+              className="bg-card rounded-xl p-4 sm:p-6 w-full max-w-md border border-border mx-2 sm:mx-0"
               onClick={(e) => e.stopPropagation()}
             >
-              <h3 className="text-xl text-white font-bold mb-4 flex items-center">
-                <svg className="w-6 h-6 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <h3 className="text-lg sm:text-xl text-foreground font-bold mb-3 sm:mb-4 flex items-center">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-primary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                 </svg>
                 Complete Cooking
               </h3>
               
               {recipeImage && (
-                <div className="relative h-32 rounded-lg overflow-hidden mb-4">
+                <div className="relative h-24 sm:h-32 rounded-lg overflow-hidden mb-3 sm:mb-4 border border-border">
                   <Image 
                     src={recipeImage} 
                     alt={recipeName} 
                     fill
                     className="object-cover"
+                    sizes="(max-width: 768px) 100vw, 448px"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end p-3">
-                    <h4 className="text-white font-medium">{recipeName}</h4>
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent flex items-end p-2 sm:p-3">
+                    <h4 className="text-primary-foreground font-medium text-sm sm:text-base">{recipeName}</h4>
                   </div>
                 </div>
               )}
               
-              <div className="mb-4">
-                <p className="text-gray-300 text-sm mb-2">How would you rate this recipe?</p>
-                <div className="flex items-center">
+              <div className="mb-3 sm:mb-4">
+                <p className="text-foreground text-xs sm:text-sm mb-2">How would you rate this recipe?</p>
+                <div className="flex items-center gap-1 sm:gap-0">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       key={star}
                       type="button"
                       onClick={() => setRating(star)}
-                      className="focus:outline-none p-1"
+                      className="focus:outline-none p-0.5 sm:p-1"
                     >
                       <svg
-                        className={`w-8 h-8 ${
-                          star <= rating ? 'text-yellow-500' : 'text-gray-600 hover:text-gray-400'
+                        className={`w-6 h-6 sm:w-8 sm:h-8 transition-colors ${
+                          star <= rating ? 'text-primary fill-primary' : 'text-muted-foreground hover:text-primary/50'
                         }`}
-                        fill="currentColor"
+                        fill={star <= rating ? 'currentColor' : 'none'}
+                        stroke="currentColor"
                         viewBox="0 0 20 20"
                       >
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8-2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
@@ -495,35 +497,35 @@ const CookingController: React.FC<CookingControllerProps> = ({
                 </div>
               </div>
               
-              <div className="mb-6">
-                <label htmlFor="notes" className="block text-gray-300 text-sm mb-2">
+              <div className="mb-4 sm:mb-6">
+                <label htmlFor="notes" className="block text-foreground text-xs sm:text-sm mb-2">
                   Cooking Notes (optional)
                 </label>
                 <textarea
                   id="notes"
                   rows={3}
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full bg-background border border-border rounded-lg p-2 sm:p-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm sm:text-base resize-none"
                   placeholder="Share any modifications or tips..."
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                 ></textarea>
               </div>
               
-              <div className="flex justify-end space-x-3">
+              <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 sm:space-x-3">
                 <button
                   onClick={() => setShowCompletionForm(false)}
-                  className="px-4 py-2 border border-gray-600 text-gray-300 rounded-lg hover:bg-gray-700"
+                  className="w-full sm:w-auto px-4 py-2 border border-border text-foreground rounded-lg hover:bg-muted transition-colors text-sm sm:text-base"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleCompleteCooking}
                   disabled={isLoading}
-                  className="px-6 py-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg flex items-center disabled:opacity-50"
+                  className="w-full sm:w-auto px-4 sm:px-6 py-2 bg-primary text-primary-foreground rounded-lg flex items-center justify-center disabled:opacity-50 text-sm sm:text-base"
                 >
                   {isLoading ? (
                     <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      <div className="animate-spin rounded-full h-3.5 w-3.5 sm:h-4 sm:w-4 border-b-2 border-primary-foreground mr-2"></div>
                       Saving...
                     </>
                   ) : (
@@ -541,52 +543,52 @@ const CookingController: React.FC<CookingControllerProps> = ({
             //{ opacity: 0 }}
             // opacity: 1 }}
              //  opacity: 0 }}
-            className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4"
+            className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 p-2 sm:p-4"
             onClick={() => setShowAbandonDialog(false)}
           >
             <div
               //{ scale: 0.9, opacity: 0 }}
               // scale: 1, opacity: 1 }}
                //  scale: 0.9, opacity: 0 }}
-              className="bg-gray-800 rounded-xl p-6 w-full max-w-md"
+              className="bg-card rounded-xl p-4 sm:p-6 w-full max-w-md border border-border mx-2 sm:mx-0"
               onClick={(e) => e.stopPropagation()}
             >
-              <h3 className="text-xl text-white font-bold mb-4 flex items-center">
-                <svg className="w-6 h-6 text-gray-400 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <h3 className="text-lg sm:text-xl text-foreground font-bold mb-3 sm:mb-4 flex items-center">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-muted-foreground mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
                 Didn't Cook?
               </h3>
               
-              <p className="text-gray-300 text-sm mb-4">
+              <p className="text-muted-foreground text-xs sm:text-sm mb-3 sm:mb-4">
                 Let us know why you didn't complete cooking this recipe (optional):
               </p>
               
-              <div className="mb-6">
+              <div className="mb-4 sm:mb-6">
                 <textarea
                   rows={3}
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                  className="w-full bg-background border border-border rounded-lg p-2 sm:p-3 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm sm:text-base resize-none"
                   placeholder="E.g. Missing ingredients, changed plans, etc."
                   value={abandonReason}
                   onChange={(e) => setAbandonReason(e.target.value)}
                 ></textarea>
               </div>
               
-              <div className="flex justify-end space-x-3">
+              <div className="flex flex-col-reverse sm:flex-row justify-end gap-2 sm:gap-3 sm:space-x-3">
                 <button
                   onClick={() => setShowAbandonDialog(false)}
-                  className="px-4 py-2 border border-gray-600 text-gray-300 rounded-lg hover:bg-gray-700"
+                  className="w-full sm:w-auto px-4 py-2 border border-border text-foreground rounded-lg hover:bg-muted transition-colors text-sm sm:text-base"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={()=> handleAbandonCooking(abandonReason)}
                   disabled={isLoading}
-                  className="px-6 py-2 bg-gray-700 text-white rounded-lg disabled:opacity-50"
+                  className="w-full sm:w-auto px-4 sm:px-6 py-2 bg-muted text-foreground rounded-lg disabled:opacity-50 hover:bg-muted/80 transition-colors text-sm sm:text-base"
                 >
                   {isLoading ? (
                     <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      <div className="animate-spin rounded-full h-3.5 w-3.5 sm:h-4 sm:w-4 border-b-2 border-foreground mr-2 inline-block"></div>
                       Submitting...
                     </>
                   ) : (

@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
- 
+
 import { useQuery } from "@tanstack/react-query";
 import { getAllUsers } from "@/app/api/(users)";
 import { useAuthStore } from "@/app/store/authStore";
@@ -40,7 +40,7 @@ const Users = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [filterRole, setFilterRole] = useState("all");
-  const router = useRouter()
+  const router = useRouter();
   // Debounce search term to avoid excessive API calls
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -156,7 +156,7 @@ const Users = () => {
     // If we have no pages or only one page, don't show pagination
     if (totalPages <= 1) {
       return (
-        <div className="text-sm text-gray-400 mt-6">
+        <div className="text-xs sm:text-sm text-muted-foreground mt-4 sm:mt-6 text-center">
           Showing {usersData.data.length} of {total} users
         </div>
       );
@@ -208,16 +208,16 @@ const Users = () => {
     const pageNumbers = getPageNumbers();
 
     return (
-      <div className="mt-6 flex flex-col items-center space-y-3">
-        <div className="flex items-center justify-center">
+      <div className="mt-4 sm:mt-6 flex flex-col items-center space-y-2 sm:space-y-3">
+        <div className="flex items-center justify-center w-full">
           {/* Previous button */}
           <button
             onClick={() => handlePageChange(displayedPage - 1)}
             disabled={displayedPage <= 1 || isLoading}
-            className="relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-l-md text-gray-300 bg-gray-800 border border-gray-700 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="relative inline-flex items-center px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-l-md text-foreground bg-card border border-border hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <svg
-              className="h-5 w-5 mr-2"
+              className="h-4 w-4 sm:h-5 sm:w-5 sm:mr-2"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -230,7 +230,7 @@ const Users = () => {
                 d="M10 19l-7-7m0 0l7-7m-7 7h18"
               />
             </svg>
-            Prev
+            <span className="hidden sm:inline">Prev</span>
           </button>
 
           {/* Page numbers */}
@@ -240,7 +240,7 @@ const Users = () => {
                 return (
                   <span
                     key={`${page}-${index}`}
-                    className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-300 bg-gray-800 border border-gray-700"
+                    className="relative inline-flex items-center px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-foreground bg-card border border-border"
                   >
                     ...
                   </span>
@@ -254,10 +254,10 @@ const Users = () => {
                     typeof page === "number" && handlePageChange(page)
                   }
                   disabled={isLoading}
-                  className={`relative inline-flex items-center px-4 py-2 text-sm font-medium border ${
+                  className={`relative inline-flex items-center px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium border transition-colors ${
                     page === displayedPage
-                      ? "bg-purple-600 border-purple-500 text-white"
-                      : "bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700"
+                      ? "bg-primary border-primary text-primary-foreground"
+                      : "bg-card border-border text-foreground hover:bg-muted"
                   } ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
                 >
                   {page}
@@ -267,7 +267,7 @@ const Users = () => {
           </div>
 
           {/* Mobile page indicator */}
-          <div className="md:hidden px-4 py-2 text-sm text-gray-300 bg-gray-800 border border-gray-700">
+          <div className="md:hidden px-3 sm:px-4 py-2 text-xs sm:text-sm text-foreground bg-card border-x border-border">
             {displayedPage} / {totalPages}
           </div>
 
@@ -275,11 +275,11 @@ const Users = () => {
           <button
             onClick={() => handlePageChange(displayedPage + 1)}
             disabled={displayedPage >= totalPages || isLoading}
-            className="relative inline-flex items-center px-4 py-2 text-sm font-medium rounded-r-md text-gray-300 bg-gray-800 border border-gray-700 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="relative inline-flex items-center px-2 sm:px-4 py-2 text-xs sm:text-sm font-medium rounded-r-md text-foreground bg-card border border-border hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
-            Next
+            <span className="hidden sm:inline">Next</span>
             <svg
-              className="h-5 w-5 ml-2"
+              className="h-4 w-4 sm:h-5 sm:w-5 sm:ml-2"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -296,9 +296,9 @@ const Users = () => {
         </div>
 
         {/* Showing X of Y users */}
-        <div className="text-sm text-gray-400">
+        <div className="text-xs sm:text-sm text-muted-foreground text-center px-2">
           Showing {usersData.data.length} of{" "}
-          <span className="font-medium">{total}</span> users
+          <span className="font-medium text-foreground">{total}</span> users
           {totalPages > 1 ? ` (Page ${displayedPage} of ${totalPages})` : ""}
         </div>
       </div>
@@ -308,8 +308,8 @@ const Users = () => {
   // Loading state
   if (isLoading && !isFetching) {
     return (
-      <div className="flex justify-center items-center h-[60vh]">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-purple-500"></div>
+      <div className="flex justify-center items-center h-[60vh] px-2">
+        <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-t-2 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -320,14 +320,14 @@ const Users = () => {
       error instanceof Error ? error.message : "Failed to load users data";
 
     return (
-      <div className="bg-red-900/20 border border-red-800 p-6 rounded-xl my-6">
-        <h3 className="text-xl font-bold text-red-400 mb-2">
+      <div className="bg-destructive/10 border border-destructive/30 p-4 sm:p-6 rounded-xl my-4 sm:my-6 mx-2 sm:mx-0">
+        <h3 className="text-lg sm:text-xl font-bold text-destructive mb-2">
           Error Loading Users
         </h3>
-        <p className="text-gray-300">{errorMessage}</p>
+        <p className="text-foreground text-sm sm:text-base">{errorMessage}</p>
         <button
           onClick={() => refetch()}
-          className="mt-4 px-4 py-2 bg-red-700/40 hover:bg-red-700/60 rounded-lg"
+          className="mt-4 px-4 py-2 bg-destructive/20 hover:bg-destructive/30 text-destructive rounded-lg text-sm sm:text-base transition-colors"
         >
           Try Again
         </button>
@@ -336,17 +336,17 @@ const Users = () => {
   }
 
   return (
-    <div>
+    <div className="px-2 sm:px-0">
       <div
         //{ opacity: 0, y: 20 }}
         // opacity: 1, y: 0 }}
         // duration: 0.5 }}
-        className="mb-8"
+        className="mb-6 sm:mb-8"
       >
-        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+        <h1 className="text-2xl sm:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/80">
           User Management
         </h1>
-        <p className="text-gray-400 mt-2">
+        <p className="text-muted-foreground mt-2 text-sm sm:text-base">
           View and manage all users registered on the platform
         </p>
       </div>
@@ -356,23 +356,23 @@ const Users = () => {
         //{ opacity: 0, y: 20 }}
         // opacity: 1, y: 0 }}
         // duration: 0.5, delay: 0.1 }}
-        className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6 mb-6"
+        className="bg-card backdrop-blur-sm border border-border rounded-xl sm:rounded-2xl p-4 sm:p-6 mb-4 sm:mb-6"
       >
-        <div className="flex flex-col md:flex-row gap-4 justify-between">
+        <div className="flex flex-col gap-3 sm:gap-4">
           {/* Search */}
-          <form onSubmit={handleSearch} className="flex-1">
+          <form onSubmit={handleSearch} className="w-full">
             <div className="relative">
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search users by name or email..."
-                className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 pr-12"
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 pr-10 sm:pr-12 text-sm sm:text-base"
               />
-              <div className="absolute inset-y-0 right-0 px-4 flex items-center">
+              <div className="absolute inset-y-0 right-0 px-3 sm:px-4 flex items-center">
                 {isLoading && debouncedSearchTerm ? (
                   <svg
-                    className="animate-spin h-5 w-5 text-gray-400"
+                    className="animate-spin h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -393,7 +393,7 @@ const Users = () => {
                   </svg>
                 ) : (
                   <svg
-                    className="h-5 w-5 text-gray-400"
+                    className="h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -411,37 +411,39 @@ const Users = () => {
             </div>
           </form>
 
-          {/* Role Filter */}
-          <div className="w-full md:w-48">
-            <select
-              value={filterRole}
-              onChange={handleRoleFilterChange}
-              disabled={isLoading}
-              className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 disabled:opacity-50"
-            >
-              <option value="all">All Roles</option>
-              <option value="user">User</option>
-              <option value="admin">Admin</option>
-              <option value="super_admin">Super Admin</option>
-            </select>
-          </div>
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+            {/* Role Filter */}
+            <div className="w-full sm:w-48">
+              <select
+                value={filterRole}
+                onChange={handleRoleFilterChange}
+                disabled={isLoading}
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50 text-sm sm:text-base"
+              >
+                <option value="all">All Roles</option>
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+                <option value="super_admin">Super Admin</option>
+              </select>
+            </div>
 
-          {/* Rows per page */}
-          <div className="w-full md:w-48">
-            <select
-              value={limit}
-              onChange={(e) => {
-                setLimit(Number(e.target.value));
-                setCurrentPage(1);
-              }}
-              disabled={isLoading}
-              className="w-full px-4 py-3 bg-gray-900/50 border border-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 disabled:opacity-50"
-            >
-              <option value="5">5 per page</option>
-              <option value="10">10 per page</option>
-              <option value="25">25 per page</option>
-              <option value="50">50 per page</option>
-            </select>
+            {/* Rows per page */}
+            <div className="w-full sm:w-48">
+              <select
+                value={limit}
+                onChange={(e) => {
+                  setLimit(Number(e.target.value));
+                  setCurrentPage(1);
+                }}
+                disabled={isLoading}
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50 text-sm sm:text-base"
+              >
+                <option value="5">5 per page</option>
+                <option value="10">10 per page</option>
+                <option value="25">25 per page</option>
+                <option value="50">50 per page</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
@@ -451,127 +453,181 @@ const Users = () => {
         //{ opacity: 0, y: 20 }}
         // opacity: 1, y: 0 }}
         // duration: 0.5, delay: 0.2 }}
-        className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden"
+        className="bg-card backdrop-blur-sm border border-border rounded-xl sm:rounded-2xl overflow-hidden relative"
       >
         {isLoading && (
-          <div className="absolute inset-0 bg-gray-900/50 backdrop-blur-sm flex items-center justify-center z-10">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+          <div className="absolute inset-0 bg-background/50 backdrop-blur-sm flex items-center justify-center z-10">
+            <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-t-2 border-b-2 border-primary"></div>
           </div>
         )}
 
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-700">
-            <thead className="bg-gray-900/50">
+        {/* Mobile Card View */}
+        <div className="block md:hidden">
+          {usersData?.data && usersData.data.length === 0 ? (
+            <div className="px-4 py-12 text-center text-muted-foreground">
+              No users found matching your search criteria
+            </div>
+          ) : (
+            <div className="divide-y divide-border">
+              {usersData?.data?.map((user) => (
+                <div
+                  key={user._id}
+                  onClick={() => router.push(`/dashboard/users/${user._id}`)}
+                  className="p-4 hover:bg-muted/50 cursor-pointer transition-colors"
+                >
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="flex-shrink-0 h-10 w-10 relative">
+                      {user.profileImage ? (
+                        <div className="w-10 h-10 rounded-full overflow-hidden relative">
+                          <Image
+                            src={user?.profileImage || "/default-profile.png"}
+                            alt={user?.username}
+                            width={40}
+                            height={40}
+                            className="w-full h-full object-cover"
+                            style={{ borderRadius: "50%" }}
+                          />
+                        </div>
+                      ) : (
+                        <div className="h-10 w-10 rounded-full bg-gradient-to-r from-primary to-primary/80 flex items-center justify-center">
+                          <span className="text-primary-foreground font-bold text-sm">
+                            {user.username.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-medium text-foreground truncate">
+                        {user.username}
+                      </div>
+                      <div className="text-xs text-muted-foreground truncate">
+                        {user.email}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span
+                      className={`px-2 py-1 inline-flex text-[10px] sm:text-xs leading-4 font-semibold rounded-full ${
+                        user.role === "super_admin"
+                          ? "bg-destructive/20 text-destructive border border-destructive/30"
+                          : user.role === "admin"
+                            ? "bg-primary/20 text-primary border border-primary/30"
+                            : "bg-primary/20 text-primary border border-primary/30"
+                      }`}
+                    >
+                      {user.role}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {formatDate(user.createdAt)}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Desktop Table View */}
+        <div className="hidden md:block overflow-x-auto">
+          <table className="min-w-full divide-y divide-border">
+            <thead className="bg-muted/50">
               <tr>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
+                  className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
                 >
                   User
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
+                  className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
                 >
                   Email
                 </th>
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
+                  className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
                 >
                   Role
                 </th>
-                {/* <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
-                >
-                  Status
-                </th> */}
                 <th
                   scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider"
+                  className="px-4 lg:px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider"
                 >
                   Joined
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-700">
+            <tbody className="divide-y divide-border">
               {usersData?.data && usersData.data.length === 0 ? (
                 <tr>
                   <td
-                    colSpan={6}
-                    className="px-6 py-12 text-center text-gray-400"
+                    colSpan={4}
+                    className="px-6 py-12 text-center text-muted-foreground"
                   >
                     No users found matching your search criteria
                   </td>
                 </tr>
               ) : (
                 usersData?.data?.map((user) => (
-                 <tr
+                  <tr
                     key={user._id}
-                    onClick={()=> router.push(`/dashboard/users/${user._id}`)}
-                    className="hover:bg-gray-700/20 cursor-pointer transition-colors"
+                    onClick={() => router.push(`/dashboard/users/${user._id}`)}
+                    className="hover:bg-muted/50 cursor-pointer transition-colors"
                   >
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 lg:px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="flex-shrink-0 h-10 w-10 relative">
                           {user.profileImage ? (
-                                             <div className="w-10 h-10 rounded-full overflow-hidden relative">
-                                               <Image
-                                                 src={user?.profileImage || "/default-profile.png"}
-                                                 alt={user?.username}
-                                                 width={40}
-                                                 height={40}
-                                                 className="w-full h-full object-cover"
-                                                 style={{ borderRadius: "50%" }}
-                                               />
-                                             </div>
+                            <div className="w-10 h-10 rounded-full overflow-hidden relative">
+                              <Image
+                                src={
+                                  user?.profileImage || "/default-profile.png"
+                                }
+                                alt={user?.username}
+                                width={40}
+                                height={40}
+                                className="w-full h-full object-cover"
+                                style={{ borderRadius: "50%" }}
+                              />
+                            </div>
                           ) : (
-                            <div className="h-10 w-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-600 flex items-center justify-center">
-                              <span className="text-white font-bold">
+                            <div className="h-10 w-10 rounded-full bg-gradient-to-r from-primary to-primary/80 flex items-center justify-center">
+                              <span className="text-primary-foreground font-bold text-sm">
                                 {user.username.charAt(0).toUpperCase()}
                               </span>
                             </div>
                           )}
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-white">
+                          <div className="text-sm font-medium text-foreground">
                             {user.username}
                           </div>
-                          <div className="text-sm text-gray-400">
+                          <div className="text-xs text-muted-foreground">
                             ID: {user._id.substring(0, 8)}...
                           </div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-300">{user.email}</div>
+                    <td className="px-4 lg:px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-foreground">
+                        {user.email}
+                      </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-4 lg:px-6 py-4 whitespace-nowrap">
                       <span
                         className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
                           user.role === "super_admin"
-                            ? "bg-red-900/30 text-red-300 border border-red-800/40"
+                            ? "bg-destructive/20 text-destructive border border-destructive/30"
                             : user.role === "admin"
-                            ? "bg-purple-900/30 text-purple-300 border border-purple-800/40"
-                            : "bg-blue-900/30 text-blue-300 border border-blue-800/40"
+                              ? "bg-primary/20 text-primary border border-primary/30"
+                              : "bg-primary/20 text-primary border border-primary/30"
                         }`}
                       >
                         {user.role}
                       </span>
                     </td>
-                    {/* <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          user.status === "inactive"
-                            ? "bg-amber-900/30 text-amber-300 border border-amber-800/40"
-                            : "bg-green-900/30 text-green-300 border border-green-800/40"
-                        }`}
-                      >
-                        {user.status || "active"}
-                      </span>
-                    </td> */}
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
+                    <td className="px-4 lg:px-6 py-4 whitespace-nowrap text-sm text-foreground">
                       {formatDate(user.createdAt)}
                     </td>
                   </tr>
@@ -582,7 +638,9 @@ const Users = () => {
         </div>
 
         {/* Pagination */}
-        <div className="px-6 py-4">{renderPagination()}</div>
+        <div className="px-3 sm:px-4 lg:px-6 py-3 sm:py-4">
+          {renderPagination()}
+        </div>
       </div>
     </div>
   );
