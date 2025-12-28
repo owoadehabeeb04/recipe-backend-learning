@@ -1,10 +1,10 @@
+"use client";
  
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import { useAuthStore } from "@/app/store/authStore";
-import axios from "axios";
 import {
   addToFavorites,
   checkFavoriteStatus,
@@ -12,6 +12,14 @@ import {
 } from "@/app/api/(favorites)/favorites";
 import { Recipe } from "@/types/recipe";
 import { usePathname } from "next/navigation";
+import { Heart, Star, Clock, CheckCircle2, CircleAlert } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export const RecipeCard = ({ recipe }: { recipe: any }) => {
   // Get user and token from auth store
@@ -24,9 +32,9 @@ export const RecipeCard = ({ recipe }: { recipe: any }) => {
   const [isCheckingStatus, setIsCheckingStatus] = useState(true);
 
   const difficultyColors = {
-    easy: "from-green-500 to-emerald-700",
-    medium: "from-amber-500 to-amber-700",
-    hard: "from-red-500 to-red-700"
+    easy: "bg-green-500/10 text-green-700 dark:text-green-400 border border-green-500/30",
+    medium: "bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/30",
+    hard: "bg-red-500/10 text-red-700 dark:text-red-400 border border-red-500/30"
   };
 
   // Check favorite status on mount
@@ -102,443 +110,118 @@ export const RecipeCard = ({ recipe }: { recipe: any }) => {
     }
   };
   const pathname = usePathname();
-console.log()
   const isInMealPlanner = pathname?.includes("/dashboard/meal-planner");
+
+  const CardWrapper = ({ children, href }: { children: React.ReactNode; href?: string }) => {
+    if (isInMealPlanner) {
+      return <div className="relative">{children}</div>;
+    }
+    return (
+      <Link href={href || `/dashboard/recipe/${recipe?._id}`} className="relative">
+        {children}
+      </Link>
+    );
+  };
+
   return (
-    <>
-      {isInMealPlanner ? (
-        // no link for meal planner
-        <div className="relative">
-          {/* Favorite Button - positioned above the card */}
+    <CardWrapper href={isInMealPlanner ? undefined : `/dashboard/recipe/${recipe?._id}`}>
+      <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-200 h-full">
+        <div className="relative aspect-video w-full overflow-hidden">
+          <Image
+            src={recipe?.featuredImage || recipe?.image || "https://images.pexels.com/photos/1640772/pexels-photo-1640772.jpeg"}
+            alt={recipe?.title}
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+          
+          {/* Favorite Button */}
           {user?.role === "user" && (
             <button
               onClick={handleFavoriteClick}
               disabled={isCheckingStatus}
-              className={`absolute top-3 left-3 z-20 cursor-pointer w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
+              className={`absolute top-2 left-2 sm:top-3 sm:left-3 z-20 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-200 ${
                 isCheckingStatus
-                  ? "bg-gray-700/50 text-gray-400"
+                  ? "bg-background/80 backdrop-blur-sm border-2 border-muted-foreground"
                   : isFavorite
-                  ? "bg-pink-500 text-white"
-                  : "bg-gray-800/70 text-gray-300 backdrop-blur-sm border border-white/10 hover:bg-gray-700/90"
+                  ? "bg-primary text-primary-foreground border-2 border-primary-foreground"
+                  : "bg-background/80 backdrop-blur-sm border-2 border-primary text-primary hover:bg-primary/10"
               }`}
-              aria-label={
-                isFavorite ? "Remove from favorites" : "Add to favorites"
-              }
+              aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
             >
               {isCheckingStatus ? (
-                <div className="w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
+                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
               ) : (
-                <svg
-                   //
-                    // isAnimating
-                    //   ? { scale: [1, 1.5, 1], rotate: [0, 5, -5, 0] }
-                    //   : { scale: 1 }
-                  
-                  // duration: 0.3 }}
-                  className={`w-4 h-4 ${
-                    isFavorite ? "fill-current" : "stroke-current fill-none"
-                  }`}
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                  strokeWidth={isFavorite ? "0" : "2"}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                  />
-                </svg>
-              )}
-            </button>
-          )}
-
-          <div
-             // y: -5 }}
-            //{ opacity: 0, y: 20 }}
-            // opacity: 1, y: 0 }}
-            // duration: 0.3 }}
-            className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden cursor-pointer group"
-          >
-            {/* Featured Image */}
-            <div className="relative h-48 w-full overflow-hidden">
-              <Image
-                src={recipe?.featuredImage}
-                alt={recipe?.title}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-110"
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent" />
-
-              {/* Published Status Badge - top right */}
-              <div className="absolute top-3 right-3 z-10">
-                {recipe?.isPublished !== false ? (
-                  <span className="flex items-center text-xs px-2 py-1 rounded-full bg-green-900/70 text-green-300 backdrop-blur-sm border border-green-600/30">
-                    <svg
-                      className="w-3 h-3 mr-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                    Published
-                  </span>
-                ) : (
-                  <span className="flex items-center text-xs px-2 py-1 rounded-full bg-amber-900/70 text-amber-300 backdrop-blur-sm border border-amber-600/30">
-                    <svg
-                      className="w-3 h-3 mr-1"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                    Draft
-                  </span>
-                )}
-              </div>
-
-              {/* Category */}
-              <span className="absolute bottom-3 left-3 text-xs uppercase tracking-wider px-2 py-1 rounded-full bg-gray-800/70 text-gray-300 backdrop-blur-sm border border-white/10">
-                {recipe?.category}
-              </span>
-
-              {/* Cooking time */}
-              <span className="absolute bottom-3 right-3 text-xs flex items-center px-2 py-1 rounded-full bg-gray-800/70 text-gray-300 backdrop-blur-sm border border-white/10">
-                <svg
-                  className="w-3 h-3 mr-1"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  ></path>
-                </svg>
-                {recipe?.cookingTime} min
-              </span>
-            </div>
-
-            {/* Content */}
-            <div className="p-5">
-              <h3 className="text-xl font-bold text-white mb-2 line-clamp-1 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-pink-600 transition-all duration-300">
-                {recipe?.title}
-              </h3>
-
-              <div className="flex justify-between items-center mb-4">
-                {/* Difficulty */}
-                {/* Difficulty */}
-                <span
-                  className={`text-xs font-medium px-2 py-1 rounded-full bg-gradient-to-r ${
-                    (recipe?.difficulty &&
-                      difficultyColors[
-                        recipe?.difficulty as keyof typeof difficultyColors
-                      ]) ||
-                    "from-gray-500 to-gray-700"
-                  }`}
-                >
-                  {recipe?.difficulty
-                    ? recipe?.difficulty.charAt(0).toUpperCase() +
-                      recipe.difficulty.slice(1)
-                    : "Unknown"}
-                </span>
-
-                {/* Rating */}
-                <div className="flex items-center">
-                  <svg
-                    className="w-4 h-4 text-yellow-500 mr-1"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                  </svg>
-                  <span className="text-white text-sm font-medium">
-                    {recipe?.averageRating
-                      ? recipe?.averageRating.toFixed(1)
-                      : "N/A"}
-                  </span>
-                </div>
-              </div>
-
-              {/* Author and publish date */}
-              <div className="flex justify-between items-center mt-4">
-                {/* Author */}
-                <p className="text-gray-400 text-xs flex items-center">
-                  <svg
-                    className="w-3.5 h-3.5 mr-1 text-gray-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                    ></path>
-                  </svg>
-                  By {recipe?.adminDetails?.name || recipe?.userDetails?.name || "Chef"}
-                </p>
-
-                {/* Date */}
-                <p className="text-gray-400 text-xs flex items-center">
-                  <svg
-                    className="w-3.5 h-3.5 mr-1 text-gray-500"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                    />
-                  </svg>
-                  {new Date(recipe?.createdAt).toLocaleDateString()}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      ) : (
-        // link for other pages
-        <div className="relative">
-          {/* Favorite Button - positioned above the card */}
-          {user?.role === "user" && (
-            <button
-              onClick={handleFavoriteClick}
-              disabled={isCheckingStatus}
-              className={`absolute top-3 left-3 z-20 cursor-pointer w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
-                isCheckingStatus
-                  ? "bg-gray-700/50 text-gray-400"
-                  : isFavorite
-                  ? "bg-pink-500 text-white"
-                  : "bg-gray-800/70 text-gray-300 backdrop-blur-sm border border-white/10 hover:bg-gray-700/90"
-              }`}
-              aria-label={
-                isFavorite ? "Remove from favorites" : "Add to favorites"
-              }
-            >
-              {isCheckingStatus ? (
-                <div className="w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-              ) : (
-                <svg
-                   //
-                    // isAnimating
-                    //   ? { scale: [1, 1.5, 1], rotate: [0, 5, -5, 0] }
-                    //   : { scale: 1 }
-                  // }
-                  // duration: 0.3 }}
-                  className={`w-4 h-4 ${
-                    isFavorite ? "fill-current" : "stroke-current fill-none"
-                  }`}
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                  strokeWidth={isFavorite ? "0" : "2"}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                  />
-                </svg>
-              )}
-            </button>
-          )}
-
-          <Link href={`/dashboard/recipe/${recipe?._id}`}>
-            <div
-               // y: -5 }}
-              //{ opacity: 0, y: 20 }}
-              // opacity: 1, y: 0 }}
-              // duration: 0.3 }}
-              className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden cursor-pointer group"
-            >
-              {/* Featured Image */}
-              <div className="relative h-48 w-full overflow-hidden">
-                <Image
-                  src={recipe?.featuredImage}
-                  alt={recipe?.title}
-                  fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                <Heart
+                  className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${isFavorite ? "fill-current text-primary-foreground" : "text-primary"}`}
+                  strokeWidth={isFavorite ? 0 : 2}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent" />
+              )}
+            </button>
+          )}
 
-                {/* Published Status Badge - top right */}
-                <div className="absolute top-3 right-3 z-10">
-                  {recipe?.isPublished !== false ? (
-                    <span className="flex items-center text-xs px-2 py-1 rounded-full bg-green-900/70 text-green-300 backdrop-blur-sm border border-green-600/30">
-                      <svg
-                        className="w-3 h-3 mr-1"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
+          {/* Rating Badge */}
+          {recipe?.averageRating > 0 && (
+            <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10 bg-primary text-primary-foreground px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold flex items-center gap-0.5 sm:gap-1 shadow-md">
+              <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3 fill-current" />
+              {recipe.averageRating.toFixed(1)}
+            </div>
+          )}
+
+          {/* Published Status Badge - only show if no favorite button or if admin */}
+          {recipe?.isPublished !== undefined && (!user || user?.role !== "user") && (
+            <div className={`absolute ${user?.role === "user" ? "top-2 left-2 sm:top-3 sm:left-3" : "top-2 right-2 sm:top-3 sm:right-3"} z-10`}>
+              {recipe.isPublished !== false ? (
+                <span className="flex items-center text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20 backdrop-blur-sm">
+                  <CheckCircle2 className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-0.5 sm:mr-1" />
                       Published
                     </span>
                   ) : (
-                    <span className="flex items-center text-xs px-2 py-1 rounded-full bg-amber-900/70 text-amber-300 backdrop-blur-sm border border-amber-600/30">
-                      <svg
-                        className="w-3 h-3 mr-1"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
+                <span className="flex items-center text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 backdrop-blur-sm">
+                  <CircleAlert className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-0.5 sm:mr-1" />
                       Draft
                     </span>
+              )}
+            </div>
                   )}
                 </div>
 
-                {/* Category */}
-                <span className="absolute bottom-3 left-3 text-xs uppercase tracking-wider px-2 py-1 rounded-full bg-gray-800/70 text-gray-300 backdrop-blur-sm border border-white/10">
-                  {recipe?.category}
-                </span>
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="line-clamp-2 text-sm sm:text-base">{recipe?.title}</CardTitle>
+          {recipe?.description && (
+            <CardDescription className="line-clamp-2 text-xs sm:text-sm mt-1">
+              {recipe.description}
+            </CardDescription>
+          )}
+        </CardHeader>
 
-                {/* Cooking time */}
-                <span className="absolute bottom-3 right-3 text-xs flex items-center px-2 py-1 rounded-full bg-gray-800/70 text-gray-300 backdrop-blur-sm border border-white/10">
-                  <svg
-                    className="w-3 h-3 mr-1"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                    ></path>
-                  </svg>
-                  {recipe?.cookingTime} min
-                </span>
+        <CardContent className="p-3 sm:p-6 pt-0">
+          <div className="flex items-center justify-between text-xs sm:text-sm mb-2 sm:mb-3">
+            {recipe?.cookingTime && (
+              <div className="flex items-center gap-1 text-foreground">
+                <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span>{recipe.cookingTime} min</span>
               </div>
-
-              {/* Content */}
-              <div className="p-5">
-                <h3 className="text-xl font-bold text-white mb-2 line-clamp-1 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-400 group-hover:to-pink-600 transition-all duration-300">
-                  {recipe?.title}
-                </h3>
-
-                <div className="flex justify-between items-center mb-4">
-                  {/* Difficulty */}
-                  {/* Difficulty */}
+            )}
+            {recipe?.difficulty && (
                   <span
-                    className={`text-xs font-medium px-2 py-1 rounded-full bg-gradient-to-r ${
-                      (recipe?.difficulty &&
-                        difficultyColors[
-                          recipe?.difficulty as keyof typeof difficultyColors
-                        ]) ||
-                      "from-gray-500 to-gray-700"
+                className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium border ${
+                  difficultyColors[recipe.difficulty as keyof typeof difficultyColors] ||
+                  "bg-muted text-muted-foreground border-border"
                     }`}
                   >
-                    {recipe?.difficulty
-                      ? recipe?.difficulty.charAt(0).toUpperCase() +
-                        recipe.difficulty.slice(1)
-                      : "Unknown"}
+                {recipe.difficulty.charAt(0).toUpperCase() + recipe.difficulty.slice(1)}
                   </span>
-
-                  {/* Rating */}
-                  <div className="flex items-center">
-                    <svg
-                      className="w-4 h-4 text-yellow-500 mr-1"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-                    </svg>
-                    <span className="text-white text-sm font-medium">
-                      {recipe?.averageRating
-                        ? recipe?.averageRating.toFixed(1)
-                        : "N/A"}
-                    </span>
-                  </div>
+            )}
                 </div>
 
-                {/* Author and publish date */}
-                <div className="flex justify-between items-center mt-4">
-                  {/* Author */}
-                  <p className="text-gray-400 text-xs flex items-center">
-                    <svg
-                      className="w-3.5 h-3.5 mr-1 text-gray-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      ></path>
-                    </svg>
-                    By {recipe?.adminDetails?.name || recipe?.userDetails?.name || "Chef"}
-                  </p>
-
-                  {/* Date */}
-                  <p className="text-gray-400 text-xs flex items-center">
-                    <svg
-                      className="w-3.5 h-3.5 mr-1 text-gray-500"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                      />
-                    </svg>
-                    {new Date(recipe?.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </Link>
+          {recipe?.category && (
+            <div className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider">
+              {recipe.category}
         </div>
       )}
-    </>
+        </CardContent>
+      </Card>
+    </CardWrapper>
   );
 };

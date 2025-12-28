@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuthStore, User } from "../store/authStore";
- 
+
 import Image from "next/image";
 import Users from "./users/page";
 import toast from "react-hot-toast";
@@ -96,7 +96,7 @@ const BellIcon = () => (
 
 export default function DashboardLayout({ children }: any) {
   const { user } = useAuthStore();
-  console.log({user})
+  console.log({ user });
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
   const { setAuth } = useAuthStore();
@@ -105,25 +105,25 @@ export default function DashboardLayout({ children }: any) {
       name: "Dashboard",
       href: "/dashboard",
       icon: <HomeIcon />,
-      roles: ["user", "admin", "super_admin"],
+      roles: ["user", "admin", "super_admin"]
     },
     {
       name: "Create Recipe",
       href: "/dashboard/create-recipe",
       icon: <RecipeIcon />,
-      roles: ["admin"],
+      roles: ["admin"]
     },
     {
       name: "My Recipes",
       href: "/dashboard/my-recipes",
       icon: <RecipeIcon />,
-      roles: ["admin"],
+      roles: ["admin"]
     },
     {
       name: "All Recipes",
       href: "/dashboard/all-recipes",
       icon: <RecipeIcon />,
-      roles: ["super_admin", "user"],
+      roles: ["super_admin", "user"]
     },
     {
       name: "Favorite Recipes",
@@ -144,7 +144,7 @@ export default function DashboardLayout({ children }: any) {
           />
         </svg>
       ),
-      roles: ["user"],
+      roles: ["user"]
     },
     {
       name: "Meal Planner",
@@ -165,47 +165,47 @@ export default function DashboardLayout({ children }: any) {
           />
         </svg>
       ),
-      roles: ["user"],
+      roles: ["user"]
     },
     {
       name: "Aria",
       href: "/dashboard/aria",
       icon: (
         <svg
-        className="w-5 h-5"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z"
-        />
-      </svg>
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M8.25 3v1.5M4.5 8.25H3m18 0h-1.5M4.5 12H3m18 0h-1.5m-15 3.75H3m18 0h-1.5M8.25 19.5V21M12 3v1.5m0 15V21m3.75-18v1.5m0 15V21m-9-1.5h10.5a2.25 2.25 0 002.25-2.25V6.75a2.25 2.25 0 00-2.25-2.25H6.75A2.25 2.25 0 004.5 6.75v10.5a2.25 2.25 0 002.25 2.25zm.75-12h9v9h-9v-9z"
+          />
+        </svg>
       ),
-      roles: ["user"],
+      roles: ["user"]
     },
     {
       name: "Users",
       href: "/dashboard/users",
       icon: <ProfileIcon />,
-      roles: ["super_admin"],
+      roles: ["super_admin"]
     },
     {
       name: "Profile",
       href: `/dashboard/profile`,
       icon: <ProfileIcon />,
-      roles: ["user", "admin", "super_admin"],
+      roles: ["user", "admin", "super_admin"]
     },
     {
       name: "Security",
       href: "/dashboard/security",
       icon: <SecurityIcon />,
-      roles: ["user", "admin", "super_admin"],
-    },
+      roles: ["user", "admin", "super_admin"]
+    }
   ];
 
   const finalMenuItems = menuItems.filter((item: any) =>
@@ -213,9 +213,9 @@ export default function DashboardLayout({ children }: any) {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Navbar */}
-      <nav className="fixed top-0 z-50 w-full backdrop-blur-lg bg-black/20 border-b border-white/10">
+      <nav className="fixed top-0 z-50 w-full backdrop-blur-lg bg-background/80 border-b border-border">
         <div className="px-3 py-3 lg:px-5 lg:pl-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
@@ -242,8 +242,11 @@ export default function DashboardLayout({ children }: any) {
               </button>
 
               {/* Logo */}
-              <Link href="/dashboard" className="flex items-center ml-2 md:mr-24">
-                <span className="self-center text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600 whitespace-nowrap">
+              <Link
+                href="/dashboard"
+                className="flex items-center ml-2 md:mr-24"
+              >
+                <span className="self-center text-2xl font-semibold text-foreground whitespace-nowrap">
                   Recipia
                 </span>
               </Link>
@@ -252,9 +255,9 @@ export default function DashboardLayout({ children }: any) {
             <div className="flex items-center">
               {/* Notification bell */}
               <div className="mr-4 relative">
-                <button className="p-1 rounded-full hover:bg-gray-700/50 transition-colors">
+                <button className="p-1 rounded-full hover:bg-accent transition-colors">
                   <BellIcon />
-                  <span className="absolute top-0 right-0 w-2 h-2 bg-pink-500 rounded-full"></span>
+                  <span className="absolute top-0 right-0 w-2 h-2 bg-primary rounded-full"></span>
                 </button>
               </div>
 
@@ -273,8 +276,10 @@ export default function DashboardLayout({ children }: any) {
                       />
                     </div>
                   ) : (
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center overflow-hidden">
-                      {user?.username?.charAt(0).toUpperCase() || "U"}
+                    <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center overflow-hidden">
+                      <span className="text-primary-foreground text-sm font-medium">
+                        {user?.username?.charAt(0).toUpperCase() || "U"}
+                      </span>
                     </div>
                   )}
                   <span className="hidden md:flex ml-2">
@@ -289,12 +294,14 @@ export default function DashboardLayout({ children }: any) {
 
       {/* Sidebar */}
       <aside
-  className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 border-r border-white/10 bg-black/30 backdrop-blur-xl transition-transform ${
-    pathname.startsWith('/dashboard/aria') 
-      ? '-translate-x-full' 
-      : isMobileMenuOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
-  }`}
->
+        className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 border-r border-border bg-sidebar backdrop-blur-xl transition-transform ${
+          pathname.startsWith("/dashboard/aria")
+            ? "-translate-x-full"
+            : isMobileMenuOpen
+              ? "translate-x-0"
+              : "-translate-x-full md:translate-x-0"
+        }`}
+      >
         <div className="h-full px-3 overflow-y-auto">
           <div className="flex flex-col h-full justify-between">
             {/* Main menu items */}
@@ -313,25 +320,23 @@ export default function DashboardLayout({ children }: any) {
                         href={item.href}
                         className={`group flex items-center p-3 rounded-lg ${
                           isActive
-                            ? "bg-gradient-to-r from-purple-600/50 to-pink-600/50 text-white"
-                            : "text-gray-400 hover:bg-gray-700/30"
+                            ? "bg-primary text-primary-foreground"
+                            : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                         } transition-all duration-300`}
                       >
                         <div
-                          className={`${
+                          className={
                             isActive
-                              ? "text-white"
-                              : "text-purple-400 group-hover:text-white"
-                          }`}
+                              ? "text-primary-foreground"
+                              : "text-sidebar-foreground group-hover:text-sidebar-accent-foreground"
+                          }
                         >
                           {item.icon}
                         </div>
                         <span className="ml-3">{item.name}</span>
 
                         {isActive && (
-                          <div
-                            className="ml-auto w-1.5 h-5 bg-gradient-to-b from-purple-400 to-pink-500 rounded-full"
-                          />
+                          <div className="ml-auto w-1.5 h-5 bg-primary-foreground rounded-full" />
                         )}
                       </Link>
                     </li>
@@ -341,7 +346,7 @@ export default function DashboardLayout({ children }: any) {
             </div>
 
             {/* Logout at the bottom */}
-            <div className="mt-auto mb-[5rem] pt-4 border-t border-gray-700/30">
+            <div className="mt-auto mb-[5rem] pt-4 border-t border-sidebar-border">
               <div
                 key="logout"
                 //{ opacity: 0, x: -20 }}
@@ -356,14 +361,13 @@ export default function DashboardLayout({ children }: any) {
 
                       window.location.href = "/login";
                       toast.success("Logout successful");
-
                     } catch (error) {
                       console.error("Logout failed:", error);
                     }
                   }}
-                  className="w-full cursor-pointer group flex items-center p-3 rounded-lg text-gray-400 hover:bg-gray-700/30 transition-all duration-300"
+                  className="w-full cursor-pointer group flex items-center p-3 rounded-lg text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition-all duration-300"
                 >
-                  <div className="text-purple-400 group-hover:text-white">
+                  <div className="text-sidebar-foreground group-hover:text-sidebar-accent-foreground">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       viewBox="0 0 24 24"
@@ -386,8 +390,12 @@ export default function DashboardLayout({ children }: any) {
       </aside>
 
       {/* Content area */}
-      <div className={` ${pathname.startsWith('/dashboard/aria') ? 'pt-16 p-2 sm:p-4  sm:pt-20' : 'md:ml-64 p-4 pt-20'} `}>  <div className="p-4 rounded-lg">{children}</div>
-</div>
+      <div
+        className={` ${pathname.startsWith("/dashboard/aria") ? "pt-16 p-2 sm:p-4  sm:pt-20" : "md:ml-64 p-1 sm:p-4 pt-20"} `}
+      >
+        {" "}
+        <div className="p-1 sm:p-4 rounded-lg">{children}</div>
+      </div>
     </div>
   );
 }

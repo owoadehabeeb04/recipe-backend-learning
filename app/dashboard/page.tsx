@@ -137,7 +137,7 @@ const Dashboard = () => {
     {
       title: "Total Recipes",
       value: statsLoading ? "..." : statistics.allRecipes,
-      color: "from-purple-500 to-indigo-500",
+      color: "bg-primary",
       icon: (
         <svg
           className="w-6 h-6 text-white"
@@ -157,7 +157,7 @@ const Dashboard = () => {
     {
       title: "My Recipes",
       value: statsLoading ? "..." : statistics.myRecipes,
-      color: "from-pink-500 to-rose-500",
+      color: "bg-primary",
       icon: (
         <svg
           className="w-6 h-6 text-white"
@@ -177,7 +177,7 @@ const Dashboard = () => {
     {
       title: "Published",
       value: statsLoading ? "..." : thePublishedRecipeToUse,
-      color: "from-blue-500 to-cyan-500",
+      color: "bg-primary",
       icon: (
         <svg
           className="w-6 h-6 text-white"
@@ -197,7 +197,7 @@ const Dashboard = () => {
     {
       title: "Unpublished",
       value: statsLoading ? "..." : theUnpublishedRecipeToUse,
-      color: "from-amber-500 to-orange-500",
+      color: "bg-primary",
       icon: (
         <svg
           className="w-6 h-6 text-white"
@@ -222,11 +222,11 @@ const Dashboard = () => {
       {[1, 2, 3, 4].map((i) => (
         <div
           key={i}
-          className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6"
+          className="bg-card border border-border rounded-lg p-6"
         >
-          <div className="w-12 h-12 rounded-xl bg-gray-700 animate-pulse mb-4"></div>
-          <div className="h-8 w-16 bg-gray-700 animate-pulse mb-2 rounded"></div>
-          <div className="h-4 w-24 bg-gray-700 animate-pulse rounded"></div>
+          <div className="w-12 h-12 rounded-xl bg-primary/10 animate-pulse mb-4"></div>
+          <div className="h-8 w-16 bg-primary/10 animate-pulse mb-2 rounded"></div>
+          <div className="h-4 w-24 bg-primary/10 animate-pulse rounded"></div>
         </div>
       ))}
     </div>
@@ -235,16 +235,16 @@ const Dashboard = () => {
   // Loading skeleton for recipes
   const RecipesSkeleton = () => (
     <div className="mt-8">
-      <h2 className="text-xl font-semibold text-white mb-4">Loading...</h2>
-      <div className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden p-6">
+      <h2 className="text-xl font-semibold text-foreground mb-4">Loading...</h2>
+      <div className="bg-card border border-border rounded-lg overflow-hidden p-6">
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className="flex justify-between items-center py-4 border-b border-gray-700 last:border-0"
+            className="flex justify-between items-center py-4 border-b border-border last:border-0"
           >
-            <div className="h-6 w-40 bg-gray-700 animate-pulse rounded"></div>
-            <div className="h-5 w-20 bg-gray-700 animate-pulse rounded"></div>
-            <div className="h-5 w-24 bg-gray-700 animate-pulse rounded"></div>
+            <div className="h-6 w-40 bg-primary/10 animate-pulse rounded"></div>
+            <div className="h-5 w-20 bg-primary/10 animate-pulse rounded"></div>
+            <div className="h-5 w-24 bg-primary/10 animate-pulse rounded"></div>
           </div>
         ))}
       </div>
@@ -253,15 +253,11 @@ const Dashboard = () => {
 
   return (
     <div>
-      <div
-        //{ opacity: 0, y: 20 }}
-        // opacity: 1, y: 0 }}
-        // duration: 0.5 }}
-      >
-        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+      <div>
+        <h1 className="text-3xl font-bold text-foreground">
           Welcome, {user?.username || "Chef"}
         </h1>
-        <p className="text-gray-400 mt-2">Here's what's cooking today</p>
+        <p className="text-muted-foreground mt-2">Here's what's cooking today</p>
       </div>
 
       {/* Stats */}
@@ -275,15 +271,15 @@ const Dashboard = () => {
               //{ opacity: 0, y: 20 }}
               // opacity: 1, y: 0 }}
               // duration: 0.5, delay: 0.1 * index }}
-              className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6 hover:shadow-lg hover:shadow-purple-500/10 transition-all"
+              className="bg-card border border-border rounded-lg p-6 hover:shadow-md transition-all"
             >
               <div
-                className={`w-12 h-12 rounded-xl bg-gradient-to-br ${stat.color} flex items-center justify-center mb-4`}
+                className={`w-12 h-12 rounded-xl ${stat.color} flex items-center justify-center mb-4`}
               >
                 {stat.icon}
               </div>
-              <h2 className="text-2xl font-bold text-white">{stat.value}</h2>
-              <p className="text-gray-400">{stat.title}</p>
+              <h2 className="text-2xl font-bold text-foreground">{stat.value}</h2>
+              <p className="text-muted-foreground">{stat.title}</p>
             </div>
           ))}
         </div>
@@ -301,28 +297,28 @@ const Dashboard = () => {
               // duration: 0.5, delay: 0.5 }}
               className="mt-8"
             >
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-white">
+                <div className="flex justify-between items-center mb-4">
+                <h2 className="text-xl font-semibold text-foreground">
                   Recent Recipes
                 </h2>
                 <Link href="/dashboard/my-recipes">
-                  <span className="text-sm text-purple-400 hover:text-purple-300 transition-colors">
+                  <span className="text-sm text-primary hover:opacity-80 transition-opacity">
                     View all recipes →
                   </span>
                 </Link>
               </div>
 
               {recentRecipes.length > 0 ? (
-                <div className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden">
+                <div className="bg-card border border-border rounded-lg overflow-hidden">
                   <div className="overflow-x-auto">
                     <table className="w-full text-left">
-                      <thead className="border-b border-white/10">
+                      <thead className="border-b border-border">
                         <tr>
-                          <th className="px-6 py-4 text-gray-400">Name</th>
-                          <th className="px-6 py-4 text-gray-400">Category</th>
-                          <th className="px-6 py-4 text-gray-400">Status</th>
-                          <th className="px-6 py-4 text-gray-400">Created</th>
-                          <th className="px-6 py-4 text-gray-400 text-right">
+                          <th className="px-6 py-4 text-muted-foreground">Name</th>
+                          <th className="px-6 py-4 text-muted-foreground">Category</th>
+                          <th className="px-6 py-4 text-muted-foreground">Status</th>
+                          <th className="px-6 py-4 text-muted-foreground">Created</th>
+                          <th className="px-6 py-4 text-muted-foreground text-right">
                             Actions
                           </th>
                         </tr>
@@ -331,35 +327,35 @@ const Dashboard = () => {
                         {recentRecipes.map((recipe) => (
                           <tr
                             key={recipe._id}
-                            className="hover:bg-white/5 transition-colors"
+                            className="hover:bg-accent transition-colors"
                           >
-                            <td className="px-6 py-4 text-white">
+                            <td className="px-6 py-4 text-foreground">
                               <Link href={`/dashboard/recipe/${recipe._id}`}>
-                                <span className="hover:text-purple-400 transition-colors">
+                                <span className="hover:text-primary transition-colors">
                                   {recipe.title}
                                 </span>
                               </Link>
                             </td>
-                            <td className="px-6 py-4 text-gray-300 capitalize">
+                            <td className="px-6 py-4 text-muted-foreground capitalize">
                               {recipe.category}
                             </td>
                             <td className="px-6 py-4">
                               {recipe.isPublished ? (
-                                <span className="px-2 py-1 bg-green-900/30 text-green-400 rounded-full text-xs">
+                                <span className="px-2 py-1 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs border border-green-500/20">
                                   Published
                                 </span>
                               ) : (
-                                <span className="px-2 py-1 bg-amber-900/30 text-amber-400 rounded-full text-xs">
+                                <span className="px-2 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-xs border border-amber-500/20">
                                   Draft
                                 </span>
                               )}
                             </td>
-                            <td className="px-6 py-4 text-gray-400">
+                            <td className="px-6 py-4 text-muted-foreground">
                               {formatTimeAgo(recipe.createdAt)}
                             </td>
                             <td className="px-6 py-4 text-right">
                               <Link href={`/dashboard/recipe/${recipe._id}`}>
-                                <span className="text-purple-400 hover:text-purple-300 transition-colors">
+                                <span className="text-primary hover:opacity-80 transition-opacity">
                                   View
                                 </span>
                               </Link>
@@ -371,10 +367,10 @@ const Dashboard = () => {
                   </div>
                 </div>
               ) : (
-                <div className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-10 text-center">
-                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-700/50 flex items-center justify-center">
+                <div className="bg-card border border-border rounded-lg p-10 text-center">
+                  <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
                     <svg
-                      className="w-8 h-8 text-gray-500"
+                      className="w-8 h-8 text-muted-foreground"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -387,15 +383,15 @@ const Dashboard = () => {
                       />
                     </svg>
                   </div>
-                  <h3 className="text-white text-lg font-medium mb-2">
+                  <h3 className="text-foreground text-lg font-medium mb-2">
                     No recipes yet
                   </h3>
-                  <p className="text-gray-400 mb-6">
+                  <p className="text-muted-foreground mb-6">
                     You haven't created any recipes yet. Get started by creating
                     your first recipe.
                   </p>
                   <Link href="/dashboard/create-recipe">
-                    <button className="px-5 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:from-purple-600 hover:to-pink-600 transition-colors">
+                    <button className="px-5 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity">
                       Create Recipe
                     </button>
                   </Link>
@@ -419,17 +415,17 @@ const Dashboard = () => {
               className="mt-8"
             >
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-white">
+                <h2 className="text-xl font-semibold text-foreground">
                   Platform Overview
                 </h2>
                 <div className="flex gap-3">
                   <Link href="/dashboard/users">
-                    <span className="text-sm text-purple-400 hover:text-purple-300 transition-colors">
+                    <span className="text-sm text-primary hover:opacity-80 transition-opacity">
                       Manage Users
                     </span>
                   </Link>
                   <Link href="/dashboard/all-recipes">
-                    <span className="text-sm text-purple-400 hover:text-purple-300 transition-colors">
+                    <span className="text-sm text-primary hover:opacity-80 transition-opacity">
                       All Recipes →
                     </span>
                   </Link>
@@ -438,17 +434,17 @@ const Dashboard = () => {
 
               {/* Stats Cards */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-                <div className="bg-gradient-to-br from-purple-900/40 to-purple-800/20 backdrop-blur-sm border border-purple-800/30 rounded-2xl p-4">
+                <div className="bg-card border border-border rounded-lg p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-purple-300 text-sm">Total Recipes</p>
-                      <h3 className="text-2xl font-bold text-white">
+                      <p className="text-muted-foreground text-sm">Total Recipes</p>
+                      <h3 className="text-2xl font-bold text-foreground">
                         {recipes.length || "..."}
                       </h3>
                     </div>
-                    <div className="w-12 h-12 bg-purple-700/30 rounded-full flex items-center justify-center">
+                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
                       <svg
-                        className="w-6 h-6 text-purple-300"
+                        className="w-6 h-6 text-primary"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -464,17 +460,17 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-pink-900/40 to-pink-800/20 backdrop-blur-sm border border-pink-800/30 rounded-2xl p-4">
+                <div className="bg-card border border-border rounded-lg p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-pink-300 text-sm">Total Users</p>
-                      <h3 className="text-2xl font-bold text-white">
+                      <p className="text-muted-foreground text-sm">Total Users</p>
+                      <h3 className="text-2xl font-bold text-foreground">
                         {users.length || "..."}
                       </h3>
                     </div>
-                    <div className="w-12 h-12 bg-pink-700/30 rounded-full flex items-center justify-center">
+                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
                       <svg
-                        className="w-6 h-6 text-pink-300"
+                        className="w-6 h-6 text-primary"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -490,17 +486,17 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-blue-900/40 to-blue-800/20 backdrop-blur-sm border border-blue-800/30 rounded-2xl p-4">
+                <div className="bg-card border border-border rounded-lg p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-blue-300 text-sm">Published</p>
-                      <h3 className="text-2xl font-bold text-white">
+                      <p className="text-muted-foreground text-sm">Published</p>
+                      <h3 className="text-2xl font-bold text-foreground">
                         {publishedRecipes.length || "..."}
                       </h3>
                     </div>
-                    <div className="w-12 h-12 bg-blue-700/30 rounded-full flex items-center justify-center">
+                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
                       <svg
-                        className="w-6 h-6 text-blue-300"
+                        className="w-6 h-6 text-primary"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -522,17 +518,17 @@ const Dashboard = () => {
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-purple-900/40 to-purple-800/20 backdrop-blur-sm border border-purple-800/30 rounded-2xl p-4">
+                <div className="bg-card border border-border rounded-lg p-4">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-purple-300 text-sm">Unpublished</p>
-                      <h3 className="text-2xl font-bold text-white">
+                      <p className="text-muted-foreground text-sm">Unpublished</p>
+                      <h3 className="text-2xl font-bold text-foreground">
                         {unpublishedRecipes.length || "..."}
                       </h3>
                     </div>
-                    <div className="w-12 h-12 bg-purple-700/30 rounded-full flex items-center justify-center">
+                    <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center">
                       <svg
-                        className="w-6 h-6 text-purple-300"
+                        className="w-6 h-6 text-primary"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -565,29 +561,29 @@ const Dashboard = () => {
               {/* Recent Content Tables */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Recent Recipes */}
-                <div className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden">
-                  <div className="px-6 py-4 border-b border-white/10 flex justify-between items-center">
-                    <h3 className="font-medium text-white">Latest Recipes</h3>
+                <div className="bg-card border border-border rounded-lg overflow-hidden">
+                  <div className="px-6 py-4 border-b border-border flex justify-between items-center">
+                    <h3 className="font-medium text-foreground">Latest Recipes</h3>
                     <Link href="/dashboard/all-recipes">
-                      <span className="text-xs text-purple-400 hover:text-purple-300">
+                      <span className="text-xs text-primary hover:opacity-80">
                         View all
                       </span>
                     </Link>
                   </div>
                   <div className="overflow-x-auto">
                     <table className="w-full text-left">
-                      <thead className="border-b border-white/10">
+                      <thead className="border-b border-border">
                         <tr>
-                          <th className="px-6 py-3 text-xs text-gray-400">
+                          <th className="px-6 py-3 text-xs text-muted-foreground">
                             Title
                           </th>
-                          <th className="px-6 py-3 text-xs text-gray-400">
+                          <th className="px-6 py-3 text-xs text-muted-foreground">
                             Admin
                           </th>
-                          <th className="px-6 py-3 text-xs text-gray-400">
+                          <th className="px-6 py-3 text-xs text-muted-foreground">
                             Status
                           </th>
-                          <th className="px-6 py-3 text-xs text-gray-400 text-right">
+                          <th className="px-6 py-3 text-xs text-muted-foreground text-right">
                             Actions
                           </th>
                         </tr>
@@ -596,27 +592,27 @@ const Dashboard = () => {
                         {recipes.slice(0, 5).map((recipe) => (
                           <tr
                             key={recipe._id}
-                            className="hover:bg-white/5 transition-colors"
+                            className="hover:bg-accent transition-colors"
                           >
-                            <td className="px-6 py-3 text-white text-sm">
+                            <td className="px-6 py-3 text-foreground text-sm">
                               <Link href={`/dashboard/recipe/${recipe._id}`}>
-                                <span className="hover:text-purple-400 transition-colors">
+                                <span className="hover:text-primary transition-colors">
                                   {recipe.title.length > 25
                                     ? recipe.title.substring(0, 25) + "..."
                                     : recipe.title}
                                 </span>
                               </Link>
                             </td>
-                            <td className="px-6 py-3 text-gray-300 text-sm">
+                            <td className="px-6 py-3 text-muted-foreground text-sm">
                               {recipe.adminDetails?.name || "Unknown"}
                             </td>
                             <td className="px-6 py-3">
                               {recipe.isPublished ? (
-                                <span className="px-2 py-0.5 bg-green-900/30 text-green-400 rounded-full text-xs">
+                                <span className="px-2 py-0.5 bg-green-500/10 text-green-600 dark:text-green-400 rounded-full text-xs border border-green-500/20">
                                   Published
                                 </span>
                               ) : (
-                                <span className="px-2 py-0.5 bg-amber-900/30 text-amber-400 rounded-full text-xs">
+                                <span className="px-2 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 rounded-full text-xs border border-amber-500/20">
                                   Draft
                                 </span>
                               )}
@@ -624,7 +620,7 @@ const Dashboard = () => {
                             <td className="px-6 py-3 text-right">
                               <div className="flex justify-end space-x-2">
                                 <Link href={`/dashboard/recipe/${recipe._id}`}>
-                                  <span className="text-xs text-purple-400 hover:text-purple-300 transition-colors">
+                                  <span className="text-xs text-primary hover:opacity-80 transition-opacity">
                                     View
                                   </span>
                                 </Link>
@@ -638,29 +634,29 @@ const Dashboard = () => {
                 </div>
 
                 {/* Recent Users */}
-                <div className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden">
-                  <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-white/10 flex justify-between items-center">
-                    <h3 className="font-medium text-white text-sm sm:text-base">Latest Users</h3>
+                <div className="bg-card border border-border rounded-lg overflow-hidden">
+                  <div className="px-4 sm:px-6 py-3 sm:py-4 border-b border-border flex justify-between items-center">
+                    <h3 className="font-medium text-foreground text-sm sm:text-base">Latest Users</h3>
                     <Link href="/dashboard/users">
-                      <span className="text-[10px] sm:text-xs text-purple-400 hover:text-purple-300">
+                      <span className="text-[10px] sm:text-xs text-primary hover:opacity-80">
                         View all
                       </span>
                     </Link>
                   </div>
                   <div className="overflow-x-auto">
                     <table className="w-full text-left">
-                      <thead className="border-b border-white/10">
+                      <thead className="border-b border-border">
                         <tr>
-                          <th className="px-3 sm:px-6 py-2 sm:py-3 text-[10px] sm:text-xs text-gray-400">
+                          <th className="px-3 sm:px-6 py-2 sm:py-3 text-[10px] sm:text-xs text-muted-foreground">
                             User
                           </th>
-                          <th className="px-3 sm:px-6 py-2 sm:py-3 text-[10px] sm:text-xs text-gray-400">
+                          <th className="px-3 sm:px-6 py-2 sm:py-3 text-[10px] sm:text-xs text-muted-foreground">
                             Role
                           </th>
-                          <th className="px-3 sm:px-6 py-2 sm:py-3 text-[10px] sm:text-xs text-gray-400">
+                          <th className="px-3 sm:px-6 py-2 sm:py-3 text-[10px] sm:text-xs text-muted-foreground">
                             Joined
                           </th>
-                          <th className="px-3 sm:px-6 py-2 sm:py-3 text-[10px] sm:text-xs text-gray-400 text-right">
+                          <th className="px-3 sm:px-6 py-2 sm:py-3 text-[10px] sm:text-xs text-muted-foreground text-right">
                             Actions
                           </th>
                         </tr>
@@ -669,7 +665,7 @@ const Dashboard = () => {
                         {users?.slice(0, 5).map((user) => (
                           <tr
                             key={user._id}
-                            className="hover:bg-white/5 transition-colors"
+                            className="hover:bg-accent transition-colors"
                           >
                             <td className="px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm">
                               <div className="flex items-center">
@@ -688,14 +684,14 @@ const Dashboard = () => {
                                     />
                                   </div>
                                 ) : (
-                                  <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center overflow-hidden mr-2 sm:mr-3 flex-shrink-0">
-                                    <span className="text-[10px] sm:text-xs text-white">
+                                  <div className="w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-primary flex items-center justify-center overflow-hidden mr-2 sm:mr-3 flex-shrink-0">
+                                    <span className="text-[10px] sm:text-xs text-primary-foreground">
                                       {user?.username?.charAt(0).toUpperCase() ||
                                         "U"}
                                     </span>
                                   </div>
                                 )}
-                                <span className="text-white font-medium line-clamp-1">
+                                <span className="text-foreground font-medium line-clamp-1">
                                   {user?.username || "Unknown"}
                                 </span>
                               </div>
@@ -704,23 +700,23 @@ const Dashboard = () => {
                               <span
                                 className={`px-1.5 sm:px-2 py-0.5 rounded-full text-[10px] sm:text-xs ${
                                   user.role === "admin"
-                                    ? "bg-purple-900/30 text-purple-300"
+                                    ? "bg-primary/10 text-primary"
                                     : user.role === "super_admin"
-                                    ? "bg-pink-900/30 text-pink-300"
-                                    : "bg-blue-900/30 text-blue-300"
+                                    ? "bg-primary/10 text-primary"
+                                    : "bg-primary/10 text-primary"
                                 }`}
                               >
                                 {user.role}
                               </span>
                             </td>
-                            <td className="px-3 sm:px-6 py-2 sm:py-3 text-gray-400 text-[10px] sm:text-xs">
+                            <td className="px-3 sm:px-6 py-2 sm:py-3 text-muted-foreground text-[10px] sm:text-xs">
                               {formatTimeAgo(user.createdAt)}
                             </td>
                             <td className="px-3 sm:px-6 py-2 sm:py-3 text-right">
                               <Link
                                 href={`/dashboard/users/${user._id}`}
                               >
-                                <span className="text-[10px] sm:text-xs text-purple-400 hover:text-purple-300 transition-colors">
+                                <span className="text-[10px] sm:text-xs text-primary hover:opacity-80 transition-opacity">
                                   View
                                 </span>
                               </Link>
@@ -732,7 +728,7 @@ const Dashboard = () => {
                           <tr>
                             <td
                               colSpan={4}
-                              className="px-3 sm:px-6 py-6 sm:py-8 text-center text-gray-400 text-xs sm:text-sm"
+                              className="px-3 sm:px-6 py-6 sm:py-8 text-center text-muted-foreground text-xs sm:text-sm"
                             >
                               No users found
                             </td>

@@ -30,8 +30,8 @@ export function Footer() {
           <div>
             <h4 className="font-semibold mb-4 sm:mb-5 text-foreground text-sm sm:text-base">Company</h4>
             <ul className="space-y-2 sm:space-y-3">
-              {footerLinks.company.map((link) => (
-                <li key={link.href}>
+              {footerLinks.company.map((link, index) => (
+                <li key={`company-${index}-${link.label}`}>
                   <Link
                     href={link.href}
                     className="text-muted-foreground hover:text-foreground transition-colors text-xs sm:text-sm"
@@ -45,8 +45,8 @@ export function Footer() {
           <div>
             <h4 className="font-semibold mb-4 sm:mb-5 text-foreground text-sm sm:text-base">Features</h4>
             <ul className="space-y-2 sm:space-y-3">
-              {footerLinks.features.map((link) => (
-                <li key={link.href}>
+              {footerLinks.features.map((link, index) => (
+                <li key={`features-${index}-${link.label}`}>
                   <Link
                     href={link.href}
                     className="text-muted-foreground hover:text-foreground transition-colors text-xs sm:text-sm"

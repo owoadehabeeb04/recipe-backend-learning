@@ -16,6 +16,9 @@ import {
   BookOpen,
   Save
 } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   CalendarHeader,
   MealPlanCalendar
@@ -92,26 +95,6 @@ const countMeals = (weekPlan: WeekPlanStore[string]) => {
     if (weekPlan[day]?.dinner?.recipe?.length > 0) count++;    
   }
   return count;
-};
-const TabButton: React.FC<{
-  active: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-  icon: React.ReactNode;
-}> = ({ active, onClick, children, icon }) => {
-  return (
-    <button
-      onClick={onClick}
-      className={`flex items-center px-4 py-3 rounded-lg font-medium ${
-        active
-          ? "bg-purple-100 text-purple-700"
-          : "text-gray-600 hover:bg-gray-100"
-      }`}
-    >
-      {icon}
-      <span className="ml-2">{children}</span>
-    </button>
-  );
 };
 
 // Main Page Component
@@ -879,43 +862,41 @@ const MealPlannerPage = () => {
 
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white p-6 rounded-xl mb-8 shadow-lg">
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <h1 className="text-3xl font-bold mb-4 md:mb-0">Meal Planner</h1>
-          <div className="flex gap-3">
-            <button
+    <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-8">
+      <Card className="mb-4 sm:mb-8">
+        <div className="bg-primary text-primary-foreground p-4 sm:p-6 rounded-t-lg">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-3 md:gap-0">
+            <h1 className="text-2xl sm:text-3xl font-bold">Meal Planner</h1>
+            <Button
               onClick={() => setShowSaveModal(true)}
-              className="px-4 py-2 bg-white/20 text-white rounded-lg font-medium hover:bg-white/30 transition flex items-center"
+              variant="secondary"
+              size="sm"
+              className="bg-background/20 hover:bg-background/30 text-primary-foreground border-0 text-sm sm:text-base w-full md:w-auto"
             >
-              <Save size={18} className="mr-2" />
-              Save Plan
-            </button>
+              <Save size={16} className="sm:mr-2 sm:h-[18px] sm:w-[18px]" />
+              <span className="hidden sm:inline">Save Plan</span>
+              <span className="sm:hidden">Save</span>
+            </Button>
           </div>
         </div>
-      </div>
+      </Card>
 
-      <div className="flex flex-wrap gap-2 mb-6">
-        <TabButton
-          active={activeTab === "planner"}
-          onClick={() => setActiveTab("planner")}
-          icon={<Calendar size={18} />}
-        >
-          Meal Planner
-        </TabButton>
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-4 sm:mb-6">
+        <TabsList className="grid w-full max-w-md grid-cols-2">
+          <TabsTrigger value="planner" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+            <Calendar size={16} className="sm:h-[18px] sm:w-[18px]" />
+            <span className="hidden sm:inline">Meal Planner</span>
+            <span className="sm:hidden">Planner</span>
+          </TabsTrigger>
+          <TabsTrigger value="saved" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+            <BookOpen size={16} className="sm:h-[18px] sm:w-[18px]" />
+            <span className="hidden sm:inline">Saved Plans</span>
+            <span className="sm:hidden">Saved</span>
+          </TabsTrigger>
+        </TabsList>
 
-        <TabButton
-          active={activeTab === "saved"}
-          onClick={() => setActiveTab("saved")}
-          icon={<BookOpen size={18} />}
-        >
-          Saved Plans
-        </TabButton>
-      </div>
-
-      {activeTab === "planner" && (
-        <div className="space-y-6">
-          <div className="bg-white rounded-xl shadow-md overflow-hidden">
+        <TabsContent value="planner" className="mt-6">
+          <Card className="overflow-hidden">
             <CalendarHeader
               currentDate={currentDate}
               onPrevWeek={goToPreviousWeek}
@@ -927,123 +908,92 @@ const MealPlannerPage = () => {
               weekPlan={currentWeekPlan}
               onAddMeal={handleAddMeal}
             />
-          </div>
-        </div>
-      )}
+          </Card>
+        </TabsContent>
 
-      {activeTab === "grocery" && (
-        <div className="bg-white rounded-xl p-6 shadow-md">
-          <h2 className="text-2xl font-bold mb-4">Weekly Grocery List</h2>
-          <GroceryList weekPlan={currentWeekPlan} />
-        </div>
-      )}
+        <TabsContent value="saved" className="mt-6">
+          <Card>
+            <div className="p-6">
+              <h2 className="text-2xl font-bold mb-4 text-foreground">
+                Your Saved Plans
+              </h2>
+              {savedPlans.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                  {savedPlans.map((plan) => {
+                    return (
+                      <Card
+                        key={plan.id || plan._id}
+                        onClick={() => handleViewPlan(plan)}
+                        className="cursor-pointer hover:shadow-lg transition-shadow group"
+                      >
+                        <div className="p-3 sm:p-5">
+                          <div className="flex flex-col sm:flex-row sm:items-start justify-between sm:mb-3 gap-2 sm:gap-0">
+                            <h4 className="font-semibold text-foreground text-base sm:text-lg group-hover:text-primary transition line-clamp-1">
+                              {plan.name}
+                            </h4>
+                            <span className="text-[10px] sm:text-xs bg-primary/10 text-primary px-2 sm:px-3 py-0.5 sm:py-1 rounded-full border border-primary/20 whitespace-nowrap flex-shrink-0 self-start">
+                              {format(plan.date, "MMM d, yyyy")}
+                            </span>
+                          </div>
 
-      {activeTab === "saved" && (
-        <div className="bg-white p-6 rounded-xl  shadow-md">
-          <h2 className="text-2xl text-gray-700  font-bold mb-4">
-            Your Saved Plans
-          </h2>
-          {savedPlans.length > 0 ? (
-  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-    {savedPlans.map((plan) => {
-      return (
-        <div
-          key={plan.id || plan._id}
-          onClick={() => handleViewPlan(plan)}
-          className="bg-gradient-to-b from-gray-900 to-gray-800 backdrop-blur-sm border border-[color:var(--purple-900)]/30 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-[color:var(--purple-600)]/20 cursor-pointer transition group"
-        >
-          <div className="p-3 sm:p-5">
-            <div className="flex flex-col sm:flex-row sm:items-start justify-between sm:mb-3 gap-2 sm:gap-0">
-              <h4 className="font-semibold text-white text-base sm:text-lg group-hover:text-white/90 transition line-clamp-1">
-                {plan.name}
-              </h4>
-              <span className="text-[10px] sm:text-xs bg-[color:var(--purple-900)]/40 text-white px-2 sm:px-3 py-0.5 sm:py-1 rounded-full border border-[color:var(--purple-700)]/40 whitespace-nowrap flex-shrink-0 self-start">
-                {format(plan.date, "MMM d, yyyy")}
-              </span>
+                          <div className="flex flex-wrap items-center text-xs sm:text-sm text-muted-foreground mb-3 sm:mb-4 gap-y-2">
+                            <div className="flex items-center mr-3 sm:mr-4">
+                              <CalendarIcon className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-1.5" />
+                              <span>7 days</span>
+                            </div>
+                            <div className="flex items-center">
+                              <Plus className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-1.5" />
+                              <span>{countMeals(plan.plan)} meals</span>
+                            </div>
+                          </div>
+
+                          <div className="flex -space-x-1 sm:-space-x-1.5 mb-3 sm:mb-5">
+                            {["breakfast", "lunch", "dinner"].map((mealType) => (
+                              <div
+                                key={mealType}
+                                className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full border ${
+                                  mealType === "breakfast"
+                                    ? "bg-amber-500/10 border-amber-500/30"
+                                    : mealType === "lunch"
+                                      ? "bg-emerald-500/10 border-emerald-500/30"
+                                      : "bg-blue-500/10 border-blue-500/30"
+                                }`}
+                                title={`${mealType.charAt(0).toUpperCase() + mealType.slice(1)} meals`}
+                              ></div>
+                            ))}
+                            <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-primary/10 border border-primary/30 text-primary flex items-center justify-center text-[9px] sm:text-xs">
+                              +
+                            </div>
+                          </div>
+                        </div>
+                      </Card>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="text-center py-8 sm:py-12">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center text-primary mb-3 sm:mb-4">
+                    <BookOpen size={20} className="sm:hidden" />
+                    <BookOpen size={24} className="hidden sm:block" />
+                  </div>
+                  <h3 className="text-base sm:text-lg font-medium text-foreground">
+                    No saved plans yet
+                  </h3>
+                  <p className="mt-1 text-sm sm:text-base text-muted-foreground">
+                    Create and save your first meal plan
+                  </p>
+                  <Button
+                    onClick={() => setActiveTab("planner")}
+                    className="mt-3 sm:mt-4"
+                  >
+                    Create a Plan
+                  </Button>
+                </div>
+              )}
             </div>
-
-            <div className="flex flex-wrap items-center text-xs sm:text-sm text-white/80 mb-3 sm:mb-4 gap-y-2">
-              <div className="flex items-center mr-3 sm:mr-4">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-1.5 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  />
-                </svg>
-                <span>7 days</span>
-              </div>
-              <div className="flex items-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-3.5 w-3.5 sm:h-4 sm:w-4 mr-1 sm:mr-1.5 text-white"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                  />
-                </svg>
-                <span>{countMeals(plan.plan)} meals</span>
-              </div>
-            </div>
-
-            <div className="flex -space-x-1 sm:-space-x-1.5 mb-3 sm:mb-5">
-              {["breakfast", "lunch", "dinner"].map((mealType) => (
-                <div
-                  key={mealType}
-                  className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full border ${
-                    mealType === "breakfast"
-                      ? "bg-[color:var(--amber-600)]/50 border-[color:var(--amber-500)]/30"
-                      : mealType === "lunch"
-                        ? "bg-[color:var(--emerald-600)]/50 border-[color:var(--emerald-500)]/30"
-                        : "bg-[color:var(--blue-600)]/50 border-[color:var(--blue-500)]/30"
-                  }`}
-                  title={`${mealType.charAt(0).toUpperCase() + mealType.slice(1)} meals`}
-                ></div>
-              ))}
-              <div className="w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-[color:var(--purple-800)]/50 border border-[color:var(--purple-700)]/30 text-white flex items-center justify-center text-[9px] sm:text-xs">
-                +
-              </div>
-            </div>
-          </div>
-        </div>
-      );
-    })}
-  </div>
-) : (
-  <div className="text-center py-8 sm:py-12">
-    <div className="w-14 h-14 sm:w-16 sm:h-16 mx-auto bg-purple-100 rounded-full flex items-center justify-center text-purple-500 mb-3 sm:mb-4">
-      <BookOpen size={20} className="sm:hidden" />
-      <BookOpen size={24} className="hidden sm:block" />
-    </div>
-    <h3 className="text-base sm:text-lg font-medium text-gray-800">
-      No saved plans yet
-    </h3>
-    <p className="mt-1 text-sm sm:text-base text-gray-500">
-      Create and save your first meal plan
-    </p>
-    <button
-      onClick={() => setActiveTab("planner")}
-      className="mt-3 sm:mt-4 px-5 sm:px-6 py-1.5 sm:py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg text-sm sm:text-base font-medium"
-    >
-      Create a Plan
-    </button>
-  </div>
-)}
-        </div>
-      )}
+          </Card>
+        </TabsContent>
+      </Tabs>
 
       {showRecipeSelector && selectedMealInfo && (
         <RecipeSelector

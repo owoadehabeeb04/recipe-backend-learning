@@ -8,7 +8,7 @@ export const SearchBar = ({
   <div className="relative w-full md:max-w-md">
     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
       <svg
-        className="w-5 h-5 text-gray-500"
+        className="w-5 h-5 text-muted-foreground"
         fill="none"
         stroke="currentColor"
         viewBox="0 0 24 24"
@@ -27,7 +27,7 @@ export const SearchBar = ({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       placeholder="Search recipes..."
-      className="w-full pl-10 pr-4 py-3 bg-gray-900/50 border border-gray-700 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-purple-500/50"
+      className="w-full pl-10 pr-4 py-3 bg-background border border-input rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-ring"
     />
   </div>
 );

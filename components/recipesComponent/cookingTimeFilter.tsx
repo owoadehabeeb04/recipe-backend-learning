@@ -20,7 +20,7 @@ export const CookingTimeFilter: React.FC<CookingTimeFilterProps> = ({
     <div className="flex flex-wrap gap-2">
       <div className="flex items-center mr-2">
         <svg 
-          className="w-4 h-4 text-purple-400 mr-1" 
+          className="w-4 h-4 text-primary mr-1" 
           fill="none" 
           stroke="currentColor" 
           viewBox="0 0 24 24"
@@ -33,7 +33,7 @@ export const CookingTimeFilter: React.FC<CookingTimeFilterProps> = ({
             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" 
           />
         </svg>
-        <span className="text-sm text-gray-400">Cooking time:</span>
+        <span className="text-sm text-muted-foreground">Cooking time:</span>
       </div>
       {timeOptions.map((option) => (
         <button
@@ -41,8 +41,8 @@ export const CookingTimeFilter: React.FC<CookingTimeFilterProps> = ({
           onClick={() => onChange(option.value)}
           className={`px-3 py-1.5 rounded-full text-xs transition-colors ${
             selectedTime === option.value
-              ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
-              : 'bg-gray-800/70 text-gray-300 hover:bg-gray-700'
+              ? 'bg-primary text-primary-foreground'
+              : 'bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground'
           }`}
         >
           {option.label}

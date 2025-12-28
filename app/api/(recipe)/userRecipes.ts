@@ -22,6 +22,10 @@ export interface RecipeQueryParams {
   search?: string;
   category?: string;
   sort?: string;
+  breakfast?: boolean;
+  lunch?: boolean;
+  dinner?: boolean;
+  favorites?: boolean;
 }
 const api = axios.create({
   baseURL: API_URL,
@@ -59,6 +63,10 @@ export const getAllRecipes = async (params?: RecipeQueryParams) => {
       if (params.search) queryParams.append('search', params.search);
       if (params.category) queryParams.append('category', params.category);
       if (params.sort) queryParams.append('sort', params.sort);
+      if (params.breakfast !== undefined) queryParams.append('breakfast', params.breakfast.toString());
+      if (params.lunch !== undefined) queryParams.append('lunch', params.lunch.toString());
+      if (params.dinner !== undefined) queryParams.append('dinner', params.dinner.toString());
+      if (params.favorites !== undefined) queryParams.append('favorites', params.favorites.toString());
     }
 
     const url = `/recipes${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;

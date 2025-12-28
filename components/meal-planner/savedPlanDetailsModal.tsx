@@ -1,11 +1,19 @@
 import { format } from "date-fns";
- 
 import React, { useState, useEffect } from "react";
 import { useAuthStore } from "@/app/store/authStore";
 import { toast } from "react-hot-toast";
 import { Calendar as CalendarIcon, Check, X, Clock, AlertCircle, FileText, BarChart2 } from "lucide-react";
 import { connectMealPlanToGoogleCalendar, disconnectMealPlanFromGoogleCalendar } from "@/app/api/(meal-planner)/googleMealPlanner";
 import SyncCalendarButton from "./syncCalendar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 // Google API client ID
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
@@ -51,14 +59,14 @@ declare global {
 }
 
 const TestUserInfo = () => (
-  <div className="p-3 bg-blue-50 border border-blue-100 rounded-lg">
-    <h4 className="text-sm font-medium text-blue-800 flex items-center">
+  <div className="p-3 bg-primary/10 border border-primary/30 rounded-lg">
+    <h4 className="text-sm font-medium text-primary flex items-center">
       <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
         <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
       </svg>
       Testing Project Information
     </h4>
-    <p className="text-xs text-gray-600 mt-1">
+    <p className="text-xs text-muted-foreground mt-1">
       This project uses Google Calendar integration in test mode. Only approved Google accounts can connect.
     </p>
     <div className="mt-2 flex">
@@ -66,7 +74,7 @@ const TestUserInfo = () => (
         href="mailto:owoadehabeeb04@gmail.com" 
         target="_blank"
         rel="noopener noreferrer"
-        className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 flex-grow text-center"
+        className="text-xs px-2 py-1 bg-primary/20 text-primary rounded hover:bg-primary/30 flex-grow text-center transition-colors"
       >
         Request Access for Your Google Account
       </a>
@@ -304,70 +312,52 @@ export const SavedPlanDetailsModal: React.FC<SavedPlanDetailsModalProps> = ({
   console.log('connected to calendar', plan)
 
   return (
-    <div 
-      //{ opacity: 0 }}
-      // opacity: 1 }}
-       //  opacity: 0 }}
-      className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4"
-    >
-      <div 
-        //{ scale: 0.9, y: 20 }}
-        // scale: 1, y: 0 }}
-         //  scale: 0.9, y: 20 }}
-        className="bg-white rounded-2xl shadow-2xl overflow-hidden w-full max-w-[800px]"
-      >
-        {/* Header */}
-        <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-5 relative">
-          <h2 className="text-2xl font-bold text-white mb-1">{plan.name}</h2>
-          <p className="text-indigo-100 text-sm">
+    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-[800px] w-full mx-2 sm:mx-4 max-h-[90vh] sm:max-h-[95vh] overflow-hidden flex flex-col p-0">
+        <DialogHeader className="bg-primary text-primary-foreground p-3 sm:p-5 relative">
+          <DialogTitle className="text-lg sm:text-2xl font-bold mb-1">{plan.name}</DialogTitle>
+          <DialogDescription className="text-primary-foreground/80 text-xs sm:text-sm">
             {format(new Date(plan.date), "MMMM d, yyyy")}
-          </p>
-          <button 
-            onClick={onClose}
-            className="absolute top-4 right-4 text-white/70 hover:text-white transition-colors"
-            aria-label="Close"
-          >
-            <X size={20} />
-          </button>
-        </div>
+          </DialogDescription>
+        </DialogHeader>
         
-        <div className="p-5 grid sm:h-fit h-[450px] sm:scroll-auto overflow-y-scroll sm:overflow-y-auto sm:grid-cols-2 gap-4">
+        <div className="p-3 sm:p-5 grid sm:h-fit h-[450px] sm:scroll-auto overflow-y-scroll sm:overflow-y-auto sm:grid-cols-2 gap-3 sm:gap-4">
           <div>
           {/* Top grid: Statistics */}
-          <div className="grid grid-cols-2 gap-3">
-            <div className="bg-gradient-to-br from-indigo-50 to-purple-50 rounded-xl p-3 border border-indigo-100/50 flex flex-col items-center justify-center">
-              <div className="text-2xl font-bold text-indigo-600 mb-1">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
+            <Card className="p-2 sm:p-3 flex flex-col items-center justify-center">
+              <div className="text-xl sm:text-2xl font-bold text-primary mb-1">
                 {countMeals(plan.plan)}
               </div>
-              <div className="text-xs text-gray-600">Total meals</div>
-            </div>
-            <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-3 border border-purple-100/50 flex flex-col items-center justify-center">
-              <div className="text-2xl font-bold text-purple-600 mb-1">7</div>
-              <div className="text-xs text-gray-600">Days planned</div>
-            </div>
+              <div className="text-[10px] sm:text-xs text-muted-foreground">Total meals</div>
+            </Card>
+            <Card className="p-2 sm:p-3 flex flex-col items-center justify-center">
+              <div className="text-xl sm:text-2xl font-bold text-primary mb-1">7</div>
+              <div className="text-[10px] sm:text-xs text-muted-foreground">Days planned</div>
+            </Card>
           </div >
             {/* Google Calendar Section */}
-            <div className={`rounded-xl mt-3 border p-3 ${
+            <Card className={`mt-2 sm:mt-3 p-2 sm:p-3 ${
             plan.connectedToCalendar 
-              ? "bg-green-50 border-green-100" 
+              ? "bg-green-500/10 border-green-500/30" 
               : googleAuthError 
-                ? "bg-red-50 border-red-100"
-                : "bg-blue-50 border-blue-100"
+                ? "bg-destructive/10 border-destructive/30"
+                : "bg-primary/10 border-primary/30"
           }`}>
             <div className="flex items-center mb-2">
               {googleAuthError ? (
                 <AlertCircle className="h-4 w-4 mr-2 text-red-600" />
               ) : (
                 <CalendarIcon className={`h-4 w-4 mr-2 ${
-                  plan.connectedToCalendar ? "text-green-600" : "text-blue-600"
+                  plan.connectedToCalendar ? "text-primary" : "text-primary"
                 }`} />
               )}
               <h3 className={`text-sm font-medium ${
                 googleAuthError
-                  ? "text-red-800"
+                  ? "text-destructive"
                   : plan.connectedToCalendar 
-                    ? "text-green-800" 
-                    : "text-blue-800"
+                    ? "text-primary" 
+                    : "text-primary"
               }`}>
                 {googleAuthError 
                   ? "Google Calendar Configuration Error" 
@@ -378,13 +368,13 @@ export const SavedPlanDetailsModal: React.FC<SavedPlanDetailsModalProps> = ({
             </div>
             
             {googleAuthError && (
-              <p className="text-xs text-red-600 mb-2">
+              <p className="text-xs text-destructive mb-2">
                 {googleAuthError}
               </p>
             )}
             
             {!googleAuthError && plan.connectedToCalendar && plan.calendarConnectionDate && (
-              <p className="text-xs text-gray-600 mb-2">
+              <p className="text-xs text-muted-foreground mb-2">
                 Connected on {format(new Date(plan.calendarConnectionDate), "MMMM d, yyyy 'at' h:mm a")}
               </p>
             )}
@@ -393,7 +383,7 @@ export const SavedPlanDetailsModal: React.FC<SavedPlanDetailsModalProps> = ({
             
             {!googleAuthError && (
               <div>
-                <p className="text-xs text-gray-600 mb-2">
+                <p className="text-xs text-muted-foreground mb-2">
                   {plan.connectedToCalendar 
                     ? "You can sync your meal plan with Google Calendar." 
                     : "Connect your meal plan to Google Calendar for better organization."}
@@ -404,10 +394,11 @@ export const SavedPlanDetailsModal: React.FC<SavedPlanDetailsModalProps> = ({
             googleAuthReady={googleAuthReady}
           />
                 {plan.connectedToCalendar ? (
-                  <button
+                  <Button
                     onClick={handleDisconnectFromGoogleCalendar}
                     disabled={isDisconnecting || !googleAuthReady}
-                    className="w-full py-2 px-3 mt-2 bg-white border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition duration-200 flex items-center justify-center shadow-sm text-sm"
+                    variant="destructive"
+                    className="w-full py-2 px-3 mt-2 text-sm"
                   >
                     {isDisconnecting ? (
                       <>
@@ -425,41 +416,41 @@ export const SavedPlanDetailsModal: React.FC<SavedPlanDetailsModalProps> = ({
                         Disconnect from Calendar
                       </>
                     )}
-                  </button>
+                  </Button>
                 ) : (
                   <>
                     {showTimeSettings ? (
-                      <div className="mt-3 bg-white p-3 rounded-lg border border-blue-100">
-                        <h4 className="text-xs font-medium text-gray-700 mb-2 flex items-center">
-                          <Clock className="h-4 w-4 mr-1.5 text-blue-500" />
+                      <div className="mt-3 bg-card p-3 rounded-lg border border-border">
+                        <h4 className="text-xs font-medium text-foreground mb-2 flex items-center">
+                          <Clock className="h-4 w-4 mr-1.5 text-primary" />
                           Meal Times Settings
                         </h4>
                         
                         <div className="space-y-2 mb-3">
                           {['breakfast', 'lunch', 'dinner'].map((meal) => (
                             <div key={meal} className="flex items-center justify-between">
-                              <label className="text-xs capitalize text-gray-700">{meal}:</label>
+                              <label className="text-xs capitalize text-foreground">{meal}:</label>
                               <div className="flex items-center space-x-1">
                                 <select 
                                   value={mealTimes[meal as keyof typeof mealTimes].hour}
                                   onChange={(e) => updateMealTime(meal, 'hour', parseInt(e.target.value))}
-                                  className="text-xs p-1 text-blue-500 border border-gray-300 rounded"
+                                  className="text-xs p-1 text-primary border border-border rounded bg-background text-foreground"
                                 >
                                   {Array.from({ length: 24 }, (_, i) => (
                                     <option key={i} value={i}>{i.toString().padStart(2, '0')}</option>
                                   ))}
                                 </select>
-                                <span>:</span>
+                                <span className="text-foreground">:</span>
                                 <select 
                                   value={mealTimes[meal as keyof typeof mealTimes].minute}
                                   onChange={(e) => updateMealTime(meal, 'minute', parseInt(e.target.value))}
-                                  className="text-xs p-1 text-blue-500 border border-gray-300 rounded"
+                                  className="text-xs p-1 text-primary border border-border rounded bg-background text-foreground"
                                 >
                                   {[0, 15, 30, 45].map((min) => (
                                     <option key={min} value={min}>{min.toString().padStart(2, '0')}</option>
                                   ))}
                                 </select>
-                                <span className="text-xs text-gray-500">
+                                <span className="text-xs text-muted-foreground">
                                   {formatTime(
                                     mealTimes[meal as keyof typeof mealTimes].hour, 
                                     mealTimes[meal as keyof typeof mealTimes].minute
@@ -471,14 +462,14 @@ export const SavedPlanDetailsModal: React.FC<SavedPlanDetailsModalProps> = ({
                         </div>
                         
                         <div className="flex space-x-2">
-                          <button
+                          <Button
                             onClick={handleConnectToGoogleCalendar}
                             disabled={isConnecting || !googleAuthReady}
-                            className="flex-1 py-2 px-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200 flex items-center justify-center shadow-sm text-xs"
+                            className="flex-1 text-xs"
                           >
                             {isConnecting ? (
                               <>
-                                <div className="w-3 h-3 border-2 border-t-white border-white/30 rounded-full animate-spin mr-1"></div>
+                                <div className="w-3 h-3 border-2 border-t-primary-foreground border-primary-foreground/30 rounded-full animate-spin mr-1"></div>
                                 Connecting...
                               </>
                             ) : (
@@ -487,20 +478,21 @@ export const SavedPlanDetailsModal: React.FC<SavedPlanDetailsModalProps> = ({
                                 Connect
                               </>
                             )}
-                          </button>
-                          <button
+                          </Button>
+                          <Button
                             onClick={() => setShowTimeSettings(false)}
-                            className="py-2 px-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition duration-200 flex items-center justify-center shadow-sm text-xs"
+                            variant="outline"
+                            className="text-xs"
                           >
                             Cancel
-                          </button>
+                          </Button>
                         </div>
                       </div>
                     ) : (
-                      <button
+                      <Button
                         onClick={() => setShowTimeSettings(true)}
                         disabled={!googleAuthReady}
-                        className="w-full py-2 px-3 mt-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition duration-200 flex items-center justify-center shadow-sm text-sm"
+                        className="w-full mt-2 text-sm"
                       >
                         {!googleAuthReady ? (
                           <>
@@ -513,38 +505,38 @@ export const SavedPlanDetailsModal: React.FC<SavedPlanDetailsModalProps> = ({
                             Connect to Google Calendar
                           </>
                         )}
-                      </button>
+                      </Button>
                     )}
                   </>
                 )}
 
               </div>
             )}
-          </div>
+          </Card>
         
           </div>
           <div>
         
             {/* Middle grid: Notes (if any) */}
             {plan.notes && (
-            <div className="bg-indigo-50 rounded-xl p-3 border border-indigo-100 flex">
+            <div className="bg-primary/10 rounded-xl p-3 border border-primary/30 flex">
               <div className="mr-2 mt-0.5">
-                <FileText className="h-4 w-4 text-indigo-600" />
+                <FileText className="h-4 w-4 text-primary" />
               </div>
               <div className="flex-1">
-                <h3 className="text-sm font-medium text-indigo-800 mb-1">Notes</h3>
-                <p className="text-xs text-gray-700">{plan.notes}</p>
+                <h3 className="text-sm font-medium text-primary mb-1">Notes</h3>
+                <p className="text-xs text-foreground">{plan.notes}</p>
               </div>
             </div>
           )}
           {/* Primary Action Grid */}
-          <div className="grid mt-3 grid-cols-2 gap-3">
-            <button
+          <div className="grid mt-2 sm:mt-3 grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+            <Button
               onClick={() => {
                 onLoad(plan);
                 onClose();
               }}
-              className="py-2.5 px-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:from-purple-700 hover:to-pink-700 transition duration-200 flex items-center justify-center shadow-sm font-medium"
+              className="py-2 sm:py-2.5 px-2 sm:px-3 text-sm sm:text-base"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -561,18 +553,19 @@ export const SavedPlanDetailsModal: React.FC<SavedPlanDetailsModalProps> = ({
                 />
               </svg>
               Load Plan
-            </button>
+            </Button>
             
-            <button
+            <Button
               onClick={() => {
                 onViewDetails();
                 onClose();
               }}
-              className="py-2.5 px-3  bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition duration-200 flex items-center justify-center shadow-sm font-medium"
+              variant="outline"
+              className="py-2 sm:py-2.5 px-2 sm:px-3 text-sm sm:text-base"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 mr-1.5 text-gray-600"
+                className="h-4 w-4 mr-1.5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -591,18 +584,20 @@ export const SavedPlanDetailsModal: React.FC<SavedPlanDetailsModalProps> = ({
                 />
               </svg>
               View Details
-            </button>
+            </Button>
           </div>
           
           {/* Secondary Action Grid */}
-          <div className="grid  mt-3 grid-cols-2 gap-3">
-            <button
+          <div className="grid mt-2 sm:mt-3 grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+            <Button
               onClick={onDuplicate}
-              className="py-2 px-3 bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition duration-200 flex items-center justify-center shadow-sm text-sm"
+              variant="outline"
+              size="sm"
+              className="text-sm sm:text-base"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 mr-1.5 text-indigo-500"
+                className="h-4 w-4 mr-1.5 text-primary"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -615,11 +610,13 @@ export const SavedPlanDetailsModal: React.FC<SavedPlanDetailsModalProps> = ({
                 />
               </svg>
               Duplicate
-            </button>
+            </Button>
             
-            <button
+            <Button
               onClick={onDelete}
-              className="py-2 px-3 bg-white border border-red-200 text-red-600 rounded-lg hover:bg-red-50 transition duration-200 flex items-center justify-center shadow-sm text-sm"
+              variant="destructive"
+              size="sm"
+              className="text-sm sm:text-base"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -636,19 +633,20 @@ export const SavedPlanDetailsModal: React.FC<SavedPlanDetailsModalProps> = ({
                 />
               </svg>
               Delete
-            </button>
+            </Button>
           </div>
           
           {/* Cancel button */}
-          <button
-  onClick={onClose}
-  className="py-2 mt-3 px-3 bg-purple-50 border border-purple-200 text-purple-600 hover:bg-purple-100 hover:text-purple-700 rounded-lg transition-colors text-sm font-medium"
->
-  Cancel
-</button>
+          <Button
+            onClick={onClose}
+            variant="outline"
+            className="mt-2 sm:mt-3 w-full text-sm sm:text-base"
+          >
+            Cancel
+          </Button>
           </div>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 };

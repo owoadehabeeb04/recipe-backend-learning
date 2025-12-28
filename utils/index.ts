@@ -2,6 +2,48 @@ import { Ingredient, NutritionData } from "@/types/recipe";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import toast from "react-hot-toast";
 
+// Helper function to check if error is a rate limit error
+const isRateLimitError = (error: any): boolean => {
+  if (!error) return false;
+  
+  // Check status code
+  if (error?.status === 429 || error?.code === 429) return true;
+  
+  // Check error message
+  const errorMessage = error?.message || error?.toString() || '';
+  if (
+    errorMessage.includes('429') ||
+    errorMessage.includes('rate limit') ||
+    errorMessage.includes('Rate limit') ||
+    errorMessage.includes('too many requests') ||
+    errorMessage.includes('Too Many Requests')
+  ) {
+    return true;
+  }
+  
+  // Check for quota errors
+  if (
+    errorMessage.includes('quota') ||
+    errorMessage.includes('Quota') ||
+    errorMessage.includes('RESOURCE_EXHAUSTED')
+  ) {
+    return true;
+  }
+  
+  return false;
+};
+
+// Helper function to show rate limit error message
+const showRateLimitError = (loadingToastId: string, context: string = '') => {
+  toast.error(
+    `Rate limit exceeded${context ? ` for ${context}` : ''}. Please wait a moment before trying again. The API has usage limits to ensure fair access for all users.`,
+    {
+      id: loadingToastId,
+      duration: 6000
+    }
+  );
+};
+
 // Recipe type definition
 interface Recipe {
   id: string;
@@ -358,14 +400,19 @@ export const generateCompleteRecipe = async ({
         duration: 4000
       }
     );
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error generating recipe:", error);
-    toast.error(
-      "Failed to generate recipe. Please try again or enter details manually.",
-      {
-        id: loadingToastId
-      }
-    );
+    
+    if (isRateLimitError(error)) {
+      showRateLimitError(loadingToastId, 'recipe generation');
+    } else {
+      toast.error(
+        "Failed to generate recipe. Please try again or enter details manually.",
+        {
+          id: loadingToastId
+        }
+      );
+    }
   } finally {
     setIsGenerating(false);
   }
@@ -469,11 +516,16 @@ Do not include units in the actual values, additional explanations, serving size
     });
     
     // Removed return statement as the function is of type Promise<void>
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error calculating nutrition:", error);
-    toast.error("Failed to calculate nutrition. Please try again later.", {
-      id: loadingToastId
-    });
+    
+    if (isRateLimitError(error)) {
+      showRateLimitError(loadingToastId, 'nutrition calculation');
+    } else {
+      toast.error("Failed to calculate nutrition. Please try again later.", {
+        id: loadingToastId
+      });
+    }
   } finally {
     setIsCalculating(false);
   }
@@ -543,8 +595,27 @@ export const generateRecipeImage = async (
     toast.success("Recipe image generated!", {
       id: loadingToastId,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Failed to generate image with Gemini:", error);
+    
+    if (isRateLimitError(error)) {
+      showRateLimitError(loadingToastId, 'image generation');
+      
+      // Fall back to Unsplash on rate limit
+      try {
+        const placeholderUrl = `https://source.unsplash.com/random/800x600/?food,${encodeURIComponent(recipeTitle)}`;
+        setPreviewImage(placeholderUrl);
+        setValue("featuredImage", placeholderUrl);
+        toast.success("Using placeholder image instead.", {
+          id: loadingToastId,
+        });
+      } catch (unsplashError) {
+        toast.error("Could not generate image. Please try again.", {
+          id: loadingToastId,
+        });
+      }
+      return;
+    }
     
     // Fall back to Unsplash on error
     try {

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAuthStore } from "@/app/store/authStore";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { Button } from "@/components/ui/button";
 
 interface SyncCalendarButtonProps {
   mealPlanId: string;
@@ -198,10 +199,10 @@ const response = data?.data
 
   return (
     <div className="mt-3">
-      <button
+      <Button
         onClick={handleSync}
         disabled={isSyncing || !googleAuthReady}
-        className="w-full py-2 px-3 bg-amber-500 text-white rounded-lg hover:bg-amber-600 transition duration-200 flex items-center justify-center shadow-sm text-sm"
+        className="w-full py-2 px-3 text-sm"
       >
         {isSyncing ? (
           <>
@@ -232,22 +233,24 @@ const response = data?.data
             Sync to Google Calendar
           </>
         )}
-      </button>
+      </Button>
 
       {syncResult && syncResult.success === false && (
-        <div className="mt-2 p-2 text-xs rounded-lg bg-red-50 text-red-800 border border-red-100">
+        <div className="mt-2 p-2 text-xs rounded-lg bg-destructive/10 text-destructive border border-destructive/30">
           <p className="font-medium">{syncResult.message}</p>
-          <button
+          <Button
             onClick={retryWithConsent}
-            className="mt-2 text-xs px-2 py-1 bg-red-100 text-red-700 rounded hover:bg-red-200"
+            variant="outline"
+            size="sm"
+            className="mt-2 text-xs"
           >
             Retry with Consent
-          </button>
+          </Button>
         </div>
       )}
 
       {syncResult && syncResult.success === true && (
-        <div className="mt-2 p-2 text-xs rounded-lg bg-green-50 text-green-800 border border-green-100">
+        <div className="mt-2 p-2 text-xs rounded-lg bg-primary/10 text-primary border border-primary/30">
           <p className="font-medium">{syncResult.message}</p>
           {syncResult.details && (
             <div className="mt-1 space-y-0.5">
@@ -259,7 +262,7 @@ const response = data?.data
               )}
               {syncResult.details.failedEvents &&
                 syncResult.details.failedEvents.length > 0 && (
-                  <p className="text-amber-600 font-medium">
+                  <p className="text-destructive font-medium">
                     {syncResult.details.failedEvents.length} events failed
                   </p>
                 )}

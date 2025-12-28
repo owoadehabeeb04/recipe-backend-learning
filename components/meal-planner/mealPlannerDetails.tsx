@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { format, parseISO, addDays } from "date-fns";
- 
+
 import Link from "next/link";
 import { Recipe } from "@/types/recipe";
 import {
@@ -88,7 +88,6 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
     Object.values(mealPlan.plan).forEach((day) => {
       // For each day, count meal slots that have recipes assigned
       Object.values(day).forEach((meal) => {
-
         // Check if this meal slot has a recipe assigned
         if (meal.recipeDetails && meal.recipe) {
           count += 1;
@@ -115,10 +114,14 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
             const key = ing.name.toLowerCase();
             if (ingredients[key]) {
               if (ingredients[key].unit === ing.unit) {
-                if (typeof ingredients[key].quantity === "number" && typeof ing.quantity === "number") {
+                if (
+                  typeof ingredients[key].quantity === "number" &&
+                  typeof ing.quantity === "number"
+                ) {
                   ingredients[key].quantity += ing.quantity;
                 } else {
-                  ingredients[key].quantity = `${ingredients[key].quantity}, ${ing.quantity}`;
+                  ingredients[key].quantity =
+                    `${ingredients[key].quantity}, ${ing.quantity}`;
                 }
               } else {
                 const newKey = `${key}-${ingredients[key].unit || "multiple"}`;
@@ -154,15 +157,14 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
 
       try {
         // Call the AI to get normalization mapping
-        const normalizationMap = await normalizeIngredientsWithAI(
-          ingredientNames
-        );
+        const normalizationMap =
+          await normalizeIngredientsWithAI(ingredientNames);
 
         const processedIngredients = ingredients.reduce(
           (result: { [key: string]: any }, ing) => {
             const normalizedName = normalizationMap[ing.name] || ing.name;
             const category = categorizeIngredient(normalizedName);
-          
+
             const key = `${normalizedName}-${ing.unit || "none"}`;
 
             if (result[key]) {
@@ -174,9 +176,8 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
                 result[key].quantity =
                   Number(result[key].quantity) + Number(ing.quantity);
               } else {
-                result[
-                  key
-                ].quantity = `${result[key].quantity}, ${ing.quantity}`;
+                result[key].quantity =
+                  `${result[key].quantity}, ${ing.quantity}`;
               }
             } else {
               result[key] = {
@@ -198,10 +199,9 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
         const uniqueNormalizedNames = Array.from(
           new Set(normalizedIngredientArray.map((ing) => ing.normalizedName))
         ).sort();
-        
+
         setNormalizedIngredientNames(uniqueNormalizedNames);
         setNormalizedIngredients(normalizedIngredientArray);
-
       } catch (error) {
         console.error("Error normalizing ingredients:", error);
       } finally {
@@ -242,13 +242,13 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900/10 via-black to-pink-900/10">
+    <div className="min-h-screen bg-background">
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header section */}
         <div className="mb-8">
           <Link
             href="/dashboard/meal-planner"
-            className="inline-flex items-center text-white hover:text-purple-300 mb-6 group transition-colors"
+            className="inline-flex items-center text-foreground hover:text-primary mb-6 group transition-colors"
           >
             <ChevronLeft className="h-5 w-5 mr-1 group-hover:-translate-x-1 transition-transform" />
             <span>Back to Meal Planner</span>
@@ -256,11 +256,11 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
 
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-white to-purple-300 bg-clip-text text-transparent">
+              <h1 className="text-3xl md:text-4xl font-bold text-foreground">
                 {mealPlan.name}
               </h1>
 
-              <div className="flex items-center mt-2 text-purple-300">
+              <div className="flex items-center mt-2 text-muted-foreground">
                 <Calendar className="h-4 w-4 mr-2" />
                 <span>
                   {format(weekStart, "MMMM d")} -{" "}
@@ -289,49 +289,49 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
 
           {/* Stats row */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
-            <div className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 backdrop-blur-sm border border-purple-600/20 rounded-xl p-4">
-              <h3 className="text-sm text-purple-300 font-medium">
+            <div className="bg-primary/10 backdrop-blur-sm border border-primary/30 rounded-xl p-4">
+              <h3 className="text-sm text-muted-foreground font-medium">
                 Total Days
               </h3>
-              <p className="text-2xl font-bold text-white mt-1">7 days</p>
+              <p className="text-2xl font-bold text-foreground mt-1">7 days</p>
             </div>
 
-            <div className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 backdrop-blur-sm border border-purple-600/20 rounded-xl p-4">
-              <h3 className="text-sm text-purple-300 font-medium">
+            <div className="bg-primary/10 backdrop-blur-sm border border-primary/30 rounded-xl p-4">
+              <h3 className="text-sm text-muted-foreground font-medium">
                 Total Meals
               </h3>
-              <p className="text-2xl font-bold text-white mt-1">
+              <p className="text-2xl font-bold text-foreground mt-1">
                 {countRecipes()} meals
               </p>
             </div>
 
-            <div className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 backdrop-blur-sm border border-purple-600/20 rounded-xl p-4">
-              <h3 className="text-sm text-purple-300 font-medium">
+            <div className="bg-primary/10 backdrop-blur-sm border border-primary/30 rounded-xl p-4">
+              <h3 className="text-sm text-muted-foreground font-medium">
                 Ingredients
               </h3>
-              <p className="text-2xl font-bold text-white mt-1">
+              <p className="text-2xl font-bold text-foreground mt-1">
                 {normalizedIngredientNames.length} items
               </p>
             </div>
 
-            <div className="bg-gradient-to-br from-purple-600/20 to-pink-600/20 backdrop-blur-sm border border-purple-600/20 rounded-xl p-4">
-              <h3 className="text-sm text-purple-300 font-medium">
+            <div className="bg-primary/10 backdrop-blur-sm border border-primary/30 rounded-xl p-4">
+              <h3 className="text-sm text-muted-foreground font-medium">
                 Created On
               </h3>
-              <p className="text-2xl font-bold text-white mt-1">
-          {format(new Date(mealPlan.createdAt), "MMMM d")}
+              <p className="text-2xl font-bold text-foreground mt-1">
+                {format(new Date(mealPlan.createdAt), "MMMM d")}
               </p>
             </div>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="mb-6 flex border-b border-purple-900/30">
+        <div className="mb-6 flex border-b border-border">
           <button
             className={`pb-3 px-4 text-lg font-medium border-b-2 -mb-[1px] ${
               activeTab === "plan"
-                ? "border-pink-500 text-white"
-                : "border-transparent text-purple-300 hover:text-white"
+                ? "border-primary text-foreground"
+                : "border-transparent text-muted-foreground hover:text-foreground"
             } transition-colors`}
             onClick={() => setActiveTab("plan")}
           >
@@ -340,8 +340,8 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
           <button
             className={`pb-3 px-4 text-lg font-medium border-b-2 -mb-[1px] ${
               activeTab === "shopping"
-                ? "border-pink-500 text-white"
-                : "border-transparent text-purple-300 hover:text-white"
+                ? "border-primary text-foreground"
+                : "border-transparent text-muted-foreground hover:text-foreground"
             } transition-colors`}
             onClick={() => setActiveTab("shopping")}
           >
@@ -359,24 +359,34 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
               return (
                 <div
                   key={day.fullDate}
-                  className="bg-black/40 backdrop-blur-sm border border-purple-900/30 rounded-xl overflow-hidden flex flex-col h-full"
+                  className="bg-card backdrop-blur-sm border border-border rounded-xl overflow-hidden flex flex-col h-full"
                 >
                   {/* Enhanced day header with pattern and circular date */}
-                  <div className="relative bg-gradient-to-r from-purple-600/80 to-pink-600/80 p-4">
-                    <div className="absolute inset-0 opacity-10 mix-blend-overlay" 
-                         style={{backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)", backgroundSize: "10px 10px"}}></div>
-                         
+                  <div className="relative bg-primary p-4">
+                    <div
+                      className="absolute inset-0 opacity-10 mix-blend-overlay"
+                      style={{
+                        backgroundImage:
+                          "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
+                        backgroundSize: "10px 10px"
+                      }}
+                    ></div>
+
                     {/* Improved day header layout */}
                     <div className="flex items-center justify-between">
-                      <h3 className="font-medium text-white text-lg">
-    {day.dayName.substring(0, 3).charAt(0).toUpperCase() + day.dayName.substring(0, 3).slice(1)}
-                    
+                      <h3 className="font-medium text-primary-foreground text-lg">
+                        {day.dayName.substring(0, 3).charAt(0).toUpperCase() +
+                          day.dayName.substring(0, 3).slice(1)}
                       </h3>
-                      <div className="bg-white/20 h-9 w-9 rounded-full flex items-center justify-center border border-white/30">
-                        <span className="font-bold text-white">{day.dayNumber}</span>
+                      <div className="bg-primary-foreground/20 h-9 w-9 rounded-full flex items-center justify-center border border-primary-foreground/30">
+                        <span className="font-bold text-primary-foreground">
+                          {day.dayNumber}
+                        </span>
                       </div>
                     </div>
-                    <span className="text-xs text-white/70">{day.month}</span>
+                    <span className="text-xs text-primary-foreground/70">
+                      {day.month}
+                    </span>
                   </div>
 
                   {/* Meals container with improved spacing */}
@@ -385,35 +395,62 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
                       // Access the plan data using the correct path
                       const mealForDay = mealPlan.plan[dayKey];
                       const meal = mealForDay ? mealForDay[mealType] : null;
-                      
+
                       // Define meal type colors and icons
                       const mealTypeStyles: any = {
                         breakfast: {
                           icon: (
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5 text-amber-400">
-                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z" clipRule="evenodd" />
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                              className="w-3.5 h-3.5 text-amber-400"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z"
+                                clipRule="evenodd"
+                              />
                             </svg>
                           ),
                           color: "amber"
                         },
                         lunch: {
                           icon: (
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5 text-green-400">
-                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z" clipRule="evenodd" />
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                              className="w-3.5 h-3.5 text-green-400"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .414.336.75.75.75h4a.75.75 0 000-1.5h-3.25V5z"
+                                clipRule="evenodd"
+                              />
                             </svg>
                           ),
                           color: "green"
                         },
                         dinner: {
                           icon: (
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5 text-blue-400">
-                              <path fillRule="evenodd" d="M7.455 2.004a.75.75 0 01.26.77 7 7 0 009.958 7.967.75.75 0 011.067.853A8.5 8.5 0 116.647 1.921a.75.75 0 01.808.083z" clipRule="evenodd" />
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                              className="w-3.5 h-3.5 text-blue-400"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M7.455 2.004a.75.75 0 01.26.77 7 7 0 009.958 7.967.75.75 0 011.067.853A8.5 8.5 0 116.647 1.921a.75.75 0 01.808.083z"
+                                clipRule="evenodd"
+                              />
                             </svg>
                           ),
                           color: "blue"
                         }
                       };
-                      
+
                       const style = mealTypeStyles[mealType];
 
                       return (
@@ -421,12 +458,12 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
                           {/* Elegant meal type header with icon */}
                           <div className="flex items-center mb-2">
                             {style.icon}
-                            <span className="text-xs font-medium tracking-wider text-purple-300 uppercase ml-1.5">
+                            <span className="text-xs font-medium tracking-wider text-muted-foreground uppercase ml-1.5">
                               {mealType}
                             </span>
-                            <div className={`ml-2 flex-1 h-[1px] bg-gradient-to-r from-${style.color}-500/40 to-transparent`}></div>
+                            <div className="ml-2 flex-1 h-[1px] bg-border"></div>
                           </div>
-                          
+
                           {meal && meal.recipeDetails ? (
                             <Link
                               href={`/dashboard/recipe/${
@@ -437,9 +474,9 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
                               className="block h-full"
                             >
                               <div
-                                 // y: -3, boxShadow: "0 12px 20px -5px rgba(88, 28, 135, 0.3)" }}
+                                // y: -3, boxShadow: "0 12px 20px -5px rgba(88, 28, 135, 0.3)" }}
                                 // duration: 0.2 }}
-                                className="bg-gradient-to-br from-purple-800/30 to-purple-900/50 border border-purple-700/30 rounded-lg overflow-hidden hover:border-purple-500/50 transition-all shadow-md h-full"
+                                className="bg-card border border-border rounded-lg overflow-hidden hover:border-primary/50 transition-all shadow-md h-full"
                               >
                                 {/* Recipe card with improved layout */}
                                 {meal.recipeDetails.featuredImage ? (
@@ -447,14 +484,14 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
                                     {/* Image with overlay gradient */}
                                     <div className="w-full h-24 relative">
                                       <Image
-                                      width={1000}
-                                      height={24}
+                                        width={1000}
+                                        height={24}
                                         src={meal.recipeDetails.featuredImage}
                                         alt={meal.recipeDetails.title}
                                         className="w-full h-full object-cover"
                                       />
                                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                                      
+
                                       {/* Title overlay on image */}
                                       <div className="absolute bottom-0 left-0 right-0 p-3">
                                         <h4 className="font-semibold text-white text-sm leading-tight whitespace-nowrap overflow-hidden text-ellipsis">
@@ -462,33 +499,34 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
                                         </h4>
                                       </div>
                                     </div>
-                                    
+
                                     {/* Meta information below image */}
                                     <div className="px-3 py-2">
                                       <div className="flex items-center flex-wrap gap-x-3 gap-y-1">
                                         {meal.recipeDetails.cookingTime && (
                                           <div className="flex items-center">
-                                            <Clock className="w-3 h-3 text-pink-300 mr-1 flex-shrink-0" />
-                                            <span className="text-xs text-purple-200">
-                                              {meal.recipeDetails.cookingTime} min
+                                            <Clock className="w-3 h-3 text-primary mr-1 flex-shrink-0" />
+                                            <span className="text-xs text-muted-foreground">
+                                              {meal.recipeDetails.cookingTime}{" "}
+                                              min
                                             </span>
                                           </div>
                                         )}
-                                        
+
                                         {meal.recipeDetails.cuisine && (
                                           <div className="flex items-center">
-                                            <span className={`w-1.5 h-1.5 rounded-full bg-${style.color}-400 mr-1`}></span>
-                                            <span className="text-xs text-purple-300 truncate max-w-[100px]">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-primary mr-1"></span>
+                                            <span className="text-xs text-muted-foreground truncate max-w-[100px]">
                                               {meal.recipeDetails.cuisine}
                                             </span>
                                           </div>
                                         )}
                                       </div>
-                                      
+
                                       {/* Difficulty badge */}
                                       {meal.recipeDetails.difficulty && (
                                         <div className="mt-2">
-                                          <span className={`px-2 py-0.5 text-xs bg-${style.color}-600/20 text-${style.color}-200 rounded-full`}>
+                                          <span className="px-2 py-0.5 text-xs bg-primary/20 text-primary rounded-full">
                                             {meal.recipeDetails.difficulty}
                                           </span>
                                         </div>
@@ -499,36 +537,37 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
                                   /* Layout for recipes without images */
                                   <div className="p-3">
                                     <div className="flex items-start">
-                                      <div className={`mr-3 h-10 w-10 rounded-lg bg-gradient-to-br from-${style.color}-600/20 to-${style.color}-700/30 flex items-center justify-center border border-${style.color}-500/20 flex-shrink-0`}>
-                                        <ChefHat className={`w-5 h-5 text-${style.color}-200`} />
+                                      <div className="mr-3 h-10 w-10 rounded-lg bg-primary/20 flex items-center justify-center border border-primary/30 flex-shrink-0">
+                                        <ChefHat className="w-5 h-5 text-primary" />
                                       </div>
                                       <div className="flex-1 min-w-0">
-                                        <h4 className="font-semibold text-white text-sm leading-tight mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
+                                        <h4 className="font-semibold text-foreground text-sm leading-tight mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
                                           {meal.recipeDetails.title}
                                         </h4>
                                         <div className="flex items-center flex-wrap gap-x-3 gap-y-1 mt-1">
                                           {meal.recipeDetails.cookingTime && (
                                             <div className="flex items-center">
-                                              <Clock className="w-3 h-3 text-pink-300 mr-1 flex-shrink-0" />
-                                              <span className="text-xs text-purple-200">
-                                                {meal.recipeDetails.cookingTime} min
+                                              <Clock className="w-3 h-3 text-primary mr-1 flex-shrink-0" />
+                                              <span className="text-xs text-muted-foreground">
+                                                {meal.recipeDetails.cookingTime}{" "}
+                                                min
                                               </span>
                                             </div>
                                           )}
-                                          
+
                                           {meal.recipeDetails.cuisine && (
                                             <div className="flex items-center">
-                                              <span className="w-1.5 h-1.5 rounded-full bg-purple-400 mr-1"></span>
-                                              <span className="text-xs text-purple-300 truncate max-w-[100px]">
+                                              <span className="w-1.5 h-1.5 rounded-full bg-primary mr-1"></span>
+                                              <span className="text-xs text-muted-foreground truncate max-w-[100px]">
                                                 {meal.recipeDetails.cuisine}
                                               </span>
                                             </div>
                                           )}
                                         </div>
-                                        
+
                                         {meal.recipeDetails.difficulty && (
                                           <div className="mt-2">
-                                            <span className="px-2 py-0.5 text-xs bg-purple-700/30 text-purple-200 rounded-full">
+                                            <span className="px-2 py-0.5 text-xs bg-primary/20 text-primary rounded-full">
                                               {meal.recipeDetails.difficulty}
                                             </span>
                                           </div>
@@ -541,14 +580,21 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
                             </Link>
                           ) : (
                             /* Empty slot with add button */
-                            <div className={`bg-gradient-to-br from-${style.color}-900/10 to-purple-900/20 border border-${style.color}-800/20 rounded-lg flex justify-center items-center h-[60px] group cursor-pointer hover:border-${style.color}-700/30 transition-colors`}>
+                            <div className="bg-muted border border-border rounded-lg flex justify-center items-center h-[60px] group cursor-pointer hover:border-primary/50 transition-colors">
                               <div className="flex flex-col items-center">
-                                <div className={`w-6 h-6 rounded-full bg-${style.color}-900/30 flex items-center justify-center mb-1 group-hover:bg-${style.color}-800/40 transition-colors`}>
-                                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className={`w-3 h-3 text-${style.color}-400`}>
+                                <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center mb-1 group-hover:bg-primary/30 transition-colors">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 20 20"
+                                    fill="currentColor"
+                                    className="w-3 h-3 text-primary"
+                                  >
                                     <path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" />
                                   </svg>
                                 </div>
-                                <p className="text-xs text-purple-400/70">Add recipe</p>
+                                <p className="text-xs text-muted-foreground">
+                                  Add recipe
+                                </p>
                               </div>
                             </div>
                           )}
@@ -562,16 +608,15 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
           </div>
         ) : (
           /* Shopping list content */
-          <div className="bg-black/40 backdrop-blur-sm border border-purple-900/30 rounded-xl p-6">
-
+          <div className="bg-card backdrop-blur-sm border border-border rounded-xl p-6">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6">
-              <h2 className="text-2xl font-bold text-white flex items-center">
-                <ShoppingBag className="w-5 h-5 mr-2 text-pink-400" />
+              <h2 className="text-2xl font-bold text-foreground flex items-center">
+                <ShoppingBag className="w-5 h-5 mr-2 text-primary" />
                 Shopping List
               </h2>
 
               <div className="flex space-x-3 mt-3 sm:mt-0">
-                <button className="px-4 py-2 bg-purple-600/20 hover:bg-purple-600/30 text-white rounded-lg border border-purple-600/30 flex items-center transition">
+                <button className="px-4 py-2 bg-primary/20 hover:bg-primary/30 text-foreground rounded-lg border border-primary/30 flex items-center transition">
                   <Printer className="h-4 w-4 mr-2" />
                   Print List
                 </button>
@@ -580,15 +625,15 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
 
             {/* Add this section to display normalized ingredient names */}
             {normalizedIngredientNames.length > 0 && (
-              <div className="mb-6 p-4 bg-purple-900/20 border border-purple-800/30 rounded-lg">
-                <h3 className="font-semibold text-white mb-3">
+              <div className="mb-6 p-4 bg-primary/10 border border-primary/30 rounded-lg">
+                <h3 className="font-semibold text-foreground mb-3">
                   All Ingredients
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {normalizedIngredientNames.map((name, idx) => (
                     <span
                       key={idx}
-                      className="px-3 py-1 bg-purple-700/30 text-purple-200 text-sm rounded-full"
+                      className="px-3 py-1 bg-primary/20 text-primary text-sm rounded-full"
                     >
                       {name}
                     </span>
@@ -643,13 +688,12 @@ const MealPlannerDetails: React.FC<MealPlannerDetailsProps> = ({
 
             {/* Notes section */}
             {mealPlan.notes && (
-              <div className="mt-8 bg-purple-900/20 border border-purple-800/30 rounded-lg p-4">
-                <h3 className="font-medium text-white mb-2">Notes</h3>
-                <p className="text-purple-200">{mealPlan.notes}</p>
+              <div className="mt-8 bg-primary/10 border border-primary/30 rounded-lg p-4">
+                <h3 className="font-medium text-foreground mb-2">Notes</h3>
+                <p className="text-muted-foreground">{mealPlan.notes}</p>
               </div>
             )}
-              <ShoppingList mealPlanId={mealPlan._id} />
-
+            <ShoppingList mealPlanId={mealPlan._id} />
           </div>
         )}
       </div>

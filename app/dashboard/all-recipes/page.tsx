@@ -46,14 +46,9 @@ const EmptyState = () => {
       // duration: 0.5 }}
       className="flex flex-col items-center justify-center h-96 text-center px-4"
     >
-      <div
-        //{ scale: 0.8, opacity: 0 }}
-        // scale: 1, opacity: 1 }}
-        // delay: 0.2, duration: 0.5 }}
-        className="w-32 h-32 mb-8 rounded-full bg-gradient-to-br from-purple-600/20 to-pink-600/20 border border-purple-500/20 flex items-center justify-center"
-      >
+      <div className="w-32 h-32 mb-8 rounded-full bg-muted border border-border flex items-center justify-center">
         <svg
-          className="w-16 h-16 text-purple-400/70"
+          className="w-16 h-16 text-muted-foreground"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -67,17 +62,13 @@ const EmptyState = () => {
           />
         </svg>
       </div>
-      <h2 className="text-2xl font-bold text-white mb-3">No Recipes Yet</h2>
-      <p className="text-gray-400 max-w-md mb-8">
+      <h2 className="text-2xl font-bold text-foreground mb-3">No Recipes Yet</h2>
+      <p className="text-muted-foreground max-w-md mb-8">
         It looks like there aren't any recipes available at the moment. Check
         back soon as our chefs are always cooking up something new!
       </p>
       <Link href="/dashboard">
-        <button
-           // scale: 1.05 }}
-          // whileTap={{ scale: 0.95 }}
-          className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-white hover:from-purple-700 hover:to-pink-700 transition-all"
-        >
+        <button className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity">
           Return to Dashboard
         </button>
       </Link>
@@ -102,9 +93,9 @@ const NoSearchResults = ({
       // duration: 0.5 }}
       className="flex flex-col items-center justify-center h-64 text-center"
     >
-      <div className="w-16 h-16 mb-4 rounded-full bg-gray-800/70 flex items-center justify-center">
+      <div className="w-16 h-16 mb-4 rounded-full bg-muted flex items-center justify-center">
         <svg
-          className="w-8 h-8 text-gray-500"
+          className="w-8 h-8 text-muted-foreground"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -117,8 +108,8 @@ const NoSearchResults = ({
           />
         </svg>
       </div>
-      <h3 className="text-xl font-medium text-white mb-2">No recipes found</h3>
-      <p className="text-gray-400 max-w-md">
+      <h3 className="text-xl font-medium text-foreground mb-2">No recipes found</h3>
+      <p className="text-muted-foreground max-w-md">
         {searchQuery
           ? `We couldn't find any recipes matching "${searchQuery}"${
               category !== "all" ? ` in ${category}` : ""
@@ -127,7 +118,7 @@ const NoSearchResults = ({
       </p>
       <button
         onClick={clearFilters}
-        className="mt-4 px-4 py-2 bg-gray-800/70 rounded-full text-gray-300 hover:bg-gray-700 transition-all"
+        className="mt-4 px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-accent transition-colors"
       >
         Clear filters
       </button>
@@ -150,9 +141,9 @@ const ErrorState = ({
       // duration: 0.5 }}
       className="flex flex-col items-center justify-center h-64 text-center"
     >
-      <div className="w-16 h-16 mb-4 rounded-full bg-red-900/20 flex items-center justify-center">
+      <div className="w-16 h-16 mb-4 rounded-full bg-destructive/10 flex items-center justify-center">
         <svg
-          className="w-8 h-8 text-red-500"
+          className="w-8 h-8 text-destructive"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -161,17 +152,17 @@ const ErrorState = ({
             strokeLinecap="round"
             strokeLinejoin="round"
             strokeWidth="2"
-            d="M12 8v4m0 4h.01M21 12a9 9 9 0 11-18 0 9 9 9 0 0118 0z"
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
           />
         </svg>
       </div>
-      <h3 className="text-xl font-medium text-white mb-2">
+      <h3 className="text-xl font-medium text-foreground mb-2">
         Something went wrong
       </h3>
-      <p className="text-gray-400 max-w-md mb-4">{message}</p>
+      <p className="text-muted-foreground max-w-md mb-4">{message}</p>
       <button
         onClick={retry}
-        className="px-4 py-2 bg-gray-800/70 rounded-full text-gray-300 hover:bg-gray-700 transition-all"
+        className="px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-accent transition-colors"
       >
         Try again
       </button>
@@ -313,16 +304,11 @@ const AllRecipesPage = () => {
   return (
     <div className="px-4 py-6 sm:py-8 md:px-8 max-w-7xl mx-auto">
       {/* Improve heading responsiveness */}
-      <div
-        //{ opacity: 0, y: 20 }}
-        // opacity: 1, y: 0 }}
-        // duration: 0.5 }}
-        className="mb-6 sm:mb-8"
-      >
-        <h1 className="text-2xl sm:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
           All Recipes
         </h1>
-        <p className="text-sm sm:text-base text-gray-400 mt-2">
+        <p className="text-sm sm:text-base text-muted-foreground mt-2">
           Discover and explore delicious recipes from our community
         </p>
       </div>
@@ -335,11 +321,13 @@ const AllRecipesPage = () => {
         className="mb-6 sm:mb-8 space-y-4"
       >
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
-          <div className="relative w-full sm:max-w-md">
-            <SearchBar value={searchQuery} onChange={handleSearchChange} />
+          <div className="flex gap-2 w-full sm:max-w-md">
+            <div className="flex-1">
+              <SearchBar value={searchQuery} onChange={handleSearchChange} />
+            </div>
             <button
               onClick={handleSearch}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 px-2 sm:px-3 py-1 rounded-full bg-gray-700/50 text-white text-sm hover:bg-gray-600/50 transition-all"
+              className="px-4 py-3 rounded-xl bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity whitespace-nowrap"
             >
               Search
             </button>
@@ -394,7 +382,7 @@ const AllRecipesPage = () => {
             <button
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
-              className="px-2 sm:px-3 py-1 sm:py-2 rounded-lg bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-700/50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-2 sm:px-3 py-1 sm:py-2 rounded-lg bg-muted text-muted-foreground hover:text-foreground hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="Previous page"
             >
               <svg
@@ -422,14 +410,14 @@ const AllRecipesPage = () => {
               .map((number, i, array) => (
                 <React.Fragment key={number}>
                   {i > 0 && array[i - 1] !== number - 1 && (
-                    <span className="px-2 py-1 text-gray-500">...</span>
+                    <span className="px-2 py-1 text-muted-foreground">...</span>
                   )}
                   <button
                     onClick={() => paginate(number)}
                     className={`w-8 h-8 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg ${
                       currentPage === number
-                        ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white"
-                        : "bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-700/50"
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground hover:text-foreground hover:bg-accent"
                     }`}
                     aria-label={`Page ${number}`}
                     aria-current={currentPage === number ? "page" : undefined}
@@ -442,7 +430,7 @@ const AllRecipesPage = () => {
             <button
               onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="px-2 sm:px-3 py-1 sm:py-2 rounded-lg bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-700/50 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-2 sm:px-3 py-1 sm:py-2 rounded-lg bg-muted text-muted-foreground hover:text-foreground hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
               aria-label="Next page"
             >
               <svg
@@ -466,8 +454,8 @@ const AllRecipesPage = () => {
       {/* Make loading state responsive */}
       {isLoading && (
         <div className="flex flex-col justify-center items-center h-48 sm:h-64">
-          <div className="w-12 h-12 sm:w-16 sm:h-16 mb-3 sm:mb-4 border-t-3 sm:border-t-4 border-b-3 sm:border-b-4 border-purple-500 rounded-full animate-spin"></div>
-          <p className="text-sm sm:text-base text-gray-400">Loading tasty recipes...</p>
+          <div className="w-12 h-12 sm:w-16 sm:h-16 mb-3 sm:mb-4 border-t-3 sm:border-t-4 border-b-3 sm:border-b-4 border-primary rounded-full animate-spin"></div>
+          <p className="text-sm sm:text-base text-muted-foreground">Loading tasty recipes...</p>
         </div>
       )}
 

@@ -11,6 +11,14 @@ import {
 } from "@/app/api/(favorites)/favorites";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { Heart, Star, Clock, CheckCircle2, CircleAlert, Edit, Trash2, Eye, EyeOff } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 // Recipe Card Component
 export const RecipeCardEditDelete = ({
@@ -35,9 +43,9 @@ export const RecipeCardEditDelete = ({
   const [isCheckingStatus, setIsCheckingStatus] = useState(true);
 
   const difficultyColors = {
-    easy: "from-green-500 to-emerald-700",
-    medium: "from-amber-500 to-amber-700",
-    hard: "from-red-500 to-red-700"
+    easy: "bg-green-500/10 text-green-700 dark:text-green-400 border border-green-500/30",
+    medium: "bg-amber-500/10 text-amber-700 dark:text-amber-400 border border-amber-500/30",
+    hard: "bg-red-500/10 text-red-700 dark:text-red-400 border border-red-500/30"
   };
 
   const formatDate = (dateString: string) => {
@@ -174,239 +182,157 @@ export const RecipeCardEditDelete = ({
 
   return (
     <>
-      <div className="relative bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden">
-        {/* Status badge */}
-        <div
-          className={`absolute top-3 right-3 z-10 px-3 py-1 rounded-full text-xs font-medium ${
-            recipe.isPublished
-              ? "bg-green-500/20 text-green-300 border border-green-500/30"
-              : "bg-amber-500/20 text-amber-300 border border-amber-500/30"
-          }`}
-        >
-          {recipe.isPublished ? "Published" : "Draft"}
-        </div>
-
-        {/* Add Favorite Button for users */}
-        {user?.role === "user" && (
-          <button
-            onClick={handleFavoriteClick}
-            disabled={isCheckingStatus}
-            className={`absolute top-3 left-20 z-20 cursor-pointer w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
-              isCheckingStatus
-                ? "bg-gray-700/50 text-gray-400"
-                : isFavorite
-                ? "bg-pink-500 text-white"
-                : "bg-gray-800/70 text-gray-300 backdrop-blur-sm border border-white/10 hover:bg-gray-700/90"
-            }`}
-            aria-label={
-              isFavorite ? "Remove from favorites" : "Add to favorites"
-            }
-          >
-            {isCheckingStatus ? (
-              <div className="w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin"></div>
-            ) : (
-              <svg
-                className={`w-4 h-4 transition-all duration-300 ${isAnimating ? 'animate-pulse scale-125' : ''} ${
-                  isFavorite ? "fill-current" : "stroke-current fill-none"
-                }`}
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-                strokeWidth={isFavorite ? "0" : "2"}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                />
-              </svg>
-            )}
-          </button>
-        )}
-
-        {user && (recipe.user === user._id || recipe.createdBy === user._id) && (
-          <div className="absolute top-3 left-3 z-10 px-3 py-1 rounded-full text-xs font-medium bg-purple-600/30 text-purple-300 border border-purple-500/30 flex items-center gap-1">
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              viewBox="0 0 20 20" 
-              fill="currentColor" 
-              className="w-3.5 h-3.5"
-            >
-              <path 
-                fillRule="evenodd" 
-                d="M10.868 2.884c-.321-.772-1.415-.772-1.736 0l-1.83 4.401-4.753.381c-.833.067-1.171 1.107-.536 1.651l3.62 3.102-1.106 4.637c-.194.813.691 1.456 1.405 1.02L10 15.591l4.069 2.485c.713.436 1.598-.207 1.404-1.02l-1.106-4.637 3.62-3.102c.635-.544.297-1.584-.536-1.65l-4.752-.382-1.831-4.401Z" 
-                clipRule="evenodd" 
-              />
-            </svg>
-            Mine
-          </div>
-        )}
-
+      <Card className="overflow-hidden hover:shadow-lg transition-shadow duration-200 h-full relative">
         {/* Featured Image */}
-        <div className="relative h-48 w-full overflow-hidden">
+        <div className="relative aspect-video w-full overflow-hidden">
           <Image
             src={recipe.featuredImage || "/placeholder-recipe.jpg"}
             alt={recipe.title}
             fill
-            className="object-cover transition-transform duration-300 hover:scale-105"
+            className="object-cover"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-transparent" />
-
-          {/* Category */}
-          <span className="absolute bottom-3 left-3 text-xs uppercase tracking-wider px-2 py-1 rounded-full bg-gray-800/70 text-gray-300 backdrop-blur-sm border border-white/10">
-            {recipe.category}
-          </span>
-
-          {/* Cooking time */}
-          <span className="absolute bottom-3 right-3 text-xs flex items-center px-2 py-1 rounded-full bg-gray-800/70 text-gray-300 backdrop-blur-sm border border-white/10">
-            <svg
-              className="w-3 h-3 mr-1"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
+          
+          {/* Favorite Button - Top Left */}
+          {user?.role === "user" && (
+            <button
+              onClick={handleFavoriteClick}
+              disabled={isCheckingStatus}
+              className={`absolute top-2 left-2 sm:top-3 sm:left-3 z-20 w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all duration-200 ${
+                isCheckingStatus
+                  ? "bg-background/80 backdrop-blur-sm border-2 border-muted-foreground"
+                  : isFavorite
+                  ? "bg-primary text-primary-foreground border-2 border-primary-foreground"
+                  : "bg-background/80 backdrop-blur-sm border-2 border-primary text-primary hover:bg-primary/10"
+              }`}
+              aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-              ></path>
-            </svg>
-            {recipe.cookingTime} min
-          </span>
+              {isCheckingStatus ? (
+                <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 border-2 border-primary border-t-transparent rounded-full animate-spin"></div>
+              ) : (
+                <Heart
+                  className={`w-3.5 h-3.5 sm:w-4 sm:h-4 transition-all duration-300 ${isAnimating ? 'animate-pulse scale-125' : ''} ${
+                    isFavorite ? "fill-current text-primary-foreground" : "text-primary"
+                  }`}
+                  strokeWidth={isFavorite ? 0 : 2}
+                />
+              )}
+            </button>
+          )}
+
+          {/* "Mine" Badge - Top Left (if favorite button not shown) or below it */}
+          {user && (recipe.user === user._id || recipe.createdBy === user._id) && (
+            <div className={`absolute ${user?.role === "user" ? "top-2 left-10 sm:top-3 sm:left-12" : "top-2 left-2 sm:top-3 sm:left-3"} z-10 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium bg-primary/20 text-primary border border-primary/30 flex items-center gap-0.5 sm:gap-1 backdrop-blur-sm`}>
+              <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-current" />
+              Mine
+            </div>
+          )}
+
+          {/* Rating Badge - Top Right */}
+          {recipe.averageRating > 0 && (
+            <div className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10 bg-primary text-primary-foreground px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-semibold flex items-center gap-0.5 sm:gap-1 shadow-md">
+              <Star className="h-2.5 w-2.5 sm:h-3 sm:w-3 fill-current" />
+              {recipe.averageRating.toFixed(1)}
+            </div>
+          )}
+
+          {/* Published Status Badge - Below rating if present */}
+          {recipe.isPublished !== undefined && (
+            <div className={`absolute ${recipe.averageRating > 0 ? "top-10 right-2 sm:top-12 sm:right-3" : "top-2 right-2 sm:top-3 sm:right-3"} z-10`}>
+              {recipe.isPublished !== false ? (
+                <span className="flex items-center text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full bg-green-500/10 text-green-600 dark:text-green-400 border border-green-500/20 backdrop-blur-sm">
+                  <CheckCircle2 className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-0.5 sm:mr-1" />
+                  Published
+                </span>
+              ) : (
+                <span className="flex items-center text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 backdrop-blur-sm">
+                  <CircleAlert className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-0.5 sm:mr-1" />
+                  Draft
+                </span>
+              )}
+            </div>
+          )}
+
+          {/* Edit Button - Top Right (if no rating) or positioned appropriately */}
+          {user &&
+            (user.role === "admin" ||
+              (user.role === "user" &&
+                (recipe.user === user._id ||
+                  recipe.roleCreated === "user"))) && (
+              <Button
+                size="sm"
+                variant="default"
+                className="absolute top-2 right-2 sm:top-3 sm:right-3 z-10 h-6 sm:h-7 px-1.5 sm:px-2 text-[10px] sm:text-xs"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  goToEdit();
+                }}
+              >
+                <Edit className="h-2.5 w-2.5 sm:h-3 sm:w-3 sm:mr-1" />
+                <span className="hidden sm:inline">Edit</span>
+              </Button>
+            )}
         </div>
 
-        {/* Content - keeping everything exactly the same */}
-        <div className="p-5">
-          <div className="flex items-center justify-between">
-            <Link href={`/dashboard/recipe/${recipe._id}`}>
-              <h3 className="text-xl font-bold text-white mb-2 line-clamp-1">
-                {recipe.title}
-              </h3>
-            </Link>
-            {/* Edit button - show only if user is admin or creator of the recipe */}
-            {user &&
-              (user.role === "admin" ||
-                (user.role === "user" &&
-                  (recipe.user === user._id ||
-                    recipe.roleCreated === "user"))) && (
-                <button
-                  className="absolute cursor-pointer top-3 right-3 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-medium px-3 py-1.5 rounded-full shadow-lg hover:from-purple-700 hover:to-pink-700 transition-all duration-300 flex items-center gap-1.5 z-10"
+        <CardHeader className="p-3 sm:p-6">
+          <CardTitle className="line-clamp-2 text-sm sm:text-base">{recipe.title}</CardTitle>
+        </CardHeader>
+
+        <CardContent className="p-3 sm:p-6 pt-0">
+          <div className="flex items-center justify-between text-xs sm:text-sm mb-2 sm:mb-3">
+            {recipe.cookingTime && (
+              <div className="flex items-center gap-1 text-foreground">
+                <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                <span>{recipe.cookingTime} min</span>
+              </div>
+            )}
+            {recipe.difficulty && (
+              <span
+                className={`px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium border ${
+                  difficultyColors[recipe.difficulty as keyof typeof difficultyColors] ||
+                  "bg-muted text-muted-foreground border-border"
+                }`}
+              >
+                {recipe.difficulty.charAt(0).toUpperCase() + recipe.difficulty.slice(1)}
+              </span>
+            )}
+          </div>
+
+          {recipe.category && (
+            <div className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wider mb-2 sm:mb-3">
+              {recipe.category}
+            </div>
+          )}
+
+          {/* Actions Footer */}
+          <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              {user?.role === "super_admin" && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="h-6 sm:h-7 px-1.5 sm:px-2 text-[10px] sm:text-xs"
                   onClick={(e) => {
                     e.stopPropagation();
-                    goToEdit();
+                    e.preventDefault();
+                    onTogglePublish?.(recipe._id, recipe.isPublished);
                   }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="w-3.5 h-3.5"
-                  >
-                    <path d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32l8.4-8.4Z" />
-                    <path d="M5.25 5.25a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3V13.5a.75.75 0 0 0-1.5 0v5.25a1.5 1.5 0 0 1-1.5 1.5H5.25a1.5 1.5 0 0 1-1.5-1.5V8.25a1.5 1.5 0 0 1 1.5-1.5h5.25a.75.75 0 0 0 0-1.5H5.25Z" />
-                  </svg>
-                  Edit
-                </button>
-              )}
-          </div>
-
-          <div className="flex justify-between items-center mb-4">
-            {/* Difficulty */}
-            <span
-              className={`text-xs font-medium px-2 py-1 rounded-full bg-gradient-to-r ${
-                difficultyColors[
-                  recipe.difficulty as keyof typeof difficultyColors
-                ]
-              }`}
-            >
-              {recipe.difficulty.charAt(0).toUpperCase() +
-                recipe.difficulty.slice(1)}
-            </span>
-
-            {/* Rating */}
-            <div className="flex items-center">
-              <svg
-                className="w-4 h-4 text-yellow-500 mr-1"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-              </svg>
-              <span className="text-white text-sm font-medium">
-                {recipe.averageRating?.toFixed(1) || "0.0"}
-              </span>
-            </div>
-          </div>
-
-          {/* Date */}
-          <p className="text-gray-400 text-xs">
-            Plan for {formatDate(recipe.createdAt)}
-          </p>
-
-          {/* Actions */}
-          <div className="mt-5 flex justify-between items-center pt-4 border-t border-gray-700">
-            <div className="space-x-2">
-              {user?.role === "super_admin" && (
-                <button
-                  onClick={() =>
-                    onTogglePublish?.(recipe._id, recipe.isPublished)
-                  }
-                  className="text-xs px-3 py-1.5 rounded-lg bg-purple-700/40 hover:bg-purple-700/60 text-white transition-colors flex items-center"
                 >
                   {recipe.isPublished ? (
                     <>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-3.5 w-3.5 mr-1"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      Unpublish
+                      <EyeOff className="h-2.5 w-2.5 sm:h-3 sm:w-3 sm:mr-1" />
+                      <span className="hidden sm:inline">Unpublish</span>
                     </>
                   ) : (
                     <>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-3.5 w-3.5 mr-1"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-                        <path
-                          fillRule="evenodd"
-                          d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                      Publish
+                      <Eye className="h-2.5 w-2.5 sm:h-3 sm:w-3 sm:mr-1" />
+                      <span className="hidden sm:inline">Publish</span>
                     </>
                   )}
-                </button>
+                </Button>
               )}
-              <p className="text-gray-400 text-xs flex items-center">
-                <svg
-                  className="w-3.5 h-3.5 mr-1 text-gray-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                  ></path>
-                </svg>
+              <p className="text-[10px] sm:text-xs text-muted-foreground flex items-center">
                 By {recipe?.adminDetails?.name || recipe?.userDetails?.name || "Chef"}
               </p>
             </div>
@@ -415,118 +341,74 @@ export const RecipeCardEditDelete = ({
                 (user.role === "user" &&
                   (recipe.user === user._id ||
                     recipe.roleCreated === "user"))) && (
-                <button
-                  onClick={handleDeleteClick}
-                  className="text-xs px-3 py-1.5 rounded-lg bg-red-700/40 hover:bg-red-700/60 text-white transition-colors flex items-center"
+                <Button
+                  size="sm"
+                  variant="destructive"
+                  className="h-6 sm:h-7 px-1.5 sm:px-2 text-[10px] sm:text-xs"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    handleDeleteClick(e);
+                  }}
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-3.5 w-3.5 mr-1"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
-                  Delete
-                </button>
+                  <Trash2 className="h-2.5 w-2.5 sm:h-3 sm:w-3 sm:mr-1" />
+                  <span className="hidden sm:inline">Delete</span>
+                </Button>
               )}
           </div>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
-      {/* Delete Confirmation Modal - keeping exactly the same */}
+      {/* Delete Confirmation Modal */}
       {showDeleteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-gray-800 border border-gray-700 rounded-2xl overflow-hidden max-w-md w-full shadow-2xl">
-            <div className="p-6">
-              <div className="w-16 h-16 mx-auto mb-4 bg-red-500/10 rounded-full flex items-center justify-center">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-8 w-8 text-red-500"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                    clipRule="evenodd"
-                  />
-                </svg>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-background/80 backdrop-blur-sm">
+          <Card className="max-w-md w-full mx-2 sm:mx-0">
+            <CardContent className="p-4 sm:p-6">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 bg-destructive/10 rounded-full flex items-center justify-center">
+                <Trash2 className="h-6 w-6 sm:h-8 sm:w-8 text-destructive" />
               </div>
 
-              <h3 className="text-xl font-bold text-white text-center mb-2">
+              <h3 className="text-lg sm:text-xl font-bold text-foreground text-center mb-2">
                 Delete Recipe
               </h3>
-              <p className="text-gray-300 text-center mb-6">
+              <p className="text-sm sm:text-base text-muted-foreground text-center mb-4 sm:mb-6">
                 Are you sure you want to delete{" "}
-                <span className="font-semibold text-white">
+                <span className="font-semibold text-foreground">
                   "{recipe.title}"
                 </span>
                 ? This action cannot be undone.
               </p>
 
-              <div className="flex space-x-3">
-                <button
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 sm:space-x-3">
+                <Button
+                  variant="outline"
+                  className="flex-1 text-sm sm:text-base"
                   onClick={() => setShowDeleteModal(false)}
-                  className="flex-1 px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-xl text-white font-medium transition-colors"
                   disabled={isDeleting}
                 >
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button
+                  variant="destructive"
+                  className="flex-1 text-sm sm:text-base"
                   onClick={confirmDelete}
-                  className="flex-1 px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 rounded-xl text-white font-medium transition-colors flex items-center justify-center"
                   disabled={isDeleting}
                 >
                   {isDeleting ? (
                     <>
-                      <svg
-                        className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
+                      <div className="w-4 h-4 border-2 border-destructive-foreground border-t-transparent rounded-full animate-spin mr-2"></div>
                       Deleting...
                     </>
                   ) : (
                     <>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-4 w-4 mr-1"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
+                      <Trash2 className="h-4 w-4 mr-1" />
                       Delete Recipe
                     </>
                   )}
-                </button>
+                </Button>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </div>
       )}
     </>

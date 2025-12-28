@@ -12,8 +12,8 @@ export const CategoryFilter = ({
       onClick={() => onChange("all")}
       className={`px-3 py-1.5 text-sm rounded-full transition-all ${
         selectedCategory === "all"
-          ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white"
-          : "bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-700/50"
+          ? "bg-primary text-primary-foreground"
+          : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
       }`}
     >
       All
@@ -25,8 +25,8 @@ export const CategoryFilter = ({
         onClick={() => onChange(category)}
         className={`px-3 py-1.5 text-sm rounded-full transition-all ${
           selectedCategory === category
-            ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white"
-            : "bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-700/50"
+            ? "bg-primary text-primary-foreground"
+            : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
         }`}
       >
         {category.charAt(0).toUpperCase() + category.slice(1)}

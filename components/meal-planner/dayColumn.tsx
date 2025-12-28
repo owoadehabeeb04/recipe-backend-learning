@@ -29,8 +29,8 @@ export const DayColumn = memo(({ date, dayPlan, onAddMeal, isCurrentDay }: DayCo
   return (
     <div className={`transition-all duration-200 ${
       isCurrentDay 
-        ? 'bg-gradient-to-b from-purple-50 to-pink-50 rounded-xl border border-purple-200 shadow-sm' 
-        : 'bg-white rounded-lg'
+        ? 'bg-primary/5 rounded-xl border border-primary/20 shadow-sm' 
+        : 'bg-card rounded-lg border border-border'
     }`}>
       <WeekdayHeader date={date} isCurrentDay={isCurrentDay} />
       

@@ -2,6 +2,7 @@ import { format, startOfWeek, addDays, addWeeks, subWeeks, isSameDay } from "dat
 import { CalendarIcon, ChevronLeft, ChevronRight } from "lucide-react";
 import { DayColumn } from "./dayColumn";
 import { memo, useCallback, useMemo } from "react";
+import { Button } from "@/components/ui/button";
 
 interface CalendarHeaderProps {
   currentDate: Date;
@@ -14,40 +15,46 @@ export const CalendarHeader = memo(({ currentDate, onPrevWeek, onNextWeek, onTod
   const monthYear = useMemo(() => format(currentDate, 'MMMM yyyy'), [currentDate]);
   
   return (
-    <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-4 sm:p-6">
-      <div className="flex justify-between items-center">
+    <div className="bg-primary text-primary-foreground p-3 sm:p-4 md:p-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0">
         <div className="flex items-center">
-          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/20 flex items-center justify-center mr-3">
-            <CalendarIcon size={18} className="sm:hidden" />
+          <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-primary-foreground/20 flex items-center justify-center mr-2 sm:mr-3">
+            <CalendarIcon size={16} className="sm:hidden" />
             <CalendarIcon size={20} className="hidden sm:block" />
           </div>
           <div>
-            <h2 className="text-xl sm:text-2xl font-bold">{monthYear}</h2>
-            <p className="text-white/80 text-sm">Plan your weekly meals</p>
+            <h2 className="text-lg sm:text-xl md:text-2xl font-bold">{monthYear}</h2>
+            <p className="text-primary-foreground/80 text-xs sm:text-sm">Plan your weekly meals</p>
           </div>
         </div>
         
-        <div className="flex items-center space-x-2">
-          <button 
+        <div className="flex items-center space-x-1 sm:space-x-2 w-full sm:w-auto justify-end">
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={onPrevWeek}
-            className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors duration-200"
+            className="text-primary-foreground hover:bg-primary-foreground/20 h-8 w-8 sm:h-10 sm:w-10"
             aria-label="Previous week"
           >
-            <ChevronLeft size={18} />
-          </button>
-          <button 
+            <ChevronLeft size={16} className="sm:h-[18px] sm:w-[18px]" />
+          </Button>
+          <Button
+            variant="secondary"
             onClick={onToday}
-            className="px-3 sm:px-4 py-2 bg-white/15 hover:bg-white/25 rounded-lg transition-colors duration-200 text-sm font-medium"
+            size="sm"
+            className="bg-primary-foreground/15 hover:bg-primary-foreground/25 text-primary-foreground border-0 text-xs sm:text-sm px-2 sm:px-3"
           >
             Today
-          </button>
-          <button 
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={onNextWeek}
-            className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors duration-200"
+            className="text-primary-foreground hover:bg-primary-foreground/20 h-8 w-8 sm:h-10 sm:w-10"
             aria-label="Next week"
           >
-            <ChevronRight size={18} />
-          </button>
+            <ChevronRight size={16} className="sm:h-[18px] sm:w-[18px]" />
+          </Button>
         </div>
       </div>
     </div>
@@ -64,21 +71,21 @@ export const WeekdayHeader = memo(({ date, isCurrentDay }: { date: Date; isCurre
   return (
     <div className={`text-center py-3 sm:py-4 ${
       isCurrentDay 
-        ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-t-xl' 
-        : 'bg-gray-50 text-gray-700'
+        ? 'bg-primary text-primary-foreground rounded-t-xl' 
+        : 'bg-muted text-muted-foreground'
     }`}>
       <p className={`text-xs sm:text-sm font-medium ${
-        isCurrentDay ? 'text-white/90' : 'text-gray-500'
+        isCurrentDay ? 'text-primary-foreground/90' : 'text-muted-foreground'
       }`}>
         {dayName}
       </p>
       <p className={`text-lg sm:text-2xl font-bold ${
-        isCurrentDay ? 'text-white' : 'text-gray-800'
+        isCurrentDay ? 'text-primary-foreground' : 'text-foreground'
       }`}>
         {dayNumber}
       </p>
       {isCurrentDay && (
-        <div className="w-1 h-1 bg-white rounded-full mx-auto mt-1"></div>
+        <div className="w-1 h-1 bg-primary-foreground rounded-full mx-auto mt-1"></div>
       )}
     </div>
   );
@@ -115,26 +122,26 @@ export const MealPlanCalendar = memo(({ weekDates, weekPlan, onAddMeal }: MealPl
   }, [weekDates, weekPlan, onAddMeal, today]);
   
   return (
-    <div className="bg-gradient-to-b from-gray-50 to-white">
+    <div className="bg-background">
       {/* Mobile view - horizontal scroll with better UX */}
       <div className="block lg:hidden">
-        <div className="overflow-x-auto pb-4 px-2">
-          <div className="flex space-x-3 min-w-[700px]">
+        <div className="overflow-x-auto pb-4 px-2 -mx-2 sm:mx-0" style={{ WebkitOverflowScrolling: 'touch' }}>
+          <div className="flex space-x-2 sm:space-x-3 min-w-[600px] sm:min-w-[700px] px-2">
             {dayColumns}
           </div>
         </div>
-        <div className="text-center pb-4 text-xs text-gray-500 bg-gray-50">
+        <div className="text-center pb-3 sm:pb-4 text-[10px] sm:text-xs text-muted-foreground bg-muted/30 py-2">
           <div className="flex items-center justify-center">
-            <div className="w-8 h-0.5 bg-gray-300 rounded mr-2"></div>
-            Swipe horizontally to view more days
-            <div className="w-8 h-0.5 bg-gray-300 rounded ml-2"></div>
+            <div className="w-6 sm:w-8 h-0.5 bg-border rounded mr-1 sm:mr-2"></div>
+            <span className="whitespace-nowrap">Swipe to view more days</span>
+            <div className="w-6 sm:w-8 h-0.5 bg-border rounded ml-1 sm:ml-2"></div>
           </div>
         </div>
       </div>
       
       {/* Desktop view - enhanced grid */}
       <div className="hidden lg:block p-4 sm:p-6">
-        <div className="grid grid-cols-7 gap-4">
+        <div className="grid grid-cols-7 gap-3 sm:gap-4">
           {dayColumns}
         </div>
       </div>

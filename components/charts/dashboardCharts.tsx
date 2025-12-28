@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import dynamic from 'next/dynamic';
-
-// Dynamically import ApexCharts components to avoid SSR issues
-const ReactApexChart = dynamic(() => import('react-apexcharts'), { ssr: false });
+import { useMemo } from 'react';
+import { AreaChart, Area, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { ChartContainer, ChartTooltip, ChartTooltipContent, ChartLegend, ChartLegendContent } from '@/components/ui/chart';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface ChartProps {
   statistics: {
@@ -25,266 +24,183 @@ export const DashboardCharts = ({
   }, 
   isLoading 
 }: ChartProps) => {
-  const [isMounted, setIsMounted] = useState(false);
+  // Chart configuration with purple theme colors
+  const chartConfig = {
+    allRecipes: {
+      label: "All Recipes",
+      color: "hsl(var(--primary))",
+    },
+    myRecipes: {
+      label: "My Recipes",
+      color: "hsl(270 65% 70%)",
+    },
+    published: {
+      label: "Published",
+      color: "hsl(270 60% 60%)",
+    },
+    unpublished: {
+      label: "Unpublished",
+      color: "hsl(270 55% 50%)",
+    },
+  };
 
-  // Only render charts on client-side to avoid hydration errors
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
-  // Setup area chart options for recipe trends
-  const areaChartOptions = {
-    chart: {
-      type: 'area' as const,
-      height: '100%',
-      toolbar: {
-        show: false
-      },
-      background: 'transparent',
-      responsive: [{
-        breakpoint: 768,
-        options: {
-          legend: {
-            position: 'bottom' as const,
-            horizontalAlign: 'center' as const
-          },
-          xaxis: {
-            labels: {
-              rotate: -45,
-              style: {
-                fontSize: '10px'
-              }
-            }
-          }
-        }
-      }]
-    },
-    stroke: {
-      curve: 'smooth' as const,
-      width: 2
-    },
-    colors: ['#805ad5', '#ed64a6', '#3182ce', '#d69e2e'],
-    fill: {
-      type: 'gradient',
-      gradient: {
-        shadeIntensity: 1,
-        opacityFrom: 0.3,
-        opacityTo: 0.1,
-        stops: [0, 90, 100]
-      }
-    },
-    dataLabels: {
-      enabled: false
-    },
-    grid: {
-      borderColor: 'rgba(255, 255, 255, 0.1)',
-      xaxis: {
-        lines: {
-          show: false
-        }
-      }
-    },
-    tooltip: {
-      theme: 'dark',
-      x: {
-        show: false
-      },
-      y: {
-        formatter: (val: number) => `${val} recipes`
-      }
-    },
-    legend: {
-      position: 'top' as const,
-      horizontalAlign: 'right' as const,
-      labels: {
-        colors: '#FFFFFF99'
-      }
-    },
-    xaxis: {
-      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-      labels: {
-        style: {
-          colors: Array(12).fill('#FFFFFF99')
-        }
-      },
-      axisBorder: {
-        show: false
-      },
-      axisTicks: {
-        show: false
-      }
-    },
-    yaxis: {
-      labels: {
-        style: {
-          colors: '#FFFFFF99'
-        },
-        formatter: (val: number) => Math.round(val).toString()
-      }
+  // Generate area chart data with natural growth pattern
+  const areaChartData = useMemo(() => {
+    if (isLoading) {
+      return Array(12).fill(null).map((_, i) => ({
+        month: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][i],
+        allRecipes: 0,
+        myRecipes: 0,
+        published: 0,
+        unpublished: 0,
+      }));
     }
-  };
 
-  // Setup pie chart options for recipe distribution
-  const pieChartOptions = {
-    chart: {
-      type: 'pie' as const,
-      background: 'transparent',
-      foreColor: '#a0aec0'
-    },
-    colors: ['#805ad5', '#ed64a6', '#3182ce', '#d69e2e'],
-    labels: ['All Recipes', 'My Recipes', 'Published', 'Unpublished'],
-    legend: {
-      position: 'bottom' as const,
-      fontSize: '14px',
-      labels: {
-        colors: ['#FFFFFF99', '#FFFFFF99', '#FFFFFF99', '#FFFFFF99']
-      },
-      itemMargin: {
-        horizontal: 10,
-        vertical: 5
-      }
-    },
-    plotOptions: {
-      pie: {
-        donut: {
-          size: '55%'
-        }
-      }
-    },
-    dataLabels: {
-      enabled: true,
-      style: {
-        fontSize: '14px',
-        fontFamily: 'inherit',
-        fontWeight: 'normal',
-        colors: ['#FFFFFF']
-      },
-      dropShadow: {
-        enabled: false
-      }
-    },
-    stroke: {
-      width: 2,
-      colors: ['#1a202c']
-    },
-    tooltip: {
-      theme: 'dark',
-      y: {
-        formatter: (val: number) => `${val} recipes`
-      }
-    },
-    responsive: [{
-      breakpoint: 480,
-      options: {
-        chart: {
-          height: 300
-        },
-        legend: {
-          position: 'bottom'
-        }
-      }
-    }]
-  };
-
-  // Generate some realistic-looking data for the area chart
-  // We'll create a pattern with some variation to mimic growth over time
-  const generateAreaData = () => {
-    // Generate consistent but random-looking values
-    const baseValue = (max: number) => Math.max(1, Math.round(max * 0.3));
-    const growth = (i: number, max: number) => 
-      Math.round(baseValue(max) + (i * max * 0.06) + (Math.sin(i) * max * 0.03));
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     
-    const allRecipeData = Array(12).fill(0).map((_, i) => growth(i, statistics.allRecipes));
-    const myRecipeData = Array(12).fill(0).map((_, i) => growth(i, statistics.myRecipes));
-    const publishedData = Array(12).fill(0).map((_, i) => growth(i, statistics.publishedRecipes));
-    const unpublishedData = Array(12).fill(0).map((_, i) => growth(i, statistics.unpublishedRecipes));
-    
-    return [
-      {
-        name: 'All Recipes',
-        data: allRecipeData
-      },
-      {
-        name: 'My Recipes',
-        data: myRecipeData
-      },
-      {
-        name: 'Published',
-        data: publishedData
-      },
-      {
-        name: 'Unpublished',
-        data: unpublishedData
-      }
-    ];
-  };
+    return months.map((month, i) => {
+      // Natural growth curve with some variation
+      const progress = i / 11; // 0 to 1
+      const growthFactor = progress * 0.7 + 0.3; // Start at 30%, grow to 100%
+      const variation = Math.sin(progress * Math.PI * 2) * 0.05; // Small natural variation
+      
+      return {
+        month,
+        allRecipes: Math.max(0, Math.round(statistics.allRecipes * (growthFactor + variation))),
+        myRecipes: Math.max(0, Math.round(statistics.myRecipes * (growthFactor + variation))),
+        published: Math.max(0, Math.round(statistics.publishedRecipes * (growthFactor + variation))),
+        unpublished: Math.max(0, Math.round(statistics.unpublishedRecipes * (growthFactor + variation))),
+      };
+    });
+  }, [statistics, isLoading]);
 
-  // For the pie chart data
-  const pieChartSeries = isLoading 
-    ? [1, 1, 1, 1] // Placeholder data while loading
-    : [
-        statistics.allRecipes || 0,
-        statistics.myRecipes || 0,
-        statistics.publishedRecipes || 0,
-        statistics.unpublishedRecipes || 0
+  // Pie chart data - showing published vs unpublished
+  const pieChartData = useMemo(() => {
+    if (isLoading) {
+      return [
+        { name: "Published", value: 1, fill: chartConfig.published.color },
+        { name: "Unpublished", value: 1, fill: chartConfig.unpublished.color },
       ];
+    }
 
-  // Generate series data for the area chart
-  const areaChartSeries = isLoading 
-    ? [
-        { name: 'All Recipes', data: Array(12).fill(1) },
-        { name: 'My Recipes', data: Array(12).fill(1) },
-        { name: 'Published', data: Array(12).fill(1) },
-        { name: 'Unpublished', data: Array(12).fill(1) }
-      ]
-    : generateAreaData();
+    const published = statistics.publishedRecipes || 0;
+    const unpublished = statistics.unpublishedRecipes || 0;
+    const total = published + unpublished;
+
+    if (total === 0) {
+      return [
+        { name: "No Data", value: 1, fill: "hsl(var(--muted))" },
+      ];
+    }
+
+    return [
+      { 
+        name: "Published", 
+        value: published,
+        fill: chartConfig.published.color 
+      },
+      { 
+        name: "Unpublished", 
+        value: unpublished,
+        fill: chartConfig.unpublished.color 
+      },
+    ].filter(item => item.value > 0);
+  }, [statistics, isLoading, chartConfig]);
 
   return (
-    <div
-      //{ opacity: 0, y: 10 }}
-      // opacity: 1, y: 0 }}
-      // duration: 0.3, delay: 0.3 }}
-      className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6"
-    >
-      {/* Area Chart - Recipe Trends */}
-      <div className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
-        <h3 className="text-white font-medium mb-4">Recipe Growth Trends</h3>
-        <div className="h-80">
-          {isMounted && !isLoading ? (
-            <ReactApexChart 
-              options={areaChartOptions} 
-              series={areaChartSeries} 
-              type="area" 
-              height="100%" 
-              width="100%"
-            />
+    <div className="mt-6 grid lg:grid-cols-3 grid-cols-1 flex-col lg:flex-row gap-6">
+      {/* Area Chart - Recipe Growth Trends */}
+      <Card className="lg:col-span-2 col-span-1">
+        <CardHeader>
+          <CardTitle>Recipe Growth Trends</CardTitle>
+        </CardHeader>
+        <CardContent className="w-full">
+          {isLoading ? (
+            <div className="flex items-center justify-center h-80 w-full">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            </div>
           ) : (
-            <div className="flex items-center justify-center h-full">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+            <div className="w-full h-80">
+              <ChartContainer config={chartConfig} className="w-full h-full">
+                <AreaChart data={areaChartData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                  <XAxis 
+                    dataKey="month" 
+                    tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+                    tickLine={{ stroke: "hsl(var(--border))" }}
+                    angle={-45}
+                    textAnchor="end"
+                    height={60}
+                  />
+                  <YAxis 
+                    tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 12 }}
+                    tickLine={{ stroke: "hsl(var(--border))" }}
+                    width={60}
+                  />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <ChartLegend content={<ChartLegendContent />} />
+                  <Area 
+                    type="monotone" 
+                    dataKey="allRecipes" 
+                    stroke={chartConfig.allRecipes.color}
+                    strokeWidth={2}
+                    fill={chartConfig.allRecipes.color}
+                    fillOpacity={0.1}
+                  />
+                  <Area 
+                    type="monotone" 
+                    dataKey="published" 
+                    stroke={chartConfig.published.color}
+                    strokeWidth={2}
+                    fill={chartConfig.published.color}
+                    fillOpacity={0.1}
+                  />
+                </AreaChart>
+              </ChartContainer>
             </div>
           )}
-        </div>
-      </div>
+        </CardContent>
+      </Card>
 
       {/* Pie Chart - Recipe Distribution */}
-      <div className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-6">
-        <h3 className="text-white font-medium mb-4">Recipe Distribution</h3>
-        <div className="h-80">
-          {isMounted && !isLoading ? (
-            <ReactApexChart 
-              options={pieChartOptions}
-              series={pieChartSeries}
-              type="pie"
-              height="100%"
-              width="100%"
-            />
+      <Card className="lg:col-span-1 w-full overflow-hidden">
+        <CardHeader>
+          <CardTitle>Recipe Distribution</CardTitle>
+        </CardHeader>
+        <CardContent className="w-full">
+          {isLoading ? (
+            <div className="flex items-center justify-center h-80 w-full">
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            </div>
           ) : (
-            <div className="flex items-center justify-center h-full">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+            <div className="w-full h-80">
+              <ChartContainer config={chartConfig} className="w-full h-full">
+                <PieChart>
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Pie
+                    data={pieChartData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) => percent > 0.05 ? `${(percent * 100).toFixed(0)}%` : ''}
+                    outerRadius="70%"
+                    innerRadius="40%"
+                    fill="#8884d8"
+                    dataKey="value"
+                    stroke="hsl(var(--background))"
+                    strokeWidth={2}
+                  >
+                    {pieChartData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.fill} />
+                    ))}
+                  </Pie>
+                  <ChartLegend content={<ChartLegendContent />} />
+                </PieChart>
+              </ChartContainer>
             </div>
           )}
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

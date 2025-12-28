@@ -7,11 +7,7 @@ import { getMealPlanByWeek } from "@/app/api/(meal-planner)/mealplanner";
 import MealPlannerDetails from "@/components/meal-planner/mealPlannerDetails";
 import Link from "next/link";
 
-export default function MealPlanPage({
-  params
-}: {
-  params:any
-}) {
+export default function MealPlanPage({ params }: { params: any }) {
   const unwrappedParams = params instanceof Promise ? use(params) : params;
   const { slug } = unwrappedParams;
   const { token } = useAuthStore();
@@ -27,36 +23,37 @@ export default function MealPlanPage({
     try {
       setIsLoading(true);
       const response: any = await getMealPlanByWeek(slug, token);
-      
-      
+
       // First check if we have a response
       if (!response) {
         setMealPlan(null);
         setError("No response received from the server");
         return;
       }
-      
+
       // Then check if the response indicates success
       if (!response.success) {
         setMealPlan(null);
         setError(response.message || "Failed to load meal plan");
         return;
       }
-      
+
       // Then check if we have the data structure we expect
       if (!response.data) {
         setMealPlan(null);
         setError("Response missing expected data structure");
         return;
       }
-    
+
       // Finally, set the meal plan data
       setMealPlan(response.data);
       setError(null);
     } catch (error) {
       console.error("Error fetching meal plan:", error);
       setMealPlan(null);
-      setError(error instanceof Error ? error.message : "An unexpected error occurred");
+      setError(
+        error instanceof Error ? error.message : "An unexpected error occurred"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -79,7 +76,8 @@ export default function MealPlanPage({
       <MealPlannerError
         error={
           error ||
-          "An error occurred while fetching the meal plan. Please try again."}
+          "An error occurred while fetching the meal plan. Please try again."
+        }
       />
     );
   }
@@ -91,7 +89,7 @@ export default function MealPlanPage({
 
   // Check if we have actual meal plan data
   if (!mealPlan) {
-    console.error("No meal plan data in response",);
+    console.error("No meal plan data in response");
     return <MealPlannerError error="No meal plan data found for this week" />;
   }
 
@@ -102,22 +100,22 @@ export default function MealPlanPage({
 // Loading skeleton component
 const MealPlannerDetailsSkeleton = () => (
   <div className="p-6 max-w-7xl mx-auto">
-    <div className="h-12 w-1/3 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-lg mb-8 animate-pulse"></div>
+    <div className="h-12 w-1/3 bg-primary/20 rounded-lg mb-8 animate-pulse"></div>
     <div className="grid grid-cols-1 md:grid-cols-7 gap-4">
       {Array(7)
         .fill(0)
         .map((_, i) => (
           <div
             key={i}
-            className="bg-black/10 backdrop-blur-sm border border-purple-900/10 rounded-xl p-4"
+            className="bg-card backdrop-blur-sm border border-border rounded-xl p-4"
           >
-            <div className="h-6 w-24 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded mb-4 animate-pulse"></div>
+            <div className="h-6 w-24 bg-primary/20 rounded mb-4 animate-pulse"></div>
             {Array(3)
               .fill(0)
               .map((_, j) => (
                 <div key={j} className="mb-4">
-                  <div className="h-4 w-20 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded mb-2 animate-pulse"></div>
-                  <div className="h-24 bg-gradient-to-r from-purple-600/10 to-pink-600/10 rounded-lg animate-pulse"></div>
+                  <div className="h-4 w-20 bg-primary/20 rounded mb-2 animate-pulse"></div>
+                  <div className="h-24 bg-primary/10 rounded-lg animate-pulse"></div>
                 </div>
               ))}
           </div>
@@ -129,10 +127,10 @@ const MealPlannerDetailsSkeleton = () => (
 // Error component
 const MealPlannerError = ({ error }: { error: string | null }) => (
   <div className="flex flex-col items-center justify-center min-h-[70vh] p-6">
-    <div className="w-20 h-20 bg-gradient-to-br from-purple-600/20 to-pink-600/20 rounded-full flex items-center justify-center mb-6">
+    <div className="w-20 h-20 bg-primary/20 rounded-full flex items-center justify-center mb-6">
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        className="h-10 w-10 text-pink-600"
+        className="h-10 w-10 text-primary"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"
@@ -145,14 +143,16 @@ const MealPlannerError = ({ error }: { error: string | null }) => (
         />
       </svg>
     </div>
-    <h2 className="text-2xl font-bold text-white mb-2">Meal Plan Not Found</h2>
-    <p className="text-purple-300/70 text-center max-w-md mb-6">
+    <h2 className="text-2xl font-bold text-foreground mb-2">
+      Meal Plan Not Found
+    </h2>
+    <p className="text-muted-foreground text-center max-w-md mb-6">
       {error ||
         "This meal plan could not be loaded. It may have been deleted or you may not have permission to view it."}
     </p>
     <Link
       href="/dashboard/meal-planner"
-      className="px-5 py-2.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-lg hover:opacity-90 transition"
+      className="px-5 py-2.5 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition"
     >
       Return to Meal Planner
     </Link>

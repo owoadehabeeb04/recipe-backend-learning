@@ -1,9 +1,11 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
+
 @theme {
     --font-sans: var(--font-geist-sans);
     --font-mono: var(--font-geist-mono);
-    
+
     /* shadcn/ui color mappings for Tailwind v4 */
     --color-background: hsl(var(--background));
     --color-foreground: hsl(var(--foreground));
@@ -51,7 +53,7 @@
     --input: 270 15% 90%;
     --ring: 270 70% 50%;
     --radius: 0.5rem;
-    
+
     /* Purple shades for custom use */
     --purple-50: 270 100% 98%;
     --purple-100: 270 90% 95%;
@@ -63,7 +65,7 @@
     --purple-700: 270 75% 40%;
     --purple-800: 270 80% 30%;
     --purple-900: 270 85% 20%;
-    
+
     /* Legacy base colors (keeping for compatibility) */
     /* --background: #ffffff; */
     /* --foreground: #171717; */
@@ -148,6 +150,14 @@
     --card-border: rgba(255, 255, 255, 0.1); /* white/10 */
     --card-hover: rgba(255, 255, 255, 0.05); /* white/5 */
     --backdrop-blur: blur(16px);
+    --sidebar: 0 0% 100%;
+    --sidebar-foreground: 270 20% 10%;
+    --sidebar-primary: 270 70% 50%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 270 30% 95%;
+    --sidebar-accent-foreground: 270 70% 50%;
+    --sidebar-border: 270 15% 90%;
+    --sidebar-ring: 270 70% 50%;
 }
 
 .dark {
@@ -171,6 +181,14 @@
     --border: 270 20% 25%;
     --input: 270 20% 25%;
     --ring: 270 70% 65%;
+    --sidebar: 270 30% 8%;
+    --sidebar-foreground: 270 10% 95%;
+    --sidebar-primary: 270 70% 65%;
+    --sidebar-primary-foreground: 270 30% 8%;
+    --sidebar-accent: 270 30% 20%;
+    --sidebar-accent-foreground: 270 70% 65%;
+    --sidebar-border: 270 20% 25%;
+    --sidebar-ring: 270 70% 65%;
 }
 
 * {
@@ -183,8 +201,6 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     transition: background-color 0.3s ease, color 0.3s ease;
 }
-
-
 
 .prose {
     color: #d1d5db;
@@ -225,7 +241,6 @@ body {
     display: block;
     height: 1em;
   }
-
 
   /* Overlay fade-in animation */
 .overlay-transition {
@@ -274,7 +289,6 @@ body {
   transform: translateY(0);
 }
 
-
 @keyframes blinking-cursor {
   0% { border-right-color: rgba(139, 92, 246, 0.8); }
   50% { border-right-color: transparent; }
@@ -294,7 +308,6 @@ body {
 .animate-appear {
   animation: appear 0.3s ease-out forwards;
 }
-
 
 @keyframes blinking-cursor {
   0% { border-right-color: rgba(139, 92, 246, 0.8); }
@@ -380,4 +393,24 @@ body {
   padding: 0;
   border-radius: 0;
   font-size: 0.875em;
+}
+
+@theme inline {
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    }
+  body {
+    @apply bg-background text-foreground;
+    }
 }

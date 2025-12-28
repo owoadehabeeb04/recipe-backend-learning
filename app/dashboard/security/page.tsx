@@ -1,10 +1,13 @@
 "use client";
 import React, { useState } from "react";
- 
 import { useForm } from "react-hook-form";
 import { useAuthStore } from "../../store/authStore";
 import { changePassword } from "../../api/(security)/change-password";
 import toast from "react-hot-toast";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 const SecurityPage = () => {
   const { token, user } = useAuthStore();
@@ -67,120 +70,115 @@ const SecurityPage = () => {
 
   return (
     <div>
-      <div
-        //{ opacity: 0, y: 20 }}
-        // opacity: 1, y: 0 }}
-        // duration: 0.5 }}
-        className="mb-8"
-      >
-        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-foreground">
           Security Settings
         </h1>
-        <p className="text-gray-400 mt-2">
+        <p className="text-muted-foreground mt-2">
           Manage your password and security preferences
         </p>
       </div>
 
-      <div
-        //{ opacity: 0, y: 20 }}
-        // opacity: 1, y: 0 }}
-        // duration: 0.5, delay: 0.2 }}
-        className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-8"
-      >
-        <h2 className="text-xl font-semibold text-white mb-6">
-          Change Password
-        </h2>
-
-        {successMessage && (
-          <div className="mb-6 p-4 bg-green-500/20 border border-green-500/30 rounded-xl text-green-300">
-            {successMessage}
-          </div>
-        )}
-
-        {errorMessage && (
-          <div className="mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-xl text-red-300">
-            {errorMessage}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="space-y-6">
-            <div className="space-y-2">
-              <label className="text-gray-300 text-sm">Current Password</label>
-              <input
-                {...register("currentPassword", {
-                  required: "Current password is required"
-                })}
-                type="password"
-                className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 text-white"
-              />
-              {errors.currentPassword && (
-                <p className="text-pink-500 text-sm">
-                  {errors.currentPassword.message}
-                </p>
-              )}
+      <Card>
+        <CardHeader>
+          <CardTitle>Change Password</CardTitle>
+          <CardDescription>
+            Update your password to keep your account secure
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {successMessage && (
+            <div className="mb-6 p-4 bg-green-500/20 border border-green-500/30 rounded-lg text-green-600 dark:text-green-400">
+              {successMessage}
             </div>
+          )}
 
-            <div className="space-y-2">
-              <label className="text-gray-300 text-sm">New Password</label>
-              <input
-                {...register("newPassword", {
-                  required: "New password is required",
-                  minLength: {
-                    value: 8,
-                    message: "Password must be at least 8 characters long"
-                  },
-                  pattern: {
-                    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-                    message:
-                      "Password must contain uppercase, lowercase, and numbers"
-                  }
-                })}
-                type="password"
-                className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 text-white"
-              />
-              {errors.newPassword && (
-                <p className="text-pink-500 text-sm">
-                  {errors.newPassword.message}
-                </p>
-              )}
+          {errorMessage && (
+            <div className="mb-6 p-4 bg-red-500/20 border border-red-500/30 rounded-lg text-red-600 dark:text-red-400">
+              {errorMessage}
             </div>
+          )}
 
-            <div className="space-y-2">
-              <label className="text-gray-300 text-sm">
-                Confirm New Password
-              </label>
-              <input
-                {...register("confirmPassword", {
-                  required: "Please confirm your password",
-                  validate: (value) =>
-                    value === watch("newPassword") || "Passwords do not match"
-                })}
-                type="password"
-                className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-4 py-3 text-white"
-              />
-              {errors.confirmPassword && (
-                <p className="text-pink-500 text-sm">
-                  {errors.confirmPassword.message}
-                </p>
-              )}
-            </div>
-
-            <div className="pt-4">
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-white hover:from-purple-700 hover:to-pink-700 transition-all disabled:opacity-70 flex items-center"
-              >
-                {isLoading && (
-                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="currentPassword">Current Password</Label>
+                <Input
+                  id="currentPassword"
+                  {...register("currentPassword", {
+                    required: "Current password is required"
+                  })}
+                  type="password"
+                  placeholder="Enter your current password"
+                />
+                {errors.currentPassword && (
+                  <p className="text-sm text-destructive">
+                    {errors.currentPassword.message}
+                  </p>
                 )}
-                {isLoading ? "Updating..." : "Update Password"}
-              </button>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="newPassword">New Password</Label>
+                <Input
+                  id="newPassword"
+                  {...register("newPassword", {
+                    required: "New password is required",
+                    minLength: {
+                      value: 8,
+                      message: "Password must be at least 8 characters long"
+                    },
+                    pattern: {
+                      value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+                      message:
+                        "Password must contain uppercase, lowercase, and numbers"
+                    }
+                  })}
+                  type="password"
+                  placeholder="Enter your new password"
+                />
+                {errors.newPassword && (
+                  <p className="text-sm text-destructive">
+                    {errors.newPassword.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="confirmPassword">Confirm New Password</Label>
+                <Input
+                  id="confirmPassword"
+                  {...register("confirmPassword", {
+                    required: "Please confirm your password",
+                    validate: (value) =>
+                      value === watch("newPassword") || "Passwords do not match"
+                  })}
+                  type="password"
+                  placeholder="Confirm your new password"
+                />
+                {errors.confirmPassword && (
+                  <p className="text-sm text-destructive">
+                    {errors.confirmPassword.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="pt-4">
+                <Button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full sm:w-auto"
+                >
+                  {isLoading && (
+                    <span className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin mr-2"></span>
+                  )}
+                  {isLoading ? "Updating..." : "Update Password"}
+                </Button>
+              </div>
             </div>
-          </div>
-        </form>
-      </div>
+          </form>
+        </CardContent>
+      </Card>
     </div>
   );
 };

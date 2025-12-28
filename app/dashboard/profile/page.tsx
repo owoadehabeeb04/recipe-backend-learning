@@ -1,12 +1,16 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
- 
 import { useForm } from "react-hook-form";
 import { useAuthStore } from "../../store/authStore";
 import { updateProfile } from "../../api/(users)";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import { uploadToCloudinary } from "@/app/api/(recipe)/uploadImage";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 interface SocialMediaLink {
   name: string;
@@ -175,21 +179,17 @@ const ProfilePage = () => {
 
   return (
     <div className="px-4 sm:px-6 md:px-8 py-6">
-      <div
-        //{ opacity: 0, y: 20 }}
-        // opacity: 1, y: 0 }}
-        // duration: 0.5 }}
-        className="mb-8"
-      >
-        <h1 className="text-2xl sm:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
+      <div className="mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-foreground">
           Profile Settings
         </h1>
-        <p className="text-gray-400 mt-2 text-sm sm:text-base">
+        <p className="text-muted-foreground mt-2 text-sm sm:text-base">
           Manage your personal information and preferences
         </p>
       </div>
 
-      <div className="bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl p-4 sm:p-6 md:p-8">
+      <Card>
+        <CardContent className="p-4 sm:p-6 md:p-8">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 sm:gap-0 mb-6 sm:mb-8">
           <div className="flex flex-col sm:flex-row sm:items-center gap-4">
             <div 
@@ -198,10 +198,10 @@ const ProfilePage = () => {
             >
               {/* Overlay loading indicator for image upload */}
               {uploadingImage && (
-                <div className="absolute inset-0 bg-black/60 flex items-center justify-center z-10">
+                <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-10">
                   <div className="flex flex-col items-center">
-                    <div className="w-6 h-6 sm:w-8 sm:h-8 border-2 border-white border-t-transparent rounded-full animate-spin mb-1 sm:mb-2"></div>
-                    <span className="text-white text-xs hidden sm:block">Uploading...</span>
+                    <div className="w-6 h-6 sm:w-8 sm:h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-1 sm:mb-2"></div>
+                    <span className="text-foreground text-xs hidden sm:block">Uploading...</span>
                   </div>
                 </div>
               )}
@@ -215,7 +215,7 @@ const ProfilePage = () => {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center text-white text-xl sm:text-3xl font-bold">
+                <div className="w-full h-full bg-primary flex items-center justify-center text-primary-foreground text-xl sm:text-3xl font-bold">
                   {user?.username?.charAt(0).toUpperCase() || "U"}
                 </div>
               )}
@@ -229,59 +229,60 @@ const ProfilePage = () => {
               />
             </div>
             <div className="text-center sm:text-left sm:ml-4">
-              <h2 className="text-xl sm:text-2xl font-semibold text-white">
+              <h2 className="text-xl sm:text-2xl font-semibold text-foreground">
                 {user?.username || "Username"}
               </h2>
-              <p className="text-gray-400 text-sm sm:text-base">
+              <p className="text-muted-foreground text-sm sm:text-base">
                 {user?.email || "email@example.com"}
               </p>
               {isEditing && (
-                <p className="text-purple-400 text-xs sm:text-sm mt-1">
+                <p className="text-primary text-xs sm:text-sm mt-1">
                   {uploadingImage ? "Uploading..." : "Click avatar to change profile image"}
                 </p>
               )}
             </div>
           </div>
           {!isEditing && (
-            <button
+            <Button
               onClick={() => setIsEditing(true)}
-              className="w-full sm:w-auto px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-white hover:from-purple-700 hover:to-pink-700 transition-all mt-4 sm:mt-0"
+              className="w-full sm:w-auto mt-4 sm:mt-0"
             >
               Edit Profile
-            </button>
+            </Button>
           )}
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
-            <div className="space-y-1 sm:space-y-2">
-              <label className="text-gray-300 text-xs sm:text-sm">Username</label>
-              <input
+            <div className="space-y-2">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
                 {...register("username", { required: "Username is required" })}
                 type="text"
                 disabled={!isEditing}
-                className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-3 py-2 sm:px-4 sm:py-3 text-white text-sm sm:text-base disabled:opacity-60"
               />
               {errors.username && (
-                <p className="text-pink-500 text-xs sm:text-sm">
+                <p className="text-sm text-destructive">
                   {errors.username.message}
                 </p>
               )}
             </div>
             
-            <div className="space-y-1 sm:space-y-2">
-              <label className="text-gray-300 text-xs sm:text-sm">Email Address</label>
-              <input
+            <div className="space-y-2">
+              <Label htmlFor="email">Email Address</Label>
+              <Input
+                id="email"
                 {...register("email", { required: "Email is required" })}
                 type="email"
-                disabled={true} // Email is always disabled as it's a key identifier
-                className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-3 py-2 sm:px-4 sm:py-3 text-white text-sm sm:text-base disabled:opacity-60"
+                disabled={true}
               />
             </div>
             
-            <div className="space-y-1 sm:space-y-2">
-              <label className="text-gray-300 text-xs sm:text-sm">Phone Number</label>
-              <input
+            <div className="space-y-2">
+              <Label htmlFor="phoneNumber">Phone Number</Label>
+              <Input
+                id="phoneNumber"
                 {...register("phoneNumber", {
                   pattern: {
                     value: /^[+]?[(]?[0-9]{3}[)]?[-\s.]?[0-9]{3}[-\s.]?[0-9]{4,6}$/,
@@ -291,10 +292,9 @@ const ProfilePage = () => {
                 type="tel"
                 disabled={!isEditing}
                 placeholder="e.g., +1 (555) 123-4567"
-                className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-3 py-2 sm:px-4 sm:py-3 text-white text-sm sm:text-base disabled:opacity-60"
               />
               {errors.phoneNumber && (
-                <p className="text-pink-500 text-xs sm:text-sm">
+                <p className="text-sm text-destructive">
                   {errors.phoneNumber.message &&
                     typeof errors.phoneNumber.message === "string" &&
                     errors.phoneNumber.message}
@@ -302,65 +302,64 @@ const ProfilePage = () => {
               )}
             </div>
             
-            <div className="space-y-1 sm:space-y-2">
-              <label className="text-gray-300 text-xs sm:text-sm">Location</label>
-              <input
+            <div className="space-y-2">
+              <Label htmlFor="location">Location</Label>
+              <Input
+                id="location"
                 {...register("location")}
                 type="text"
                 disabled={!isEditing}
                 placeholder="e.g., New York, NY"
-                className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-3 py-2 sm:px-4 sm:py-3 text-white text-sm sm:text-base disabled:opacity-60"
               />
             </div>
             
             {/* Social Media section */}
-            <div className="space-y-1 sm:space-y-2 md:col-span-2">
-              <label className="text-gray-300 text-xs sm:text-sm">Social Media</label>
+            <div className="space-y-2 md:col-span-2">
+              <Label>Social Media</Label>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
-                  <input
+                  <Input
                     type="text"
                     value={socialMediaName}
                     onChange={(e) => setSocialMediaName(e.target.value)}
                     disabled={!isEditing}
                     placeholder="Platform (e.g., Twitter)"
-                    className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-3 py-2 sm:px-4 sm:py-3 text-white text-sm sm:text-base disabled:opacity-60"
                   />
                 </div>
                 <div>
-                  <input
+                  <Input
                     type="url"
                     value={socialMediaUrl}
                     onChange={(e) => setSocialMediaUrl(e.target.value)}
                     disabled={!isEditing}
                     placeholder="URL (e.g., https://twitter.com/username)"
-                    className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-3 py-2 sm:px-4 sm:py-3 text-white text-sm sm:text-base disabled:opacity-60"
                     pattern="https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)"
                   />
                 </div>
               </div>
               {/* Display current social media if available */}
               {!isEditing && user?.socialMediaLink && (
-                <p className="text-gray-400 text-xs sm:text-sm mt-2">
-                  {user.socialMediaLink.name}: <a href={user.socialMediaLink.link} target="_blank" rel="noopener noreferrer" className="text-purple-400 hover:underline break-all">{user.socialMediaLink.link}</a>
+                <p className="text-sm text-muted-foreground mt-2">
+                  {user.socialMediaLink.name}: <a href={user.socialMediaLink.link} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline break-all">{user.socialMediaLink.link}</a>
                 </p>
               )}
             </div>
             
-            <div className="space-y-1 sm:space-y-2 md:col-span-2">
-              <label className="text-gray-300 text-xs sm:text-sm">Bio</label>
-              <textarea
+            <div className="space-y-2 md:col-span-2">
+              <Label htmlFor="bio">Bio</Label>
+              <Textarea
+                id="bio"
                 {...register("bio")}
                 disabled={!isEditing}
                 rows={4}
                 placeholder="Tell us a little about yourself..."
-                className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-3 py-2 sm:px-4 sm:py-3 text-white text-sm sm:text-base disabled:opacity-60"
               />
             </div>
             
-            <div className="space-y-1 sm:space-y-2">
-              <label className="text-gray-300 text-xs sm:text-sm">Website</label>
-              <input
+            <div className="space-y-2">
+              <Label htmlFor="website">Website</Label>
+              <Input
+                id="website"
                 {...register("website", {
                   pattern: {
                     value: /^(ftp|http|https):\/\/[^ "]+$/,
@@ -370,10 +369,9 @@ const ProfilePage = () => {
                 type="text"
                 disabled={!isEditing}
                 placeholder="e.g., https://yourwebsite.com"
-                className="w-full bg-gray-900/50 border border-gray-700 rounded-xl px-3 py-2 sm:px-4 sm:py-3 text-white text-sm sm:text-base disabled:opacity-60"
               />
               {errors.website && (
-                <p className="text-pink-500 text-xs sm:text-sm">
+                <p className="text-sm text-destructive">
                   {errors.website.message &&
                     typeof errors.website.message === "string" &&
                     errors.website.message}
@@ -384,28 +382,30 @@ const ProfilePage = () => {
 
           {isEditing && (
             <div className="mt-6 sm:mt-8 flex flex-col sm:flex-row sm:justify-end gap-3 sm:gap-4">
-              <button
+              <Button
                 type="button"
                 onClick={handleReset}
-                className="px-4 py-2 border border-gray-600 rounded-full text-gray-300 hover:bg-gray-700 transition-all w-full sm:w-auto order-2 sm:order-1"
+                variant="outline"
+                className="w-full sm:w-auto order-2 sm:order-1"
                 disabled={uploadingImage}
               >
                 Cancel
-              </button>
-              <button
+              </Button>
+              <Button
                 type="submit"
                 disabled={isLoading || uploadingImage}
-                className="px-6 py-2 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-white hover:from-purple-700 hover:to-pink-700 transition-all disabled:opacity-70 flex items-center justify-center w-full sm:w-auto order-1 sm:order-2"
+                className="w-full sm:w-auto order-1 sm:order-2"
               >
                 {(isLoading || uploadingImage) && (
-                  <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></span>
+                  <span className="w-4 h-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin mr-2"></span>
                 )}
                 {isLoading ? "Saving..." : uploadingImage ? "Uploading..." : "Save Changes"}
-              </button>
+              </Button>
             </div>
           )}
         </form>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 };

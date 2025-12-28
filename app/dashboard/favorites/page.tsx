@@ -60,10 +60,10 @@ const EmptyFavorites = () => {
         //{ scale: 0.8, opacity: 0 }}
         // scale: 1, opacity: 1 }}
         // delay: 0.2, duration: 0.5 }}
-        className="w-32 h-32 mb-8 rounded-full bg-gradient-to-br from-pink-600/20 to-purple-600/20 border border-pink-500/20 flex items-center justify-center"
+        className="w-32 h-32 mb-8 rounded-full bg-muted border border-border flex items-center justify-center"
       >
         <svg
-          className="w-16 h-16 text-pink-400/70"
+          className="w-16 h-16 text-muted-foreground"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -77,16 +77,13 @@ const EmptyFavorites = () => {
           />
         </svg>
       </div>
-      <h2 className="text-2xl font-bold text-white mb-3">No Favorites Yet</h2>
-      <p className="text-gray-400 max-w-md mb-8">
+      <h2 className="text-2xl font-bold text-foreground mb-3">No Favorites Yet</h2>
+      <p className="text-muted-foreground max-w-md mb-8">
         You haven't added any recipes to your favorites. Browse our recipes and
         click the heart icon to save your favorites for easy access later!
       </p>
       <Link href="/dashboard/all-recipes">
-        <button
-           // scale: 1.05 }}
-          className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-white hover:from-purple-700 hover:to-pink-700 transition-all"
-        >
+        <button className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity">
           Browse Recipes
         </button>
       </Link>
@@ -111,9 +108,9 @@ const NoSearchResults = ({
       // duration: 0.5 }}
       className="flex flex-col items-center justify-center h-64 text-center"
     >
-      <div className="w-16 h-16 mb-4 rounded-full bg-gray-800/70 flex items-center justify-center">
+      <div className="w-16 h-16 mb-4 rounded-full bg-muted flex items-center justify-center">
         <svg
-          className="w-8 h-8 text-gray-500"
+          className="w-8 h-8 text-muted-foreground"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -126,8 +123,8 @@ const NoSearchResults = ({
           />
         </svg>
       </div>
-      <h3 className="text-xl font-medium text-white mb-2">No favorites found</h3>
-      <p className="text-gray-400 max-w-md">
+      <h3 className="text-xl font-medium text-foreground mb-2">No favorites found</h3>
+      <p className="text-muted-foreground max-w-md">
         {searchQuery
           ? `We couldn't find any favorites matching "${searchQuery}"${
               category !== "all" ? ` in ${category}` : ""
@@ -136,7 +133,7 @@ const NoSearchResults = ({
       </p>
       <button
         onClick={clearFilters}
-        className="mt-4 px-4 py-2 bg-gray-800/70 rounded-full text-gray-300 hover:bg-gray-700 transition-all"
+        className="mt-4 px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-accent transition-colors"
       >
         Clear filters
       </button>
@@ -159,9 +156,9 @@ const ErrorState = ({
       // duration: 0.5 }}
       className="flex flex-col items-center justify-center h-64 text-center"
     >
-      <div className="w-16 h-16 mb-4 rounded-full bg-red-900/20 flex items-center justify-center">
+      <div className="w-16 h-16 mb-4 rounded-full bg-destructive/10 flex items-center justify-center">
         <svg
-          className="w-8 h-8 text-red-500"
+          className="w-8 h-8 text-destructive"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -174,13 +171,13 @@ const ErrorState = ({
           />
         </svg>
       </div>
-      <h3 className="text-xl font-medium text-white mb-2">
+      <h3 className="text-xl font-medium text-foreground mb-2">
         Something went wrong
       </h3>
-      <p className="text-gray-400 max-w-md mb-4">{message}</p>
+      <p className="text-muted-foreground max-w-md mb-4">{message}</p>
       <button
         onClick={retry}
-        className="px-4 py-2 bg-gray-800/70 rounded-full text-gray-300 hover:bg-gray-700 transition-all"
+        className="px-4 py-2 bg-muted text-foreground rounded-lg hover:bg-accent transition-colors"
       >
         Try again
       </button>
@@ -312,12 +309,12 @@ const FavoriteRecipes = () => {
   if (!token) {
     return (
       <div className="flex flex-col items-center justify-center h-96">
-        <h2 className="text-2xl font-bold text-white mb-4">Sign In Required</h2>
-        <p className="text-gray-400 mb-6">
+        <h2 className="text-2xl font-bold text-foreground mb-4">Sign In Required</h2>
+        <p className="text-muted-foreground mb-6">
           Please sign in to view your favorite recipes
         </p>
         <Link href="/login">
-          <button className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full text-white">
+          <button className="px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity">
             Sign In
           </button>
         </Link>
@@ -333,10 +330,10 @@ const FavoriteRecipes = () => {
         // duration: 0.5 }}
         className="mb-8"
       >
-        <h1 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-pink-400 to-purple-600">
+        <h1 className="text-3xl font-bold text-foreground">
           My Favorite Recipes
         </h1>
-        <p className="text-gray-400 mt-2">
+        <p className="text-muted-foreground mt-2">
           Your personalized collection of saved recipes
         </p>
       </div>
@@ -353,7 +350,7 @@ const FavoriteRecipes = () => {
             <SearchBar value={searchQuery} onChange={handleSearchChange} />
             <button
               onClick={handleSearch}
-              className="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1 rounded-full bg-gray-700/50 text-white hover:bg-gray-600/50 transition-all"
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 px-3 py-1 rounded-lg bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
             >
               Search
             </button>
@@ -375,14 +372,14 @@ const FavoriteRecipes = () => {
         {/* Active filters display */}
         {(searchQuery || category !== "all" || sortBy !== "newest") && (
           <div className="flex items-center space-x-2 mt-4">
-            <span className="text-sm text-gray-400">Active filters:</span>
+            <span className="text-sm text-muted-foreground">Active filters:</span>
             <div className="flex flex-wrap gap-2">
               {searchQuery && (
-                <span className="px-2 py-1 bg-gray-800/70 text-gray-300 rounded-full text-xs flex items-center">
+                <span className="px-2 py-1 bg-muted text-foreground rounded-full text-xs flex items-center">
                   Search: {searchQuery}
                   <button 
                     onClick={() => setSearchQuery("")}
-                    className="ml-1 text-gray-400 hover:text-white"
+                    className="ml-1 text-muted-foreground hover:text-foreground"
                   >
                     ×
                   </button>
@@ -390,11 +387,11 @@ const FavoriteRecipes = () => {
               )}
               
               {category !== "all" && (
-                <span className="px-2 py-1 bg-gray-800/70 text-gray-300 rounded-full text-xs flex items-center">
+                <span className="px-2 py-1 bg-muted text-foreground rounded-full text-xs flex items-center">
                   Category: {category}
                   <button 
                     onClick={() => setCategory("all")}
-                    className="ml-1 text-gray-400 hover:text-white"
+                    className="ml-1 text-muted-foreground hover:text-foreground"
                   >
                     ×
                   </button>
@@ -402,11 +399,11 @@ const FavoriteRecipes = () => {
               )}
               
               {sortBy !== "newest" && (
-                <span className="px-2 py-1 bg-gray-800/70 text-gray-300 rounded-full text-xs flex items-center">
+                <span className="px-2 py-1 bg-muted text-foreground rounded-full text-xs flex items-center">
                   Sort: {sortBy}
                   <button 
                     onClick={() => setSortBy("newest")}
-                    className="ml-1 text-gray-400 hover:text-white"
+                    className="ml-1 text-muted-foreground hover:text-foreground"
                   >
                     ×
                   </button>
@@ -415,7 +412,7 @@ const FavoriteRecipes = () => {
               
               <button
                 onClick={clearFilters}
-                className="px-2 py-1 bg-pink-900/30 text-pink-300 rounded-full text-xs hover:bg-pink-900/50 transition-colors"
+                className="px-2 py-1 bg-primary/10 text-primary rounded-full text-xs hover:bg-primary/20 transition-colors"
               >
                 Clear all
               </button>
@@ -427,16 +424,16 @@ const FavoriteRecipes = () => {
       {/* Content Area */}
       {isLoading ? (
         <div className="flex flex-col justify-center items-center h-64">
-          <div className="w-16 h-16 mb-4 border-t-4 border-b-4 border-pink-500 rounded-full animate-spin"></div>
-          <p className="text-gray-400">Loading your favorites...</p>
+          <div className="w-16 h-16 mb-4 border-t-4 border-b-4 border-primary rounded-full animate-spin"></div>
+          <p className="text-muted-foreground">Loading your favorites...</p>
         </div>
       ) : hasError ? (
         <ErrorState message={errorMessage} retry={fetchFavorites} />
       ) : recipes.length > 0 ? (
         <>
           <div className="flex justify-between items-center mb-4">
-            <p className="text-sm text-gray-400">
-              Showing <span className="text-white">{recipes.length}</span> favorite{recipes.length !== 1 ? 's' : ''}
+            <p className="text-sm text-muted-foreground">
+              Showing <span className="text-foreground">{recipes.length}</span> favorite{recipes.length !== 1 ? 's' : ''}
             </p>
           </div>
           
@@ -460,7 +457,7 @@ const FavoriteRecipes = () => {
                 <button
                   onClick={() => paginate(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className="px-3 py-2 rounded-lg bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-700/50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-3 py-2 rounded-lg bg-muted text-muted-foreground hover:text-foreground hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg
                     className="w-5 h-5"
@@ -487,14 +484,14 @@ const FavoriteRecipes = () => {
                   .map((number, i, array) => (
                     <React.Fragment key={number}>
                       {i > 0 && array[i - 1] !== number - 1 && (
-                        <span className="px-3 py-1 text-gray-500">...</span>
+                        <span className="px-3 py-1 text-muted-foreground">...</span>
                       )}
                       <button
                         onClick={() => paginate(number)}
                         className={`px-3 py-1 rounded-lg ${
                           currentPage === number
-                            ? "bg-gradient-to-r from-pink-600 to-purple-600 text-white"
-                            : "bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-700/50"
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-muted text-muted-foreground hover:text-foreground hover:bg-accent"
                         }`}
                       >
                         {number}
@@ -505,7 +502,7 @@ const FavoriteRecipes = () => {
                 <button
                   onClick={() => paginate(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className="px-3 py-2 rounded-lg bg-gray-800/50 text-gray-400 hover:text-white hover:bg-gray-700/50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="px-3 py-2 rounded-lg bg-muted text-muted-foreground hover:text-foreground hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <svg
                     className="w-5 h-5"
