@@ -9,9 +9,10 @@ import { useAuthStore } from "@/app/store/authStore";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 import { useRouter } from "next/navigation";
- 
 import Link from "next/link";
 import { setAuthCookie } from "@/utils/auth";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const signupSchema = z
   .object({
@@ -97,195 +98,127 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-gray-900 to-gray-800 text-white p-4">
-      {/* Background elements */}
-      <div className="absolute inset-0 overflow-hidden -z-10">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-purple-500 rounded-full filter blur-3xl opacity-10 -mr-20 -mt-20"></div>
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-pink-500 rounded-full filter blur-3xl opacity-10 -ml-20 -mb-20"></div>
+    <div className="w-full space-y-6">
+      <div className="space-y-2 text-center lg:text-left">
+        <h2 className="text-3xl font-bold text-foreground">User Registration</h2>
+        <p className="text-muted-foreground">
+          Create your User account
+        </p>
       </div>
 
-      <div
-        //{ opacity: 0, y: 20 }}
-        // opacity: 1, y: 0 }}
-        // duration: 0.5 }}
-        className="max-w-md w-full space-y-8 p-8 bg-gray-800/50 backdrop-blur-sm border border-white/10 rounded-2xl shadow-xl"
-      >
-        <div>
-          <h2 className="mt-2 text-center text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-pink-600">
-            User Registration
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-400">
-            Create your User account
-          </p>
+      <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
+        <div className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="username">Username</Label>
+            <Input
+              {...register("username")}
+              type="text"
+              id="username"
+              placeholder="Enter your username"
+            />
+            {errors.username && (
+              <p className="text-sm text-destructive">
+                {errors.username.message}
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="email">Email Address</Label>
+            <Input
+              {...register("email")}
+              type="email"
+              id="email"
+              placeholder="Enter your email"
+            />
+            {errors.email && (
+              <p className="text-sm text-destructive">
+                {errors.email.message}
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              {...register("password")}
+              type="password"
+              id="password"
+              placeholder="Create a strong password"
+            />
+            {errors.password && (
+              <p className="text-sm text-destructive">
+                {errors.password.message}
+              </p>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="confirmPassword">Confirm Password</Label>
+            <Input
+              {...register("confirmPassword")}
+              type="password"
+              id="confirmPassword"
+              placeholder="Confirm your password"
+            />
+            {errors.confirmPassword && (
+              <p className="text-sm text-destructive">
+                {errors.confirmPassword.message}
+              </p>
+            )}
+          </div>
         </div>
 
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit(onSubmit)}>
-          <div className="space-y-5">
-            <div>
-              <label
-                htmlFor="username"
-                className="block text-sm font-medium text-gray-300"
+        <div className="text-right text-sm text-muted-foreground">
+          Already have an account?{" "}
+          <Link
+            href="/login"
+            className="font-medium text-primary hover:opacity-80 transition-opacity"
+          >
+            Log in
+          </Link>
+        </div>
+
+        <button
+          type="submit"
+          disabled={isLoading}
+          className="w-full bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50 transition-opacity py-3 rounded-lg font-medium"
+        >
+          {isLoading ? (
+            <div className="flex items-center justify-center">
+              <svg
+                className="animate-spin -ml-1 mr-3 h-5 w-5"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
               >
-                Username
-              </label>
-              <div className="mt-1 relative">
-                <input
-                  {...register("username")}
-                  type="text"
-                  className="appearance-none bg-gray-900/50 text-white rounded-lg block w-full px-4 py-3 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-transparent"
-                  placeholder="Enter your username"
-                />
-                {errors.username && (
-                  <p className="mt-1 text-sm text-pink-500">
-                    {errors.username.message}
-                  </p>
-                )}
-              </div>
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
+              </svg>
+              Creating account...
             </div>
-
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-300"
-              >
-                Email Address
-              </label>
-              <div className="mt-1 relative">
-                <input
-                  {...register("email")}
-                  type="email"
-                  className="appearance-none bg-gray-900/50 text-white rounded-lg block w-full px-4 py-3 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-transparent"
-                  placeholder="Enter your email"
-                />
-                {errors.email && (
-                  <p className="mt-1 text-sm text-pink-500">
-                    {errors.email.message}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-300"
-              >
-                Password
-              </label>
-              <div className="mt-1 relative">
-                <input
-                  {...register("password")}
-                  type="password"
-                  className="appearance-none bg-gray-900/50 text-white rounded-lg block w-full px-4 py-3 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-transparent"
-                  placeholder="Create a strong password"
-                />
-                {errors.password && (
-                  <p className="mt-1 text-sm text-pink-500">
-                    {errors.password.message}
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-medium text-gray-300"
-              >
-                Confirm Password
-              </label>
-              <div className="mt-1 relative">
-                <input
-                  {...register("confirmPassword")}
-                  type="password"
-                  className="appearance-none bg-gray-900/50 text-white rounded-lg block w-full px-4 py-3 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500/50 focus:border-transparent"
-                  placeholder="Confirm your password"
-                />
-                {errors.confirmPassword && (
-                  <p className="mt-1 text-sm text-pink-500">
-                    {errors.confirmPassword.message}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="text-right">
-            <span className="text-sm text-gray-400">
-              Already have an account?{" "}
-              <Link
-                href="/login"
-                className="font-medium text-purple-400 hover:text-purple-300 transition-colors"
-              >
-                Log in
-              </Link>
-            </span>
-          </div>
-
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-               // scale: 1.02 }}
-              className="group relative w-full flex justify-center py-3 px-4 border border-transparent rounded-xl text-sm font-medium text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 transition-all duration-200 shadow-lg shadow-purple-500/20"
-            >
-              {isLoading ? (
-                <div className="flex items-center">
-                  <svg
-                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Creating account...
-                </div>
-              ) : (
-                <div className="flex items-center">
-                  Create  User Account
-                  <svg
-                    className="ml-2 -mr-1 w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M13 7l5 5m0 0l-5 5m5-5H6"
-                    ></path>
-                  </svg>
-                </div>
-              )}
-            </button>
-          </div>
-
-          {error && (
-            <div
-              //{ opacity: 0 }}
-              // opacity: 1 }}
-              className="p-3 bg-red-500/20 border border-red-500/30 rounded-lg text-sm text-red-400"
-            >
-              {error}
-            </div>
+          ) : (
+            "Create User Account"
           )}
-        </form>
-      </div>
+        </button>
+
+        {error && (
+          <div className="p-3 bg-destructive/10 border border-destructive/20 rounded-lg text-sm text-destructive">
+            {error}
+          </div>
+        )}
+      </form>
     </div>
   );
 }
