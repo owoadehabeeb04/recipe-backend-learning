@@ -160,27 +160,21 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
         <div
           className={`w-8 h-8 rounded-full flex items-center justify-center ${
             isAssistant
-              ? "bg-gradient-to-r from-purple-600 to-pink-600"
-              : "bg-purple-800/40 border border-purple-700/30"
+              ? "bg-primary text-primary-foreground"
+              : "bg-muted text-muted-foreground"
           }`}
         >
           {isAssistant ? (
-            <ChefHat className="w-4 h-4 text-white" />
+            <ChefHat className="w-4 h-4" />
           ) : (
-            <span className="text-xs font-medium text-white">You</span>
+            <span className="text-xs font-medium">You</span>
           )}
         </div>
       </div>
 
       {/* Message content */}
-      <div className={`max-w-[80%] ${isAssistant ? "mr-auto" : "ml-auto"}`}>
-        <div
-          className={`rounded-t-xl ${
-            isAssistant
-              ? "bg-purple-900/30 border border-purple-700/30 rounded-br-xl rounded-bl-none"
-              : "bg-gradient-to-r from-purple-600/20 to-pink-600/20 border border-purple-500/30 rounded-bl-xl rounded-br-none"
-          } px-4 py-3`}
-        >
+      <div className={`flex-1 ${isAssistant ? "mr-auto" : "ml-auto"} max-w-[85%]`}>
+        <div className="px-2 py-2">
           {/* Render images if present */}
           {(message.images && message.images.length > 0) && (
             <div
@@ -220,31 +214,31 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
 
           {/* Content based on role */}
           {isAssistant ? (
-            <div className="prose text-[0.8rem] prose-invert prose-sm max-w-none relative">
+            <div className="prose text-sm prose-invert max-w-none relative">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 components={{
-                  p: ({ node, ...props }) => <p className="mb-4" {...props} />,
+                  p: ({ node, ...props }) => <p className="mb-3 text-foreground" {...props} />,
                   h3: ({ node, ...props }) => (
                     <h3
-                      className="text-white font-medium text-base mt-6 mb-2"
+                      className="text-foreground font-semibold text-base mt-6 mb-2"
                       {...props}
                     />
                   ),
                   h4: ({ node, ...props }) => (
                     <h4
-                      className="text-white font-medium mt-4 mb-2"
+                      className="text-foreground font-semibold mt-4 mb-2"
                       {...props}
                     />
                   ),
                   hr: ({ node, ...props }) => (
-                    <hr className="my-4 border-purple-700/30" {...props} />
+                    <hr className="my-4 border-border" {...props} />
                   ),
                   ul: ({ node, ...props }) => (
-                    <ul className="list-disc pl-5 mb-4" {...props} />
+                    <ul className="list-disc pl-5 mb-3 text-foreground" {...props} />
                   ),
                   li: ({ node, ...props }) => (
-                    <li className="mb-1" {...props} />
+                    <li className="mb-1 text-foreground" {...props} />
                   ),
                   br: ({ node, ...props }) => (
                     <br className="mb-2" {...props} />
@@ -253,13 +247,13 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
                   table: ({ node, ...props }) => (
                     <div className="overflow-x-auto mb-4 w-full">
                       <table
-                        className="min-w-full border-collapse text-left text-[0.7rem]"
+                        className="min-w-full border-collapse text-left text-sm border border-border"
                         {...props}
                       />
                     </div>
                   ),
                   thead: ({ node, ...props }) => (
-                    <thead className="bg-purple-900/30" {...props} />
+                    <thead className="bg-muted" {...props} />
                   ),
                   tbody: ({ node, ...props }) => <tbody {...props} />,
                   tr: ({ node, children, ...props }) => {
@@ -269,41 +263,41 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
                       parentNode?.parent?.children?.indexOf(parentNode) ?? 0;
                     return (
                       <tr
-                        className={index % 2 ? "bg-purple-900/10" : undefined}
+                        className={index % 2 ? "bg-muted/50" : undefined}
                         {...props}
                       />
                     );
                   },
                   th: ({ node, ...props }) => (
                     <th
-                      className="py-2 px-3 text-left font-medium text-purple-200 border-b border-purple-800/50"
+                      className="py-2 px-3 text-left font-medium text-foreground border-b border-border"
                       {...props}
                     />
                   ),
                   td: ({ node, ...props }) => (
                     <td
-                      className="py-1.5 px-2 border-b border-purple-800/20 align-top"
+                      className="py-1.5 px-2 border-b border-border align-top text-foreground"
                       {...props}
                     />
                   ),
                   code: ({ node, ...props }) => (
                     <code
-                      className="px-1 py-0.5 bg-black/30 rounded text-pink-300 font-mono text-[0.75rem]"
+                      className="px-1.5 py-0.5 bg-muted rounded text-foreground font-mono text-xs"
                       {...props}
                     />
                   ),
                   pre: ({ node, ...props }) => (
                     <pre
-                      className="p-3 bg-black/30 rounded-md overflow-x-auto mb-4 font-mono text-[0.75rem]"
+                      className="p-3 bg-muted rounded-md overflow-x-auto mb-4 font-mono text-xs border border-border"
                       {...props}
                     />
                   ),
                   em: ({ node, ...props }) => (
-                    <em className="text-purple-300" {...props} />
+                    <em className="text-muted-foreground italic" {...props} />
                   ),
                   strong: ({ node, ...props }) => (
                     <strong
-                      className="text-purple-200 font-semibold"
+                      className="text-foreground font-semibold"
                       {...props}
                     />
                   )
@@ -315,13 +309,13 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
               {isTyping && (
                 <>
                   {/* Blinking cursor at the end */}
-                  <span className="inline-block w-2 h-4 bg-purple-400 ml-1 animate-pulse"></span>
+                  <span className="inline-block w-2 h-4 bg-primary ml-1 animate-pulse"></span>
 
                   {/* Skip button */}
                   <div className="absolute bottom-0 right-0">
                     <button
                       onClick={showFullText}
-                      className="text-xs text-purple-400 hover:text-white bg-purple-900/50 px-2 py-1 rounded"
+                      className="text-xs text-muted-foreground hover:text-foreground bg-muted px-2 py-1 rounded transition-colors"
                     >
                       Skip
                     </button>
@@ -331,44 +325,44 @@ const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
             </div>
           ) : (
             // Only render text message if there is content (otherwise just show the images)
-            message.message && <p className="text-white text-[0.8rem]">{message.message}</p>
+            message.message && <p className="text-foreground text-sm leading-relaxed">{message.message}</p>
           )}
         </div>
 
         {/* Timestamp and actions */}
         <div
-          className={`flex items-center text-xs text-purple-400 mt-1 ${
+          className={`flex items-center text-xs text-muted-foreground mt-1.5 ${
             isAssistant ? "justify-start" : "justify-end"
           }`}
         >
           <span>{format(new Date(message.timestamp), "h:mm a")}</span>
 
           {isAssistant && typingComplete && (
-            <div className="flex items-center ml-2">
+            <div className="flex items-center ml-2 gap-1">
               <button
                 onClick={copyToClipboard}
-                className={`p-1 transition-colors ${
-                  copied ? "text-green-400" : "hover:text-white"
+                className={`p-1 transition-colors rounded ${
+                  copied ? "text-green-500" : "text-muted-foreground hover:text-foreground"
                 }`}
                 title="Copy to clipboard"
               >
                 {copied ? (
-                  <Check className="w-3 h-3" />
+                  <Check className="w-3.5 h-3.5" />
                 ) : (
-                  <Copy className="w-3 h-3" />
+                  <Copy className="w-3.5 h-3.5" />
                 )}
               </button>
               <button
-                className="p-1 hover:text-green-400 transition-colors"
+                className="p-1 text-muted-foreground hover:text-green-500 transition-colors rounded"
                 title="Helpful"
               >
-                <ThumbsUp className="w-3 h-3" />
+                <ThumbsUp className="w-3.5 h-3.5" />
               </button>
               <button
-                className="p-1 hover:text-red-400 transition-colors"
+                className="p-1 text-muted-foreground hover:text-red-500 transition-colors rounded"
                 title="Not helpful"
               >
-                <ThumbsDown className="w-3 h-3" />
+                <ThumbsDown className="w-3.5 h-3.5" />
               </button>
             </div>
           )}
