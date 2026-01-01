@@ -269,18 +269,16 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
   return (
     <div 
       ref={ref} 
-      className="h-[97vh] w-full flex flex-col overflow-hidden bg-gradient-to-b from-gray-900 via-gray-900 to-gray-950 border-r border-gray-800 shadow-xl relative"
+      className="h-full w-full flex flex-col overflow-hidden bg-card border-r border-border relative"
     >
-      {/* Logo and title area - enhanced with gradient */}
-      <div className="px-4 py-5 border-b mt-12 border-gray-800/80 backdrop-blur-sm bg-black/20 flex-shrink-0">
+      {/* Logo and title area */}
+      <div className="px-4 py-4 border-b border-border bg-card flex-shrink-0">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-pink-600 p-0.5 shadow-lg">
-              <div className="w-full h-full rounded-full bg-gray-900 flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-purple-300" />
-              </div>
+            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-primary-foreground" />
             </div>
-            <h1 className="text-xl font-bold ml-3 text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-pink-400">
+            <h1 className="text-lg font-semibold ml-2 text-foreground">
               Aria
             </h1>
           </div>
@@ -288,7 +286,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
           {isMobile && (
             <button 
               onClick={onCloseMobile}
-              className="p-1.5 rounded-full hover:bg-gray-800/80 transition-all"
+              className="p-1.5 rounded-full hover:bg-muted transition-colors text-muted-foreground hover:text-foreground"
             >
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -298,20 +296,19 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
         </div>
       </div>
       
-      {/* New chat button - enhanced with better gradient */}
+      {/* New chat button */}
       <div className="px-3 pt-4 pb-3 flex-shrink-0">
         <button
           onClick={handleCreateNewChat}
-          className="group w-full flex items-center justify-center p-3 relative bg-gradient-to-br from-purple-600/10 to-pink-600/10 hover:from-purple-600/20 hover:to-pink-600/20 rounded-lg border border-purple-900/40 hover:border-purple-500/40 transition-all duration-300"
+          className="w-full flex items-center justify-center p-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg transition-colors font-medium"
           disabled={isLoading}
         >
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-pink-500/5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          <PlusCircle className="w-5 h-5 mr-2 text-purple-300" />
-          <span className="font-medium text-purple-50">New conversation</span>
+          <PlusCircle className="w-5 h-5 mr-2" />
+          <span>New conversation</span>
         </button>
       </div>
 
-      {/* Search area - refined design */}
+      {/* Search area */}
       <div className="px-3 pb-4 flex-shrink-0">
         <div className="relative">
           <input
@@ -320,20 +317,20 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
             placeholder="Search conversations..."
-            className="w-full px-9 py-2.5 bg-gray-800/60 border border-gray-700/80 rounded-lg text-gray-300 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-purple-500/50 transition-all"
+            className="w-full px-9 py-2.5 bg-background border border-border rounded-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
           />
           <Search 
-            className="absolute left-3 top-3.5 w-4.5 h-4.5 text-gray-500" 
+            className="absolute left-3 top-3.5 w-4.5 h-4.5 text-muted-foreground" 
           />
           {isSearching && (
-            <Loader2 className="absolute right-3 top-3.5 w-4.5 h-4.5 text-purple-400 animate-spin" />
+            <Loader2 className="absolute right-3 top-3.5 w-4.5 h-4.5 text-primary animate-spin" />
           )}
         </div>
       </div>
 
-      {/* Error message - slightly enhanced */}
+      {/* Error message */}
       {error && (
-        <div className="mx-3 p-2.5 mb-2 bg-red-900/20 border border-red-700/30 rounded-lg text-sm text-red-300 flex items-center flex-shrink-0">
+        <div className="mx-3 p-2.5 mb-2 bg-destructive/10 border border-destructive/30 rounded-lg text-sm text-destructive flex items-center flex-shrink-0">
           <AlertCircle className="w-4 h-4 mr-2 flex-shrink-0" />
           <span>{error}</span>
         </div>
@@ -341,8 +338,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
 
       {/* Chat list - ensure it takes available space and scrolls, with bottom padding for the fixed button */}
       <div 
-        className="flex-1 min-h-0 overflow-y-auto px-2 py-1 pb-16 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent"
-         //inView ? "visible" : "hidden"}
+        className="flex-1 min-h-0 overflow-y-auto px-2 py-1 pb-20 scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent"
       >
         {/* Categorized chats */}
         {Object.entries(categorizedChats).map(([category, categoryChats]) => {
@@ -350,13 +346,13 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
           
           return (
             <div key={category} className="mb-3">
-              {/* Category header - enhanced */}
+              {/* Category header */}
               <button 
-                className="w-full flex items-center justify-between px-3 py-1.5 text-gray-400 hover:text-gray-300 text-sm font-medium bg-gradient-to-r from-gray-800/20 to-transparent rounded-md"
+                className="w-full flex items-center justify-between px-3 py-1.5 text-muted-foreground hover:text-foreground text-sm font-medium hover:bg-muted/50 rounded-md transition-colors"
                 onClick={() => toggleCategory(category)}
               >
-                <span className="text-gray-300">{categoryNames[category]}</span>
-                <div className="h-5 w-5 flex items-center justify-center rounded-full bg-gray-800/80">
+                <span className="text-foreground">{categoryNames[category]}</span>
+                <div className="h-5 w-5 flex items-center justify-center rounded-full bg-muted">
                   {expandedCategories[category] ? (
                     <ChevronDown className="w-3.5 h-3.5" />
                   ) : (
@@ -365,7 +361,7 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
                 </div>
               </button>
               
-              {/* Category chats with enhanced styling */}
+              {/* Category chats */}
               {expandedCategories[category] && (
                 <div className="mt-1 space-y-0.5 pl-1">
                   {categoryChats.map((chat: any) => (
@@ -373,45 +369,36 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
                       key={chat._id}
                       className={`p-2.5 rounded-lg cursor-pointer group flex items-center justify-between relative overflow-hidden ${
                         selectedChatId === chat._id
-                          ? "bg-gradient-to-r from-purple-700/30 to-pink-700/20 text-white shadow-sm"
-                          : "hover:bg-gray-800/40 text-gray-300"
+                          ? "bg-primary/10 text-foreground border border-primary/30"
+                          : "hover:bg-muted text-foreground"
                       } transition-all duration-200`}
                       onClick={() => {
                         onSelectChat(chat._id);
                         if (isMobile && onCloseMobile) onCloseMobile();
                       }}
                     >
-                      {/* Subtle gradient overlay for selected items */}
-                      {selectedChatId === chat._id && (
-                        <div className="absolute inset-0 bg-gradient-to-br from-purple-400/5 to-pink-400/5"></div>
-                      )}
-                      
                       <div className="flex items-center z-10">
                         <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 ${
                           selectedChatId === chat._id 
-                            ? "bg-gradient-to-br from-purple-600/60 to-pink-600/60" 
-                            : "bg-gray-800"
+                            ? "bg-primary text-primary-foreground" 
+                            : "bg-muted text-muted-foreground"
                         }`}>
-                          <MessageSquare className="w-3.5 h-3.5 text-purple-200" />
+                          <MessageSquare className="w-3.5 h-3.5" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className={`truncate text-sm font-medium ${
-                            selectedChatId === chat._id ? "text-white" : ""
-                          }`}>
+                          <p className="truncate text-sm font-medium text-foreground">
                             {chat.title || "New conversation"}
                           </p>
-                          <p className={`text-xs truncate ${
-                            selectedChatId === chat._id ? "text-purple-200/70" : "text-gray-500"
-                          }`}>
+                          <p className="text-xs truncate text-muted-foreground">
                             {formatDate(new Date(chat.updatedAt))}
                           </p>
                         </div>
                       </div>
                       
-                      {/* Delete button with enhanced hover effect */}
+                      {/* Delete button */}
                       <button
                         onClick={(e) => handleDeleteChat(chat._id, e)}
-                        className="opacity-0 group-hover:opacity-100 p-1.5 rounded-full hover:bg-red-500/20 text-gray-400 hover:text-red-400 transition-all z-10"
+                        className="opacity-0 group-hover:opacity-100 p-1.5 rounded-full hover:bg-destructive/20 text-muted-foreground hover:text-destructive transition-all z-10"
                         aria-label="Delete chat"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
@@ -424,38 +411,36 @@ const ChatHistory: React.FC<ChatHistoryProps> = ({
           );
         })}
         
-        {/* Empty state - enhanced */}
+        {/* Empty state */}
         {chats.length === 0 && !isLoading && (
-          <div 
-            className="text-center py-12"
-          >
-            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center">
-              <MessageSquare className="w-8 h-8 text-purple-300/50" />
+          <div className="text-center py-12">
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted flex items-center justify-center">
+              <MessageSquare className="w-8 h-8 text-muted-foreground" />
             </div>
-            <p className="text-gray-300 font-medium">No conversations yet</p>
-            <p className="text-sm mt-1 text-gray-500">Start a new conversation to chat with Aria</p>
+            <p className="text-foreground font-medium">No conversations yet</p>
+            <p className="text-sm mt-1 text-muted-foreground">Start a new conversation to chat with Aria</p>
           </div>
         )}
         
-        {/* Loading state - enhanced */}
+        {/* Loading state */}
         {isLoading && (
           <div className="flex justify-center py-12">
             <div className="relative">
-              <div className="w-10 h-10 border-2 border-gray-800 rounded-full"></div>
-              <div className="absolute inset-0 border-t-2 border-purple-500 rounded-full animate-spin"></div>
+              <div className="w-10 h-10 border-2 border-muted rounded-full"></div>
+              <div className="absolute inset-0 border-t-2 border-primary rounded-full animate-spin"></div>
             </div>
           </div>
         )}
       </div>
       
-      {/* Back to dashboard link - fixed at bottom */}
-      <div className="absolute bottom-0 left-0 right-0 border-t border-gray-800/50 bg-gradient-to-b from-gray-900/80 via-gray-900/95 to-gray-950 backdrop-blur-sm flex-shrink-0 z-20">
+      {/* Back to dashboard button - fixed at bottom, more prominent */}
+      <div className="absolute bottom-0 left-0 right-0 border-t border-border bg-card backdrop-blur-sm flex-shrink-0 z-20 shadow-lg">
         <button 
           onClick={handleBackToDashboard}
-          className="flex items-center cursor-pointer text-gray-400 hover:text-white p-3 mx-3 my-2 rounded-lg hover:bg-gradient-to-r hover:from-gray-800/60 hover:to-gray-800/20 w-[calc(100%-24px)] transition-all"
+          className="flex items-center justify-center w-full mx-3 my-3 p-3 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg font-medium transition-colors shadow-md"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 17l-5-5m0 0l5-5m-5 5h12" />
+          <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
           </svg>
           <span>Back to Dashboard</span>
         </button>

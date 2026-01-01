@@ -13,7 +13,7 @@ import {
   XCircle,
   Upload,
   ImageIcon
-,} from "lucide-react";
+} from "lucide-react";
 import Image from "next/image";
 import axios from "axios";
 import ChatMessage from "./chatMessage";
@@ -190,7 +190,6 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
         payload.imageUrls = cloudinaryUrls; // Direct array of strings
       }
 
-
       // Make the API call
       const response = await axios.post(
         `${API_URL}/chatbot/chats/${chatId}/${images.length > 1 ? "images" : "image"}`,
@@ -202,7 +201,6 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
           }
         }
       );
-
 
       // Critical change: Reload all messages from server instead of trying to update locally
       if (response.data.success) {
@@ -283,7 +281,6 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
     if (data.success && data.data) {
       const { userMessage: apiUserMsg, aiMessage: assistantMessage } =
         data.data;
-
 
       // Make sure we have image URLs regardless of API response
       const imageUrls =
@@ -603,9 +600,34 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
       } else {
         throw new Error("Failed to send message");
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error sending message:", err);
-      setError("Failed to send message. Please try again.");
+
+      // Check if it's a rate limit error
+      const isRateLimit =
+        err?.response?.status === 429 ||
+        err?.status === 429 ||
+        err?.response?.data?.isRateLimit ||
+        err?.response?.data?.message?.toLowerCase().includes("rate limit") ||
+        err?.response?.data?.message
+          ?.toLowerCase()
+          .includes("too many requests") ||
+        err?.message?.includes("429") ||
+        err?.message?.toLowerCase().includes("rate limit");
+
+      if (isRateLimit) {
+        setError(
+          "Rate limit exceeded. Please wait a few minutes before trying again. The API has usage limits to ensure fair access for all users."
+        );
+        toast.error(
+          "Rate limit exceeded. Please wait a few minutes before trying again.",
+          {
+            duration: 8000
+          }
+        );
+      } else {
+        setError("Failed to send message. Please try again.");
+      }
 
       setMessages((prev) => prev.filter((msg) => msg.id !== userMessage.id));
     } finally {
@@ -619,27 +641,23 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
     }
   };
 
- 
   const applySuggestion = (suggestion: string) => {
     setInput(suggestion);
   };
 
   if (!selectedChatId) {
     return (
-      <div className=" h-[80vh] lg:max-w-3/4 mx-auto backdrop-blur-sm border-0 border-purple-900/30 rounded-xl p-3 sm:p-6 flex flex-col items-center justify-center text-center  overflow-hidden">
-        <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-r from-purple-600/80 to-pink-600/80 flex items-center justify-center mb-3 sm:mb-4">
-          <Sparkles className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
-        </div>
-        <h3 className="text-lg sm:text-xl font-medium text-white mb-2">
+      <div className="h-[80vh] lg:max-w-3/4 mx-auto backdrop-blur-sm border border-border rounded-xl p-3 sm:p-6 flex flex-col items-center justify-center text-center overflow-hidden bg-card">
+        <h3 className="text-lg sm:text-xl font-medium text-foreground mb-2">
           Welcome to Aria
         </h3>
-        <p className="text-purple-300 text-sm sm:text-base max-w-md mb-4 sm:mb-6">
+        <p className="text-muted-foreground text-sm sm:text-base max-w-md mb-4 sm:mb-6">
           Your AI chef assistant ready to help with recipes, cooking techniques,
           and meal planning.
         </p>
         <button
           onClick={handleCreateNewChat}
-          className="px-3 sm:px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-lg flex items-center"
+          className="px-3 sm:px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg flex items-center transition-colors"
           disabled={isLoading}
         >
           {isLoading ? (
@@ -659,14 +677,14 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
   }
 
   return (
-    <div className=" h-[80vh] lg:max-w-3/4 mx-auto bg-b/40 backdrop-blur-sm border-0 border-purple-900/30 rounded-xl flex flex-col overflow-hidden">
+    <div className="h-[80vh] lg:max-w-3/4 mx-auto backdrop-blur-sm border border-border rounded-xl flex flex-col overflow-hidden bg-card">
       {error && (
-        <div className="p-2 sm:p-3 m-2 sm:m-3 bg-red-900/20 border border-red-700/30 rounded-lg text-red-300 flex items-center">
+        <div className="p-2 sm:p-3 m-2 sm:m-3 bg-destructive/10 border border-destructive/30 rounded-lg text-destructive flex items-center">
           <AlertCircle className="w-4 h-4 mr-1.5 flex-shrink-0" />
           <span className="text-xs sm:text-sm">{error}</span>
           <button
             onClick={() => setError(null)}
-            className="ml-auto text-red-400 hover:text-white p-1.5"
+            className="ml-auto text-destructive hover:text-destructive/80 p-1.5 transition-colors"
             aria-label="Dismiss error"
           >
             <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -677,13 +695,13 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
       <div className="flex-1 overflow-y-auto p-2 sm:p-4 space-y-3 sm:space-y-4 overscroll-contain">
         {messages.length === 0 && !isLoading ? (
           <div className="h-full flex flex-col items-center justify-center text-center px-3 sm:px-0">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-r from-purple-600/80 to-pink-600/80 flex items-center justify-center mb-3 sm:mb-4">
-              <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-primary flex items-center justify-center mb-3 sm:mb-4">
+              <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-primary-foreground" />
             </div>
-            <h3 className="text-base sm:text-lg font-medium text-white mb-2">
+            <h3 className="text-base sm:text-lg font-medium text-foreground mb-2">
               Start a conversation with Aria
             </h3>
-            <p className="text-purple-300 text-sm sm:text-base max-w-md mb-4 sm:mb-6">
+            <p className="text-muted-foreground text-sm sm:text-base max-w-md mb-4 sm:mb-6">
               Ask about recipes, cooking techniques, or meal planning
             </p>
           </div>
@@ -697,10 +715,10 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
 
             {isThinking && (
               <div className="flex items-center">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600/80 to-pink-600/80 flex items-center justify-center mr-2">
-                  <Sparkles className="w-4 h-4 text-white" />
+                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center mr-2">
+                  <Sparkles className="w-4 h-4 text-primary-foreground" />
                 </div>
-                <div className="bg-purple-900/20 border border-purple-800/30 text-purple-100 py-2 px-4  text-[0.8rem] rounded-lg">
+                <div className="bg-muted border border-border text-foreground py-2 px-4 text-[0.8rem] rounded-lg">
                   Aria is thinking...
                 </div>
               </div>
@@ -708,20 +726,20 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
 
             {isLoading && !isThinking && (
               <div className="flex items-center">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-600/80 to-pink-600/80 flex items-center justify-center mr-2">
-                  <Sparkles className="w-4 h-4 text-white" />
+                <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center mr-2">
+                  <Sparkles className="w-4 h-4 text-primary-foreground" />
                 </div>
                 <div className="flex space-x-1">
                   <div
-                    className="w-2 h-2 bg-purple-500 rounded-full animate-bounce"
+                    className="w-2 h-2 bg-primary rounded-full animate-bounce"
                     style={{ animationDelay: "0ms" }}
                   ></div>
                   <div
-                    className="w-2 h-2 bg-purple-500 rounded-full animate-bounce"
+                    className="w-2 h-2 bg-primary rounded-full animate-bounce"
                     style={{ animationDelay: "150ms" }}
                   ></div>
                   <div
-                    className="w-2 h-2 bg-purple-500 rounded-full animate-bounce"
+                    className="w-2 h-2 bg-primary rounded-full animate-bounce"
                     style={{ animationDelay: "300ms" }}
                   ></div>
                 </div>
@@ -734,51 +752,51 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
       </div>
 
       {messages.length === 0 && !isLoading && (
-        <div className="px-2  mt-auto sm:px-4 py-2 sm:py-3 border-t border-purple-800/30 flex overflow-x-auto no-scrollbar pb-1 -mx-0.5">
-         {suggestions.map((suggestion, index) => (
-          <SuggestionChip
-            key={index}
-            text={suggestion}
-            onClick={() => applySuggestion(suggestion)}
-          />
+        <div className="px-2 mt-auto sm:px-4 py-2 sm:py-3 border-t border-border flex overflow-x-auto no-scrollbar pb-1 -mx-0.5">
+          {suggestions.map((suggestion, index) => (
+            <SuggestionChip
+              key={index}
+              text={suggestion}
+              onClick={() => applySuggestion(suggestion)}
+            />
           ))}
         </div>
       )}
       {isRecording && (
-        <div className="absolute top-4 right-4 z-10 bg-pink-600/90 text-white px-3 py-1.5 rounded-full flex items-center animate-pulse">
-          <span className="w-2 h-2 bg-white rounded-full mr-2"></span>
+        <div className="absolute top-4 right-4 z-10 bg-primary text-primary-foreground px-3 py-1.5 rounded-full flex items-center animate-pulse shadow-lg">
+          <span className="w-2 h-2 bg-primary-foreground rounded-full mr-2"></span>
           Recording...
         </div>
       )}
-      <div className="p-2 mt-auto sm:p-4 border-t border-purple-800/30">
+      <div className="p-2 mt-auto sm:p-4 border-t border-border">
         {selectedChatId && selectedChatId !== "new" && chatInfo && (
           <div className="mb-2 sm:mb-3">
             <div className="flex flex-col xs:flex-row xs:items-center xs:justify-between text-xs mb-1.5 space-y-1 xs:space-y-0">
               <div className="flex items-center">
-                <MessageSquare className="w-3.5 h-3.5 text-purple-400 mr-1.5" />
-                <span className="text-purple-300">
+                <MessageSquare className="w-3.5 h-3.5 text-muted-foreground mr-1.5" />
+                <span className="text-muted-foreground">
                   {chatInfo.messageCount} / {chatInfo.totalLimit} messages
                 </span>
               </div>
 
               <div>
                 {chatInfo.isApproachingLimit ? (
-                  <span className="text-amber-400 flex items-center">
+                  <span className="text-amber-500 flex items-center">
                     <AlertTriangle className="w-3.5 h-3.5 mr-1" />
                     {chatInfo.remainingPairs} pairs remaining
                   </span>
                 ) : (
-                  <span className="text-purple-400">
+                  <span className="text-muted-foreground">
                     {chatInfo.remainingPairs} pairs remaining
                   </span>
                 )}
               </div>
             </div>
 
-            <div className="w-full h-1 bg-purple-900/30 rounded-full overflow-hidden">
+            <div className="w-full h-1 bg-muted rounded-full overflow-hidden">
               <div
                 className={`h-full ${
-                  chatInfo.isApproachingLimit ? "bg-amber-500" : "bg-purple-600"
+                  chatInfo.isApproachingLimit ? "bg-amber-500" : "bg-primary"
                 }`}
                 style={{
                   width: `${(chatInfo.messageCount / chatInfo.totalLimit) * 100}%`
@@ -806,11 +824,11 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
 
           {/* Selected images preview */}
           {selectedImages.length > 0 && (
-            <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-thin scrollbar-thumb-purple-500 scrollbar-track-purple-900/20">
+            <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-thin scrollbar-thumb-primary scrollbar-track-muted">
               {imagePreviewUrls.map((url, index) => (
                 <div
                   key={index}
-                  className="relative flex-shrink-0 w-16 h-16 rounded-md overflow-hidden group border border-purple-500/30"
+                  className="relative flex-shrink-0 w-16 h-16 rounded-md overflow-hidden group border border-border"
                 >
                   <Image
                     src={url}
@@ -823,7 +841,7 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
                     <button
                       type="button"
                       onClick={() => removeSelectedImage(index)}
-                      className="text-white/90 hover:text-white"
+                      className="text-primary-foreground/90 hover:text-primary-foreground"
                     >
                       <XCircle className="w-5 h-5" />
                     </button>
@@ -834,7 +852,7 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
           )}
 
           {/* Textarea for message input */}
-          <div className="relative bg-purple-900/30 border-2 border-purple-600/40 hover:border-purple-500/50 focus-within:border-purple-400 shadow-[0_0_10px_rgba(147,51,234,0.2)] transition-all duration-200 rounded-xl overflow-hidden">
+          <div className="relative bg-background border-2 border-border hover:border-primary/50 focus-within:border-primary shadow-sm transition-all duration-200 rounded-xl overflow-hidden">
             <textarea
               value={isRecording ? transcript || "Listening..." : input}
               onChange={(e) => !isRecording && setInput(e.target.value)}
@@ -852,7 +870,7 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
                 target.style.height = "auto";
                 target.style.height = `${Math.min(target.scrollHeight, 150)}px`; // Max height of 150px
               }}
-              className="w-full bg-transparent px-4 py-3 text-base text-white placeholder:text-purple-300/80 focus:outline-none resize-none min-h-[50px]"
+              className="w-full bg-transparent px-4 py-3 text-base text-foreground placeholder:text-muted-foreground focus:outline-none resize-none min-h-[50px]"
               disabled={isLoading || isProcessingVoice || isRecording}
             />
 
@@ -861,7 +879,7 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
               <button
                 type="button"
                 onClick={() => setInput("")}
-                className="absolute top-2 right-2 p-1.5 text-purple-300 hover:text-white active:text-pink-300 transition-colors rounded-full hover:bg-purple-800/30"
+                className="absolute top-2 right-2 p-1.5 text-muted-foreground hover:text-foreground transition-colors rounded-full hover:bg-muted"
                 disabled={isLoading || isProcessingVoice}
               >
                 <X className="w-4 h-4" />
@@ -872,14 +890,13 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
           {/* Action buttons row below the textarea */}
           <div className="flex items-center justify-between">
             <div className="flex space-x-1">
-             
               <button
                 type="button"
                 onClick={toggleRecording}
                 className={`p-2 rounded-lg ${
                   isRecording
-                    ? "bg-pink-500/20 text-pink-400"
-                    : "bg-purple-900/40 text-purple-300 hover:bg-purple-800/50 hover:text-white"
+                    ? "bg-primary/20 text-primary"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
                 } transition-all`}
                 disabled={isLoading || isProcessingVoice} // Removed: || selectedImages.length > 0
               >
@@ -902,8 +919,8 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
                 onClick={() => fileInputRef.current?.click()}
                 className={`p-2 rounded-lg ${
                   selectedImages.length > 0
-                    ? "bg-purple-500/20 text-purple-400"
-                    : "bg-purple-900/40 text-purple-300 hover:bg-purple-800/50 hover:text-white"
+                    ? "bg-primary/20 text-primary"
+                    : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
                 } transition-all`}
                 disabled={isLoading || isProcessingVoice || isRecording}
               >
@@ -934,10 +951,8 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
                 isLoading ||
                 isProcessingVoice ||
                 (!input.trim() && selectedImages.length === 0 && !isRecording)
-                  ? "bg-purple-900/50 text-purple-300 cursor-not-allowed"
-                  : isRecording && selectedImages.length > 0
-                    ? "bg-gradient-to-r from-pink-500 to-purple-600 text-white hover:from-pink-600 hover:to-purple-700"
-                    : "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 active:from-purple-800 active:to-pink-800 transform active:scale-95 transition-all shadow-[0_0_15px_rgba(219,39,119,0.3)]"
+                  ? "bg-muted text-muted-foreground cursor-not-allowed"
+                  : "bg-primary text-primary-foreground hover:bg-primary/90 active:scale-95 transform transition-all"
               }`}
               disabled={
                 isLoading ||
@@ -969,8 +984,8 @@ const AriaInterface: React.FC<AriaInterfaceProps> = ({
           </div>
         </form>
         {isProcessingVoice && (
-          <div className="fixed bottom-4 sm:bottom-20 right-4 z-30 bg-purple-600/90 text-white px-4 py-2 rounded-full flex items-center shadow-lg">
-            <span className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></span>
+          <div className="fixed bottom-4 sm:bottom-20 right-4 z-30 bg-primary text-primary-foreground px-4 py-2 rounded-full flex items-center shadow-lg">
+            <span className="w-2 h-2 bg-primary-foreground rounded-full mr-2 animate-pulse"></span>
             Processing voice message...
           </div>
         )}

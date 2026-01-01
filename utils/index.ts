@@ -6,27 +6,52 @@ import toast from "react-hot-toast";
 const isRateLimitError = (error: any): boolean => {
   if (!error) return false;
   
-  // Check status code
-  if (error?.status === 429 || error?.code === 429) return true;
-  
-  // Check error message
-  const errorMessage = error?.message || error?.toString() || '';
+  // Check status code in various locations (GoogleGenerativeAI SDK may nest errors differently)
   if (
-    errorMessage.includes('429') ||
-    errorMessage.includes('rate limit') ||
-    errorMessage.includes('Rate limit') ||
-    errorMessage.includes('too many requests') ||
-    errorMessage.includes('Too Many Requests')
+    error?.status === 429 ||
+    error?.statusCode === 429 ||
+    error?.code === 429 ||
+    error?.response?.status === 429 ||
+    error?.response?.statusCode === 429 ||
+    error?.cause?.status === 429 ||
+    error?.cause?.code === 429 ||
+    error?.cause?.statusCode === 429
   ) {
+    console.log('Rate limit detected via status code:', error);
     return true;
   }
   
-  // Check for quota errors
+  // Check error message (case-insensitive) - check multiple possible locations
+  const errorMessage = (
+    error?.message ||
+    error?.error?.message ||
+    error?.toString() ||
+    error?.response?.data?.error?.message ||
+    error?.response?.data?.message ||
+    error?.cause?.message ||
+    ''
+  ).toLowerCase();
+  
   if (
+    errorMessage.includes('429') ||
+    errorMessage.includes('rate limit') ||
+    errorMessage.includes('too many requests') ||
     errorMessage.includes('quota') ||
-    errorMessage.includes('Quota') ||
-    errorMessage.includes('RESOURCE_EXHAUSTED')
+    errorMessage.includes('resource_exhausted') ||
+    errorMessage.includes('exceeded') ||
+    errorMessage.includes('limit exceeded')
   ) {
+    console.log('Rate limit detected via error message:', errorMessage);
+    return true;
+  }
+  
+  // Check for Google API specific error codes
+  if (
+    error?.code === 'RESOURCE_EXHAUSTED' ||
+    error?.error?.code === 'RESOURCE_EXHAUSTED' ||
+    error?.cause?.code === 'RESOURCE_EXHAUSTED'
+  ) {
+    console.log('Rate limit detected via error code:', error);
     return true;
   }
   
@@ -36,12 +61,48 @@ const isRateLimitError = (error: any): boolean => {
 // Helper function to show rate limit error message
 const showRateLimitError = (loadingToastId: string, context: string = '') => {
   toast.error(
-    `Rate limit exceeded${context ? ` for ${context}` : ''}. Please wait a moment before trying again. The API has usage limits to ensure fair access for all users.`,
+    `Rate limit exceeded${context ? ` for ${context}` : ''}. Please wait a few minutes before trying again. The API has usage limits to ensure fair access for all users.`,
     {
       id: loadingToastId,
-      duration: 6000
+      duration: 8000
     }
   );
+};
+
+// Helper function to retry with exponential backoff
+const retryWithBackoff = async <T>(
+  fn: () => Promise<T>,
+  maxRetries: number = 3,
+  baseDelay: number = 1000
+): Promise<T> => {
+  let lastError: any;
+  
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error: any) {
+      lastError = error;
+      
+      // Don't retry if it's not a rate limit error
+      if (!isRateLimitError(error)) {
+        throw error;
+      }
+      
+      // Don't retry on the last attempt
+      if (attempt === maxRetries) {
+        break;
+      }
+      
+      // Calculate delay with exponential backoff
+      const delay = baseDelay * Math.pow(2, attempt);
+      console.log(`Rate limit hit. Retrying in ${delay}ms... (attempt ${attempt + 1}/${maxRetries})`);
+      
+      // Wait before retrying
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+  
+  throw lastError;
 };
 
 // Recipe type definition
@@ -217,8 +278,12 @@ export const generateCompleteRecipe = async ({
   
   Be practical, accurate, and detailed in your responses.`;
 
-    // Generate content
-    const result = await model.generateContent(prompt);
+    // Generate content with retry logic
+    const result = await retryWithBackoff(
+      () => model.generateContent(prompt),
+      3, // max 3 retries
+      2000 // start with 2 second delay
+    );
     const response = result.response.text();
 
 
@@ -470,8 +535,12 @@ FIBER: [number]
 Do not include units in the actual values, additional explanations, serving size calculations, or any other text. If any ingredient lacks sufficient information for accurate calculation, make a reasonable estimate based on similar ingredients and note this in a separate section AFTER providing the formatted nutrition data.
 `;
 
-    // Generate the nutrition information
-    const result = await model.generateContent(prompt);
+    // Generate the nutrition information with retry logic
+    const result = await retryWithBackoff(
+      () => model.generateContent(prompt),
+      3, // max 3 retries
+      2000 // start with 2 second delay
+    );
     const response = result.response.text();
     
     
@@ -564,8 +633,12 @@ export const generateRecipeImage = async (
     The image should look appetizing, well-lit, styled like a high-end cookbook photograph.
     Include colorful ingredients, appropriate garnishes, and elegant plating.`;
     
-    // Call the model to generate the image
-    const result = await model.generateContent(prompt);
+    // Call the model to generate the image with retry logic
+    const result = await retryWithBackoff(
+      () => model.generateContent(prompt),
+      2, // max 2 retries for image generation
+      3000 // start with 3 second delay
+    );
     const response = result.response;
     const parts = response.candidates?.[0]?.content?.parts;
     

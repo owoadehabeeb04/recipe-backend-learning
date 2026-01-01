@@ -221,7 +221,10 @@ export const RecipeCardEditDelete = ({
           )}
 
           {/* "Mine" Badge - Top Left (if favorite button not shown) or below it */}
-          {user && (recipe.user === user._id || recipe.createdBy === user._id) && (
+          {user && (
+            (recipe.user && String(recipe.user) === String(user._id)) ||
+            (recipe.createdBy && String(recipe.createdBy) === String(user._id))
+          ) && (
             <div className={`absolute ${user?.role === "user" ? "top-2 left-10 sm:top-3 sm:left-12" : "top-2 left-2 sm:top-3 sm:left-3"} z-10 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium bg-primary/20 text-primary border border-primary/30 flex items-center gap-0.5 sm:gap-1 backdrop-blur-sm`}>
               <Star className="w-2.5 h-2.5 sm:w-3 sm:h-3 fill-current" />
               Mine
@@ -257,8 +260,8 @@ export const RecipeCardEditDelete = ({
           {user &&
             (user.role === "admin" ||
               (user.role === "user" &&
-                (recipe.user === user._id ||
-                  recipe.roleCreated === "user"))) && (
+                recipe.roleCreated === "user" &&
+                String(recipe.user) === String(user._id))) && (
               <Button
                 size="sm"
                 variant="default"
@@ -339,8 +342,8 @@ export const RecipeCardEditDelete = ({
             {user &&
               (user.role === "admin" ||
                 (user.role === "user" &&
-                  (recipe.user === user._id ||
-                    recipe.roleCreated === "user"))) && (
+                  recipe.roleCreated === "user" &&
+                  String(recipe.user) === String(user._id))) && (
                 <Button
                   size="sm"
                   variant="destructive"
